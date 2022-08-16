@@ -102,6 +102,4 @@ This is used to embed links within menus. First create a Menu Type link and prov
 
 
 
-https://user-images.githubusercontent.com/109171329/184963128-13c42820-d16b-4ea8-b020-835e2eafef70.mp4
-
 
