@@ -198,7 +198,8 @@ async function loadRestContent(){
   }
 }
 async function getLiveboards(restURLParams){
-  return await fetch(settings.URL+"callosum/v1/tspublic/v1/metadata/list?type=PINBOARD_ANSWER_BOOK"+restURLParams,
+  var baseURL = settings.URL.replace("#/","").replace("#","")
+  return await fetch(baseURL+"callosum/v1/tspublic/v1/metadata/list?type=PINBOARD_ANSWER_BOOK"+restURLParams,
   {
     credentials: 'include',
   })
@@ -206,7 +207,8 @@ async function getLiveboards(restURLParams){
     data => data.headers)
 }
 async function getAnswers(restURLParams){
-  return await fetch(settings.URL+"callosum/v1/tspublic/v1/metadata/list?type=QUESTION_ANSWER_BOOK"+restURLParams,
+  var baseURL = settings.URL.replace("#/","").replace("#","")
+  return await fetch(baseURL+"callosum/v1/tspublic/v1/metadata/list?type=QUESTION_ANSWER_BOOK"+restURLParams,
   {
     credentials: 'include',
   })
@@ -244,8 +246,8 @@ function onEmbedRendered(){
     console.log("copy!")
     //loadRestContent();
   })
-  embedRef.current.on(EmbedEvent.Save,(data) => {
-    console.log("save!")
+  embedRef.current.on(EmbedEvent.Data,(data) => {
+    console.log("data!",data)
     //loadRestContent();
   })
   embedRef.current.on(EmbedEvent.VizPointDoubleClick, (data) => {
@@ -254,7 +256,7 @@ function onEmbedRendered(){
       window.dispatchEvent(event)
   })
   embedRef.current.on(EmbedEvent.VizPointClick, (data) => {
-    console.log('single click');
+    console.log('single click',data);
   })
   embedRef.current.on(EmbedEvent.CustomAction, (payload) => {
     
@@ -685,7 +687,7 @@ const contentLinkVertical = {
   marginBottom: '5px'
 }
 const contentLinkHorizontal = {
-  maxWidth:'100px',
+  maxWidth:'165px',
   height:'50px',
   display:'flex',
   alignItems: 'center',
@@ -700,7 +702,7 @@ const horizontalLink = {
 }
 const hoverMenuHorizontal ={
   position: 'absolute',
-  width: '150px',
+  width: '200px',
   top: '75px',
   marginLeft:'-10px',
 }
