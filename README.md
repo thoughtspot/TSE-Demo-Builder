@@ -2,7 +2,7 @@
 
 ## TSE Demo Builder
 
-This application is designed to enable quick TSE demos that mimic a client environment. 
+This application is designed to enable quick TSE demos that mimic a client environment. This is created and maintained by the Thoughspot Sales Engineering team.
 
 
 # VERSION 1.0.1
@@ -13,7 +13,7 @@ Install Node JS [https://nodejs.org/en/download/]. This app uses version 16.
 
 In a terminal window:
 
-`git clone https://github.com/hannsta/TSE-Demo-Builder.git` 
+`git clone https://github.com/thoughtspot/TSE-Demo-Builder.git` 
 Clones the repository. Alternatively, download and extract the zip file.
 
 `cd TSE-Demo-Builder` 
@@ -99,5 +99,7 @@ ANSWER_GUID|disableAction=Action.Share|disableAction=Action.Save
 This is used to provide additional details needed to render the link. See Link Type descriptions above for more information on each option.
 ##### Link Parent
 This is used to embed links within menus. First create a Menu Type link and provide a name. Any link that you want to show up within that menu, you will want to set that link's parent attribute to be the menu's name.
+
+
 
 
