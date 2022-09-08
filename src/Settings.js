@@ -368,6 +368,7 @@ function Link(props){
       <option value="pinboards">Liveboards</option>
       <option value="data">Data</option>
       <option value="spotiq">SpotIQ</option> 
+      <option value="search">Search</option> 
     </select>
   }
   else if (type=="None"){
