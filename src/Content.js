@@ -186,10 +186,10 @@ async function loadRestContent(){
       if (config.type=='all' || config.type=='answer'){
         var answers = await getAnswers(config.restURLParams)
       }
-      if (liveboards.length>0){
+      if (liveboards && liveboards.length>0){
         restLiveboardsCopy[config.link] = liveboards 
       }
-      if (answers.length>0){
+      if (answers && answers.length>0){
         restAnswersCopy[config.link] = answers
       }
     }
@@ -258,8 +258,14 @@ function onEmbedRendered(){
   embedRef.current.on(EmbedEvent.VizPointClick, (data) => {
     console.log('single click',data);
   })
+
+
+
+
+
+
   embedRef.current.on(EmbedEvent.CustomAction, (payload) => {
-    
+    console.log(payload)
     var data = payload.data.embedAnswerData.data[0].columnDataLite
     var alertString = "Action Triggered: "+ payload.data.id
     for (var col in data){
@@ -268,6 +274,10 @@ function onEmbedRendered(){
     alert(alertString);
   })
 }
+
+
+
+
 
 var isHorizontal = (settings.orientation=='Horizontal') 
 
