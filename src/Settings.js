@@ -382,7 +382,8 @@ function Link(props){
       'Field':'[Region]:Region,[Timestamp].detailed:Detailed Time',
       'Search String':'[tml] [search] [query] |WorksheetGUID',
       'URL':'URL of website or image',
-      'Rest':'tags=Retail Sales|category=my|sort=CREATED|type=liveboard'
+      'Rest':'tags=Retail Sales|category=my|sort=CREATED|type=liveboard',
+      'Advanced':'WorksheetGUID'
     }
     contentInput = <input style={{flex:1,border:'1px solid #cccccccc', borderRadius:'5px', marginRight:'5px'}} placeholder={placeholders[type]} value={content} onChange={e => handleContentChange(e.target.value)} />;
   }
@@ -409,7 +410,8 @@ function Link(props){
     'App': 'Link Name',
     'Menu': 'Menu Name',
     'None':'Link Name',
-    'Rest':'Link Name'
+    'Rest':'Link Name',
+    'Advanced':'Link Name',
   }
   return(
     <div className="link">
@@ -426,6 +428,7 @@ function Link(props){
         <option value="Filter">Filter (Liveboard & Search String)</option>
         <option value="Field">Field (Search String)</option>
         <option value="Rest">REST Content List</option>
+        <option value="Advanced">Advanced Search</option>
       </select>
       {contentInput}
       {(type!='Menu' && type!='Rest') ? 

@@ -3,7 +3,8 @@ import { init,  AuthType, Page, EmbedEvent, Action, HostEvent} from '@thoughtspo
 import { SearchEmbed, LiveboardEmbed, AppEmbed, useEmbedRef } from '@thoughtspot/visual-embed-sdk/react';
 import { MultiSelect } from "react-multi-select-component";
 import NotePopup from './NotePopup';
-
+import ClientWebsite from './ClientWebsite'
+import AdvancedDemoPage from './advanced_demo/AdvancedDemoPage';
 function Content(props) {
 const {
   settings,
@@ -510,9 +511,13 @@ if (renderType=='App'){
   renderPage = <AppEmbed pageId={renderContent} frameParams={{width:'100%',height:'100%'}} />
 }
 if (renderType=='URL'){
+  //renderPage = <ClientWebsite url={renderContent}></ClientWebsite>
   renderPage = <iframe  style={{width:'100%',height:'100%',border:'none'}} src={renderContent}></iframe>
 }
-
+if (renderType=='Advanced'){
+  //renderPage = <ClientWebsite url={renderContent}></ClientWebsite>
+  renderPage = <AdvancedDemoPage  worksheet={renderContent}></AdvancedDemoPage>
+}
 document.title = settings.name
 
 
