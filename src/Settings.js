@@ -377,10 +377,10 @@ function Link(props){
     var placeholders = {
       'Search': 'WorksheetGUID|hideDataSources=false|disableAction=Action.Share|disableAction=Action.Save',
       'Liveboard':'LiveboardGUID|disableAction=Action.Share|disableAction=Action.Save',
-      'Answer': 'AnswerGUID|disableAction=Action.Share|disableAction=Action.Save',
+      'Answer': 'AnswerGUID|hideDataSources=false|disableAction=Action.Share|disableAction=Action.Save',
       'Filter':'East,West,South,North',
       'Field':'[Region]:Region,[Timestamp].detailed:Detailed Time',
-      'Search String':'[tml] [search] [query] |WorksheetGUID',
+      'Search String':'[tml] [search] [query] |WorksheetGUID|hideDataSources=false',
       'URL':'URL of website or image',
       'Rest':'tags=Retail Sales|category=my|sort=CREATED|type=liveboard',
       'Advanced':'WorksheetGUID'

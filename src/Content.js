@@ -497,7 +497,7 @@ if (renderType=='Answer'){
       enabledActions={enabledActions.length>0 ? enabledActions : null} 
       disabledActions={disabledActions.length>0 ? disabledActions : null}  
       onLoad={onEmbedRendered}  
-      hideDataSources={true}  
+      hideDataSources={hideDataSources}  
       answerId={renderContent.split("|")[0]} 
       frameParams={{width:'100%',height:'100vh'}}
   />
