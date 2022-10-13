@@ -437,10 +437,11 @@ var enabledActions = []
 var disabledActions = []
 var hideDataSources = true;
 //Scan Properties
-if (renderContent && (renderType=='Liveboard' || renderType=='Answer' || renderType=='Search')){
+if (renderContent && (renderType=='Liveboard' || renderType=='Answer' || renderType=='Search'|| renderType=='Search String')){
   var contents = renderContent.split("|")
   if (contents.length>1){
-    for (var i=1;i<contents.length;i++){
+    var propStartIdx = renderType=='Search String' ? 2 : 1
+    for (var i=propStartIdx;i<contents.length;i++){
       var props = contents[i].split("=");
       if (props.length>1){
         var prop = props[0]
