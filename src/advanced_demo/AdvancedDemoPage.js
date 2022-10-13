@@ -10,6 +10,8 @@ function AdvancedDemoPage(props){
     const embedRef = useEmbedRef();
     const [dataObj,setDataObj] = useState('')
     const [selectedView, setSelectedView] = useState('search')
+    const [searchString, setSearchString] = useState('')
+    const [selectedFilters, setSelectedFilters] = useState('')
     function onEmbedRendered(){
         embedRef.current.on(EmbedEvent.QueryChanged,(resp) => {
             console.log("data!",resp)
@@ -19,13 +21,12 @@ function AdvancedDemoPage(props){
     }
     
     function updateSearch(selectedColumns,selectedFilters,chartFilter){
-        console.log("updating!!!",selectedColumns,selectedFilters,chartFilter)
         var searchString =""
         for (var i in selectedColumns){
             searchString += "["+selectedColumns[i]+"] "
         }
         for (var i in selectedFilters){
-            searchString += "'"+selectedFilters[i]+"' "
+            searchString += "["+selectedFilters[i].col+"]."+"'"+selectedFilters[i].val+"' "
         }
         if (chartFilter){
             searchString += "'"+chartFilter+"'"
@@ -41,19 +42,33 @@ function AdvancedDemoPage(props){
             //     executeSearch: true,
             // });
         }
+        setSearchString(searchString)
+        setSelectedFilters(selectedFilters)
         const event = new CustomEvent('searchQuery', {detail: {data: searchString}});
         window.dispatchEvent(event)
+
+    }
+    var breadcrumbs = []
+    for (var filter of selectedFilters){
+        breadcrumbs.push(<div style={{width:'auto',marginLeft:'15px',display:'flex',alignItems:'center'}}>
+            <FilterBreadcrumb col={filter.col} val={filter.val} removeFilter={removeFilter}></FilterBreadcrumb>
+        </div>)
+    }
+    function removeFilter(filter){
+        setSelectedFilters(
+            selectedFilters.filter((e)=>(e.val !== filter)),
+        )
     }
     return(
         <div style={{display:'flex',flexDirection:'column'}}>
             <div style={{flex:1,display:'flex',flexDirection:'row',fontFamily:'Open Sans'}}>
                 <div style={{width:'75%'}}>
-                <ColumnList key={worksheet} worksheet={worksheet} updateSearch={updateSearch} ></ColumnList>
+                <ColumnList key={worksheet} selectedFilters={selectedFilters} setSelectedFilters={setSelectedFilters} worksheet={worksheet} updateSearch={updateSearch} ></ColumnList>
                 </div>
-                <div style={{height:'280px',display:'flex',flexDirection:'column',width:'25%',margin: '15px', padding: '15px', boxShadow: 'rgb(230 230 230) 0px 0px 15px'}}>
+                <div style={{height:'240px',display:'flex',flexDirection:'column',width:'25%',margin: '15px', padding: '15px', boxShadow: 'rgb(230 230 230) 0px 0px 15px'}}>
                     <div style={{height:'30px',fontWeight:600}}>Information</div>
                     <div style={{display:'flex',flexDirection:'row',minHeight:'50px',alignItems:'center'}}>
-                        <div style={{width:'50px',color:'#cccccccc',display:'flex',alignItems:'center'}}>
+                        <div style={{width:'40px',color:'#cccccccc',display:'flex',alignItems:'center'}}>
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="-2 -1.5 24 24" width="24" fill="currentColor"><path d="M4 .565h12a4 4 0 0 1 4 4v12a4 4 0 0 1-4 4H4a4 4 0 0 1-4-4v-12a4 4 0 0 1 4-4z"></path></svg>
                         </div>
                         <div style={{display:'flex',justifyContent:'center',alignItems:'center',fontSize:'12px'}}>
@@ -70,10 +85,14 @@ function AdvancedDemoPage(props){
                     </div>
                 </div>
             </div>     
-            <div style={{display:'flex',flexDirection:'row',alignItems:'center',marginLeft:'15px'}}>
+            <div style={{display:'flex',maxHeight:'50px',flexDirection:'row',alignItems:'center',marginLeft:'15px'}}>
                 <div className={selectedView=="search" ?"advancedToggleButton selected" : "advancedToggleButton"} onClick={()=>setSelectedView('search')}>Explore</div>
                 <div className={selectedView=="table" ?"advancedToggleButton selected" : "advancedToggleButton"}  onClick={()=>setSelectedView('table')}>Table</div>
                 <div className={selectedView=="d3" ?"advancedToggleButton selected" : "advancedToggleButton"}  onClick={()=>setSelectedView('d3')}>Custom</div>
+                <div style={{display:'flex',flexDirection:'row',alignItems:'center'}}>
+                {breadcrumbs}
+                </div>
+
             </div>
             <div style={{
                 display:'flex',
@@ -85,10 +104,23 @@ function AdvancedDemoPage(props){
                 marginRight:'15px',
                 marginLeft:'15px',
             }}>
-                <SearchEmbed ref={embedRef} onLoad={onEmbedRendered} enabledActions={[]} dataSources={[worksheet]} hideDataSources={true} frameParams={{width:'calc(100vw - 30px)',height:'100%'}}></SearchEmbed>
-            </div>
-            <div style={{flex:1}}>
+                
+                {selectedView == 'search' ? 
+                <SearchEmbed 
+                ref={embedRef} 
+                onLoad={onEmbedRendered} 
+                searchOptions={{
+                    searchTokenString: searchString,
+                    executeSearch: true,
+                }}
+                visibleActions={[]} 
+                dataSources={[worksheet]} 
+                hideDataSources={true} 
+                frameParams={{width:'calc(100vw - 30px)',height:'100%'}}></SearchEmbed>
+                : null }
+                {selectedView == 'table' ? 
                 <DataObjView worksheet={worksheet}></DataObjView>
+                : null }
             </div>
         </div>
     )
@@ -114,3 +146,27 @@ function SearchString(){
     )
 }
 
+function FilterBreadcrumb(props){
+    const {
+        col,
+        val,
+        removeFilter
+    } = props
+    const [isHover, setIsHover] = useState(false)
+    return(
+        <div onMouseEnter={()=>setIsHover(true)} onMouseLeave={()=>setIsHover(false)}
+        style={{display:'flex',flexDirection:'row',width:'125px',height:'30px',background:'#efefef',borderRadius:'15px',fontSize:'12px'}}>
+            <div style={{alignItems:'center',display:'flex',marginLeft:'10px',width:'auto'}}>
+                {col}
+            </div>
+            <div style={{alignItems:'center',display:'flex',marginLeft:'5px',width:'auto',overflow:'hidden',fontWeight:600}}>
+                {val}
+            </div>
+            {isHover ? 
+            <div style={{position:'relative',right:'0px',width:'20px'}} onClick={()=>removeFilter(val)}>
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="-2 -2 24 24" width="16" fill="currentColor"><path d="M11.414 10l2.829-2.828a1 1 0 1 0-1.415-1.415L10 8.586 7.172 5.757a1 1 0 0 0-1.415 1.415L8.586 10l-2.829 2.828a1 1 0 0 0 1.415 1.415L10 11.414l2.828 2.829a1 1 0 0 0 1.415-1.415L11.414 10zM10 20C4.477 20 0 15.523 0 10S4.477 0 10 0s10 4.477 10 10-4.477 10-10 10z"></path></svg>
+            </div>
+            : null}
+        </div>
+    )
+}

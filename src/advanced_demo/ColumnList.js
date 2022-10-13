@@ -3,9 +3,10 @@ function ColumnList(props){
     const {
         worksheet,
         updateSearch,
+        selectedFilters,
+        setSelectedFilters
     } = props
     const [selectedColumns, setSelectedColumns] = useState('')
-    const [selectedFilters, setselectedFilters] = useState('')
     const [chartFilter, setChartFilter] = useState('')
 
     function toggleColumn(col){
@@ -16,12 +17,16 @@ function ColumnList(props){
         }
         
     }
-    function toggleFilter(filter){
+    function toggleFilter(filter,col){
         console.log(filter,"filter!!")
         if (selectedColumns.includes(filter)){
-            setselectedFilters(selectedFilters.filter((e)=>(e !== filter)),updateSearch(selectedColumns,selectedFilters,chartFilter))
+            setSelectedFilters(
+                selectedFilters.filter((e)=>(e.val !== filter)),
+            )
         }else{
-            setselectedFilters([...selectedFilters, filter], updateSearch(selectedColumns,selectedFilters,chartFilter))
+            setSelectedFilters(
+                [...selectedFilters, {val:filter,col:col}], 
+            )
         }
     }
     const [columns,setColumns] = useState('')
@@ -72,17 +77,17 @@ function ColumnList(props){
                 <Column worksheet={worksheet} col={col} toggleColumn={toggleColumn} toggleFilter={toggleFilter} isSelected={selectedColumns && selectedColumns.includes(col)}></Column>
             )
         }
-        menu.push(<div style={{display:'flex',flexDirection:'column',alignItems:'flex-start',minWidth:'250px',maxWidth:'calc(vw / 6)'}}>
+        menu.push(<div style={{display:'flex',flexDirection:'column',alignItems:'flex-start',minWidth:'200px',maxWidth:'calc(vw / 6)',paddingLeft:'10px',height:'90%'}}>
             <div style={{fontWeight:600,display:'flex',justifyContent:'flex-start',alignItems:'center',width:'100%',height:'35px',fontSize:'12px',marginBottom:'5px'}}>
                 {tableName.replace("_1","").replace("_"," ")}
             </div>
-            <div style={{display:'flex',flexDirection:'column',alignItems:'flex-start',overflow:'auto',scrollbarWidth:'thin'}}>
+            <div style={{display:'flex',flexDirection:'column',alignItems:'flex-start',overflow:'auto',scrollbarWidth:'thin',marginRight:'10px',height:'100%'}}>
             {colOptions}
             </div>
             </div>)
       }
       return (
-        <div style={{height:'300px',width:'calc(100% - 40px)',margin:'15px',padding:'5px',boxShadow:'0px 0px 15px #e6e6e6',flexDirection:'column',display:'flex'}}>
+        <div style={{height:'260px',width:'calc(100% - 40px)',margin:'15px',padding:'5px',boxShadow:'0px 0px 15px #e6e6e6',flexDirection:'column',display:'flex'}}>
                 <div style={{margin:'10px',fontWeight:600,height:'25px'}}>Configuration</div>
                 <div style={{marginLeft:'10px',marginRight:'10px',width:'calc(100% - 20px)',display:'flex',flexDirection:'row',overflowX:'auto'}}>
                     {menu}
@@ -109,7 +114,7 @@ function Column(props){
         setFilterListVisible(!filterListVisible)
     }
     return(
-        <div style={{fontSize:'11px', wordWrap:'none',display:'flex',flexDirection:'row',minHeight:'30px',maxHeight:'30px',borderBottom:'1px solid #efefef',alignItems:'center'}} >
+        <div className="columnSelector" >
             <div  onClick={toggleColumnSelector} style={{marginRight:'5px', width:'18px',color:isSelected?'#898989':'#efefef',display:'flex',alignItems:'center'}}>
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="-2 -1.5 24 24" width="18" fill="currentColor"><path d="M4 .565h12a4 4 0 0 1 4 4v12a4 4 0 0 1-4 4H4a4 4 0 0 1-4-4v-12a4 4 0 0 1 4-4z"></path></svg>
             </div>
@@ -161,7 +166,7 @@ function FilterPopup(props){
     var filterOptions = []
     for (var i=0;i<filterValues.length;i++){
         var val = filterValues[i][0];
-        filterOptions.push(<Filter value={val} toggleFilter={toggleFilter}></Filter>)
+        filterOptions.push(<Filter value={val} col={col} toggleFilter={toggleFilter}></Filter>)
     }
     return(
         <div style={{boxShadow:'0px 0px 25px #e0e0e0', zIndex:999,display:'flex',flexDirection:'column',position:'absolute',background:'#ffffff',padding:'10px'}}>
@@ -174,10 +179,11 @@ function FilterPopup(props){
 function Filter(props){
     const {
         value,
+        col,
         toggleFilter
     } = props
     function toggleFilterValue(){
-        toggleFilter(value)
+        toggleFilter(value,col)
     }
     return (
         <div className="filterPicker" 

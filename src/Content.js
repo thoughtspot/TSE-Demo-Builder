@@ -40,6 +40,8 @@ useEffect(() => {
       init({
         thoughtSpotHost: settings.URL,
         authType: AuthType.None,
+        customCssUrl: 'cdn.jsdelivr.net/gh/piduguSai/TS-Custom-CSS@main/TS-custom-styles.css',
+        callPrefetch: true,
       });
     }
     catch(err){
@@ -433,7 +435,7 @@ if (!isHorizontal){
 
 var enabledActions = []
 var disabledActions = []
-
+var hideDataSources = true;
 //Scan Properties
 if (renderContent && (renderType=='Liveboard' || renderType=='Answer' || renderType=='Search')){
   var contents = renderContent.split("|")
@@ -448,6 +450,10 @@ if (renderContent && (renderType=='Liveboard' || renderType=='Answer' || renderT
         }
         if (prop == 'disableAction'){
           disabledActions.push(Action[val.split("Action.")[1]])
+        }
+        if (prop == 'hideDataSources'){
+          console.log(val.toLowerCase(), "ahdsfasd")
+          hideDataSources = val.toLowerCase() == 'true'
         }
       }
     }
@@ -469,7 +475,7 @@ if (renderType=='Search'){
       enabledActions={enabledActions.length>0 ? enabledActions : null} 
       disabledActions={disabledActions.length>0 ? disabledActions : null} 
       dataSources={renderContents} 
-      hideDataSources={true} 
+      hideDataSources={hideDataSources} 
       frameParams={{width:'100%',height:'100%'}}
   />
 }
@@ -485,6 +491,7 @@ if (renderType=='Liveboard'){
       frameParams={{width:'100%',height:'100%'}}
   />
 }
+///Hide for mani
 if (renderType=='Answer'){
   renderPage = <MemorizedSearchEmbed ref={embedRef} 
       enabledActions={enabledActions.length>0 ? enabledActions : null} 
@@ -504,7 +511,7 @@ if (renderType=='Search String'){
   }
   var dataSources = renderContent.split("|")[1].split(",");
   
-  renderPage = <SearchEmbed ref={embedRef}  dataSources={dataSources} hideDataSources={true} searchOptions={searchOptions} frameParams={{width:'100%',height:'100vh'}}
+  renderPage = <SearchEmbed ref={embedRef}  dataSources={dataSources} hideDataSources={hideDataSources} searchOptions={searchOptions} frameParams={{width:'100%',height:'100vh'}}
   />
 }
 if (renderType=='App'){

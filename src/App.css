@@ -262,3 +262,13 @@ div.selected{
   background:var(--secondary-color);
   color:var(--primary-color);
 }
+.columnSelector{
+  font-size:11px;
+  word-wrap:none;
+  display:flex;
+  flex-direction:row;
+  min-height:30px;
+  max-height:30px;
+  border-bottom:1px solid #efefef;
+  align-items:center;
+}

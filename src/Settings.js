@@ -375,7 +375,7 @@ function Link(props){
     contentInput = null;
   }else{
     var placeholders = {
-      'Search': 'WorksheetGUID|disableAction=Action.Share|disableAction=Action.Save',
+      'Search': 'WorksheetGUID|hideDataSources=false|disableAction=Action.Share|disableAction=Action.Save',
       'Liveboard':'LiveboardGUID|disableAction=Action.Share|disableAction=Action.Save',
       'Answer': 'AnswerGUID|disableAction=Action.Share|disableAction=Action.Save',
       'Filter':'East,West,South,North',
@@ -428,7 +428,6 @@ function Link(props){
         <option value="Filter">Filter (Liveboard & Search String)</option>
         <option value="Field">Field (Search String)</option>
         <option value="Rest">REST Content List</option>
-        <option value="Advanced">Advanced Search</option>
       </select>
       {contentInput}
       {(type!='Menu' && type!='Rest') ? 
