@@ -169,7 +169,7 @@ function FilterPopup(props){
         filterOptions.push(<Filter value={val} col={col} toggleFilter={toggleFilter}></Filter>)
     }
     return(
-        <div style={{boxShadow:'0px 0px 25px #e0e0e0', zIndex:999,display:'flex',flexDirection:'column',position:'absolute',background:'#ffffff',padding:'10px'}}>
+        <div style={{boxShadow:'0px 0px 25px #e0e0e0', top:'100px',height:'350px',width:'250px',zIndex:999,display:'flex',flexDirection:'column',position:'absolute',background:'#ffffff',padding:'10px'}}>
             {filterOptions}
         </div>
 

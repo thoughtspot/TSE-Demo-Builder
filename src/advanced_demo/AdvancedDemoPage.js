@@ -61,7 +61,7 @@ function AdvancedDemoPage(props){
     }
     return(
         <div style={{display:'flex',flexDirection:'column'}}>
-            <div style={{flex:1,display:'flex',flexDirection:'row',fontFamily:'Open Sans'}}>
+            <div style={{flex:1,display:'flex',flexDirection:'row',fontFamily:'Open Sans',maxHeight:'300px'}}>
                 <div style={{width:'75%'}}>
                 <ColumnList key={worksheet} selectedFilters={selectedFilters} setSelectedFilters={setSelectedFilters} worksheet={worksheet} updateSearch={updateSearch} ></ColumnList>
                 </div>
@@ -113,7 +113,7 @@ function AdvancedDemoPage(props){
                     searchTokenString: searchString,
                     executeSearch: true,
                 }}
-                visibleActions={[]} 
+                forceTable={true}
                 dataSources={[worksheet]} 
                 hideDataSources={true} 
                 frameParams={{width:'calc(100vw - 30px)',height:'100%'}}></SearchEmbed>

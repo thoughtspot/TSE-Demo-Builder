@@ -428,6 +428,7 @@ function Link(props){
         <option value="Filter">Filter (Liveboard & Search String)</option>
         <option value="Field">Field (Search String)</option>
         <option value="Rest">REST Content List</option>
+        <option value="Advanced">Advanced</option>
       </select>
       {contentInput}
       {(type!='Menu' && type!='Rest') ? 
