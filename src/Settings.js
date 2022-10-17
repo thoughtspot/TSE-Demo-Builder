@@ -196,18 +196,7 @@ const handleFileRead = async (event) => {
   const base64 = await convertBase64(file)
   setLogoImage(base64);
 }
-const convertBase64 = (file) => {
-  return new Promise((resolve, reject) => {
-    const fileReader = new FileReader();
-    fileReader.readAsDataURL(file)
-    fileReader.onload = () => {
-      resolve(fileReader.result);
-    }
-    fileReader.onerror = (error) => {
-      reject(error);
-    }
-  })
-}
+
 const triggerInputFile = () => {
   fileInput.current.click()
 }
@@ -357,7 +346,6 @@ function Link(props){
   function handleContentChange(linkContent){
     saveLinkContent(id,linkContent)
   }
-  
   var contentInput = null;
   if (type=='Menu'){
     contentInput = null;
@@ -370,6 +358,9 @@ function Link(props){
       <option value="spotiq">SpotIQ</option> 
       <option value="search">Search</option> 
     </select>
+  }
+  else if (type=='Image'){
+   contentInput = <ImageInput value={content} setValue={handleContentChange}></ImageInput>
   }
   else if (type=="None"){
     contentInput = null;
@@ -424,6 +415,7 @@ function Link(props){
         <option value="Answer">Answer</option>
         <option value="App">Full App</option>
         <option value="URL">URL</option>
+        <option value="Image">Image</option>
         <option value="Search String">Search String</option>
         <option value="Filter">Filter (Liveboard & Search String)</option>
         <option value="Field">Field (Search String)</option>
@@ -482,5 +474,46 @@ function ArrowUp(){
 }
 function RevertIcon(){
   return <svg xmlns="http://www.w3.org/2000/svg" viewBox="-2 -2 24 24" width="24" fill="currentColor"><path d="M2 5h16V2H2v3zm16 2v12a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V7H1a1 1 0 0 1-1-1V1a1 1 0 0 1 1-1h18a1 1 0 0 1 1 1v5a1 1 0 0 1-1 1h-1zM4 18h12V7H4v11zm4-4h4a1 1 0 0 1 0 2H8a1 1 0 0 1 0-2z"></path></svg>;
+}
+const convertBase64 = (file) => {
+  return new Promise((resolve, reject) => {
+    const fileReader = new FileReader();
+    fileReader.readAsDataURL(file)
+    fileReader.onload = () => {
+      resolve(fileReader.result);
+    }
+    fileReader.onerror = (error) => {
+      reject(error);
+    }
+  })
+}
+
+function ImageInput(props){
+  const {
+    value,
+    setValue
+  } = props
+
+  const imageInput = useRef(null)
+  async function handleImageChange(event){
+    const file = event.target.files[0]
+    const base64 = await convertBase64(file)
+    setValue(base64)
+  }
+  const triggerInputImage = () => {
+    imageInput.current.click()
+  }
+  return (
+    <div>
+      <img className="logoImagePreview" onClick={triggerInputImage} src={value}></img> 
+      <input ref={imageInput} type="file" name="file" 
+            className="upload-file" 
+            id="file"
+            onChange={handleImageChange}
+            style={{display:'none'}}
+            encType="multipart/form-data" 
+            required/>
+     </div>
+  )
 }
 export default SettingsMenu;

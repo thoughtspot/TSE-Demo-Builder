@@ -522,6 +522,13 @@ if (renderType=='URL'){
   //renderPage = <ClientWebsite url={renderContent}></ClientWebsite>
   renderPage = <iframe  style={{width:'100%',height:'100%',border:'none'}} src={renderContent}></iframe>
 }
+if (renderType=="Image"){
+  renderPage = 
+  <div style={{height:'100%',width:'100%',overflow:'auto'}}>
+    <img  style={{width:'100%',border:'none'}} src={renderContent}></img>
+  </div>
+
+}
 if (renderType=='Advanced'){
   //renderPage = <ClientWebsite url={renderContent}></ClientWebsite>
   renderPage = <AdvancedDemoPage  worksheet={renderContent}></AdvancedDemoPage>
