@@ -941,7 +941,7 @@ function Filter(props){
     var filtersObj  = {
       columnName: filterName,
       operator: 'BW_INC',
-      values: [e.selection.startDate.getTime() / 1000, e.selection.endDate.getTime() / 1000]
+      values: [Math.floor(e.selection.startDate.getTime() / 1000), Math.floor(e.selection.endDate.getTime() / 1000)]
     }
     setSelectedFilter([e.selection])
     setFilter(filtersObj)
@@ -969,14 +969,14 @@ function Filter(props){
 
             </div>
           :
-          <div>
-          Select Date Range
+          <div style={{display:'flex',flexDirection:'row'}}>
+          <div>Select <br></br> Date Range</div>
           <CalendarIcon />
           </div>
           }
         </div>
         {popupVisible ? 
-          <div style={{position:'absolute',left:'calc(100% - 600px)'}}>
+          <div style={{position:'absolute',left:'calc(100% - 600px)',boxShadow:'0px 0px 5px #cccccccc',borderRadius:'10px'}}>
             <DateRangePicker
               ranges={selectedFilter ? selectedFilter : [{
                 startDate: new Date(),
