@@ -8,11 +8,10 @@ function D3Chart(props){
     const svg = useRef(null);
 
     useEffect(()=>{
-        if (data && data[0].length > 2){
+        if (data && data[0].length > 1){
             var packedData = convertToCirclePack(data)
             var svgData = chart({'name':'charty','children':packedData})
             svgData.setAttribute("height",600)
-            svgData.setAttribute("width",600)
             if(svg.current){
                 svg.current.innerHTML = ""
                 svg.current.appendChild(svgData)
@@ -122,8 +121,7 @@ function chart(data){
       var outObj = []
       for (var i=0;i<data.length;i++){
         var row = data[i]
-
-        for (var j=1;j<row.length;j++){
+        for (var j=1;j<row.length-1;j++){
             outObj = addChild(outObj,row,0)
         }
       } 

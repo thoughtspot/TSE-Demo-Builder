@@ -113,13 +113,12 @@ function AdvancedDemoPage(props){
                     searchTokenString: searchString,
                     executeSearch: true,
                 }}
-                forceTable={true}
                 dataSources={[worksheet]} 
                 hideDataSources={true} 
                 frameParams={{width:'calc(100vw - 30px)',height:'100%'}}></SearchEmbed>
                 : null }
                 {selectedView == 'table' ? 
-                <DataObjView worksheet={worksheet}></DataObjView>
+                <DataObjView  key={searchString} worksheet={worksheet} queryString={searchString}></DataObjView>
                 : null }
             </div>
         </div>

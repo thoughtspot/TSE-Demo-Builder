@@ -5,6 +5,13 @@ import { MultiSelect } from "react-multi-select-component";
 import NotePopup from './NotePopup';
 import ClientWebsite from './ClientWebsite'
 import AdvancedDemoPage from './advanced_demo/AdvancedDemoPage';
+import { TextField, Box } from '@mui/material';
+import { LocalizationProvider, DatePicker, faIR } from '@mui/x-date-pickers';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import 'react-date-range/dist/styles.css'; // main style file
+import 'react-date-range/dist/theme/default.css'; // theme css file
+import { DateRangePicker } from 'react-date-range';
+
 function Content(props) {
 const {
   settings,
@@ -12,6 +19,7 @@ const {
 } = props
 const thoughtspot_URL = "https://se-thoughtspot-cloud.thoughtspot.cloud/#/" 
 
+const [initKey,setInitKey] = useState(0)
 const [renderType, setRenderType] = useState('')
 const [renderContent, setRenderContent] = useState('')
 const [renderName, setRenderName] = useState('')
@@ -37,10 +45,112 @@ useEffect(() => {
   if (settings.URL){
     console.log(settings.URL)
     try {
+      // /                ,
+
       init({
         thoughtSpotHost: settings.URL,
         authType: AuthType.None,
-        customCssUrl: 'cdn.jsdelivr.net/gh/piduguSai/TS-Custom-CSS@main/TS-custom-styles.css',
+        // customisations: {
+        //   style: {
+        //     customCSS: {
+        //       variables: {
+        //         "--ts-var-button--primary-color": settings.secondaryColor,
+        //         "--ts-var-button--secondary-color":settings.secondaryColor,
+        //         "--ts-var-button--secondary-background":settings.primaryColor+"cc",
+        //         "--ts-var-viz-background":settings.primaryColor+"ee",
+        //         "--ts-var-viz-title-color":settings.secondaryColor,
+        //         "--ts-var-root-background":settings.primaryColor+"77",
+        //       },
+        //       rules_UNSTABLE: {
+        //         '[data-testid="sage-search-bar"]':{
+        //           "background":settings.primaryColor,
+        //           "color":settings.secondaryColor
+        //         },
+        //         '[data-testid="sage-completions-dropdown"]':{
+        //           "background":settings.primaryColor,
+        //           "color":settings.secondaryColor
+        //         },
+        //         '[data-testid="answer-header-action-menu"]':{
+        //           "background":settings.primaryColor,
+        //           "color":settings.secondaryColor+" !important"
+        //         },
+        //         '[data-testid="answer-config-panel"]':{
+        //           "background":settings.primaryColor,
+        //           "color":settings.secondaryColor
+        //         },
+        //         '[data-testid="answer-content-loading-indicator"]':{
+        //           "background-color":settings.primaryColor+"77"
+        //         },
+        //         '[class*="_measure"]':{
+        //           "background-color":"#0dce85 !important",
+        //           "border-bottom":"1px solid #0dce85"
+        //         },
+        //         '[class*="_attribute"]':{
+        //           "background-color":"#2770ef !important",
+        //           "border-bottom":"1px solid #2770ef"
+        //         },
+        //         '.axis-label-title':{
+        //           "color":settings.secondaryColor+" !important"
+        //         },
+        //         '.highcharts-yaxis-labels text':{
+        //           "color":settings.secondaryColor+" !important",
+        //           "fill":settings.secondaryColor+" !important"
+        //         },
+        //         '.highcharts-xaxis-labels text':{
+        //           "color":settings.secondaryColor+" !important",
+        //           "fill":settings.secondaryColor+" !important"
+        //         },
+        //         '[class*="completionText"]':{
+        //           "color":settings.secondaryColor+" !important"
+        //         },
+        //         '[class*="completionSubtext"]':{
+        //           "color":settings.secondaryColor+"66 !important"
+        //         },
+        //         '[class*="completion"]:hover':{
+        //           "background":settings.primaryColor+"66 !important"
+        //         },
+        //         '[class*="footerHelpContainer"]':{
+        //           "background":settings.primaryColor+"66 !important"
+        //         },
+        //         '[class*="_selected"]':{
+        //           "background":settings.secondaryColor+"11 !important"
+        //         },
+        //         '[class*="answerEditPane"], [class*="answerConfigPanelNav"]':{
+        //           "border-left":"1px solid "+settings.secondaryColor+"11 !important"
+        //         },
+        //         '[class*="headerText"]':{
+        //           "color":settings.secondaryColor+" !important"
+        //         },
+        //         '[class*="labelText"]':{
+        //           "color":settings.secondaryColor+"cc !important"
+        //         },
+        //         '[class*="_input"]':{
+        //           "background-color":settings.primaryColor+"cc !important",
+        //           "color":settings.secondaryColor+" !important"
+        //         },
+        //         '[class*="_itemText"] p':{
+        //           "color":settings.secondaryColor+" !important"
+        //         },
+        //         '[class*="buttonSelected"], [class*="buttonWithIcon"]:hover':{
+        //           "background-color":settings.secondaryColor+"33 !important"
+        //         },
+        //         '[class*="undoRedoResetWrapper"]':{
+        //           "background":settings.primaryColor+" !important",
+        //           "color":settings.secondaryColor+" !important"
+        //         },
+        //         '[class*="buttonWithIcon"]':{
+        //           "color":settings.secondaryColor+" !important"
+        //         },
+        //         '[class*="_positionable"]':{
+        //           "background":settings.primaryColor+" !important"
+        //         },
+        //         '[class*="_container"]':{
+        //           "background-color":"transparent !important"
+        //         },
+        //       }
+        //     },
+        //   },
+        // },
         callPrefetch: true,
       });
     }
@@ -57,7 +167,7 @@ useEffect(() => {
   loadRestContent();
 
 
-}, [])
+}, [initKey])
 function loadDefaultFilters(){
   var defaultFilters = {}
   if (settings.links){
@@ -102,7 +212,7 @@ function renderLink(type,content,name){
     
   //Only keep filter values if that filter exists in the new content
   for (var link of settings.links){
-    if ((settings.linkTypes[link]=='Filter' || settings.linkTypes[link]=='Field') && settings.linkParents[link]==name){ 
+    if ((settings.linkTypes[link]=='Filter' || settings.linkTypes[link]=='Date Filter' || settings.linkTypes[link]=='Field') && settings.linkParents[link]==name){ 
       for (var filter of runFilters){
           if (filter.columnName == settings.linkNames[link]){
             newRunFilters.push(filter)
@@ -220,6 +330,7 @@ async function getAnswers(restURLParams){
 }
 
 function setFilter(newFilterObj){
+  console.log("getting filter",newFilterObj)
   var filterObjs = runFilters;
   var found = false;
   for (var i=0;i<filterObjs.length;i++){
@@ -245,8 +356,8 @@ function setFilter(newFilterObj){
 
 }
 function onEmbedRendered(){
-  embedRef.current.on(EmbedEvent.MakeACopy,(data) => {
-    console.log("copy!")
+  embedRef.current.on("save",(data) => {
+    console.log("save!",data)
     //loadRestContent();
   })
   embedRef.current.on(EmbedEvent.Data,(data) => {
@@ -294,7 +405,6 @@ if (settings.links){
   }
   for (var link of topLevel){
     var childrenLinks = []
-    console.log("rest answers",restAnswers,restLiveboards)
     if (settings.linkTypes[link]=='Rest' && restAnswers && restAnswers[link]){
       for (var contentItem of restAnswers[link]){
         childrenLinks.push(
@@ -355,7 +465,7 @@ if (settings.links){
 var filters = []
 if (settings.links){
   for (var link of settings.links){
-    if ((settings.linkTypes[link]=='Filter' || settings.linkTypes[link]=='Field') && settings.linkParents[link]==renderName){
+    if ((settings.linkTypes[link]=='Filter' || settings.linkTypes[link]=='Field' || settings.linkTypes[link]=='Date Filter') && settings.linkParents[link]==renderName){
       var filterContent = settings.linkContents[link].split("|")
       var  hasSelectAll = true;
       var filterValues = filterContent[0].split(',')
@@ -384,8 +494,8 @@ if (settings.links){
         }
       }
       var filterType = 'Filter'
-      if (settings.linkTypes[link]=='Field'){
-        filterType='Field'
+      if (settings.linkTypes[link]){
+        filterType= settings.linkTypes[link]
       }
       var options = []
       for (var val in filterValues){
@@ -436,6 +546,7 @@ if (!isHorizontal){
 var enabledActions = []
 var disabledActions = []
 var hideDataSources = true;
+var collapseDataSources = false;
 //Scan Properties
 if (renderContent && (renderType=='Liveboard' || renderType=='Answer' || renderType=='Search'|| renderType=='Search String')){
   var contents = renderContent.split("|")
@@ -453,8 +564,10 @@ if (renderContent && (renderType=='Liveboard' || renderType=='Answer' || renderT
           disabledActions.push(Action[val.split("Action.")[1]])
         }
         if (prop == 'hideDataSources'){
-          console.log(val.toLowerCase(), "ahdsfasd")
           hideDataSources = val.toLowerCase() == 'true'
+        }
+        if (prop == 'collapseDataSources'){
+          collapseDataSources = val.toLowerCase() == 'true'
         }
       }
     }
@@ -528,6 +641,22 @@ if (renderType=="Image"){
     <img  style={{width:'100%',border:'none'}} src={renderContent}></img>
   </div>
 
+}if (renderType=="OnImageViz"){
+  var addedHeight = isHorizontal ? "75px" : "0px"; 
+  renderPage = 
+  <div style={{height:'100%',width:'100%',overflow:'auto'}}>
+    <img  style={{width:'100%',border:'none'}} src={renderContent.image}></img>
+    <div style={{position:'absolute',top:"calc("+renderContent.box.y+"% + "+addedHeight+")",left:renderContent.box.x+"%",width:renderContent.box.width+"%",height:renderContent.box.height+"%"}}>
+    <LiveboardEmbed 
+      ref={embedRef} 
+      onLiveboardRendered = {onEmbedRendered}
+      vizId={renderContent.config.split("|")[1]}
+      liveboardId={renderContent.config.split("|")[0]} 
+      frameParams={{width:'100%',height:'100%'}}
+  />
+    </div>
+
+  </div>
 }
 if (renderType=='Advanced'){
   //renderPage = <ClientWebsite url={renderContent}></ClientWebsite>
@@ -542,7 +671,9 @@ function openTS(){
 function openGit(){
   window.open('https://github.com/hannsta/TSE-Demo-Builder','_blank')
 }
+function setTempFunction(){
 
+}
 
 return (
   <div style={isHorizontal ? horizontalContainer : verticalContainer}>
@@ -755,12 +886,23 @@ function Filter(props){
     defaultValues
   } = props
   const [selectedFilter, setSelectedFilter] = useState('')
-  
+  const [popupVisible, setPopupVisible] = useState('')
+
   useEffect(() => {
     if (defaultValues){
       setSelectedFilter(defaultValues)
     }else{
-      setSelectedFilter([])
+      if (type=='Date Filter'){
+        const selectionRange = [{
+          startDate: new Date(),
+          endDate: new Date(),
+          key: 'selection',
+        }]
+        setSelectedFilter(selectionRange)
+      }else{
+        setSelectedFilter([])
+
+      }
     }
   }, [])
   
@@ -793,17 +935,65 @@ function Filter(props){
     setSelectedFilter(e)
     setFilter(filtersObj)
   }
-
+  function handleDateFilterChange(e){
+    console.log(e,"range")
+    if (e.selection.startDate)
+    var filtersObj  = {
+      columnName: filterName,
+      operator: 'BW_INC',
+      values: [e.selection.startDate.getTime() / 1000, e.selection.endDate.getTime() / 1000]
+    }
+    setSelectedFilter([e.selection])
+    setFilter(filtersObj)
+  }
   return (
-  <MultiSelect 
-    multi={true} 
-    hasSelectAll={hasSelectAll} 
-    value={selectedFilter} 
-    options={options} 
-    placeholder={"Select "+filterName} 
-    onChange={type == 'Field' ? handleFieldChange: handleFilterChange} 
-    overrideStrings={overrideStrings}/>
-  )
+    <div>
+      {type == 'Field' || type == 'Filter' ?     
+    <MultiSelect 
+      multi={true} 
+      hasSelectAll={hasSelectAll} 
+      value={selectedFilter} 
+      options={options} 
+      placeholder={"Select "+filterName} 
+      onChange={type == 'Field' ? handleFieldChange: handleFilterChange} 
+      overrideStrings={overrideStrings}/>
+      :
+      <div>
+        <div style={{height:'38px',color:'#999999',width:'140px',fontSize:'11px',border:'1px solid #ccc',borderRadius:'5px',display:'flex',alignItems:'center',justifyContent:'center'}} onClick={()=>setPopupVisible(!popupVisible)}> 
+          { selectedFilter[0] ? 
+            <div style={{display:'flex',flexDirection:'row'}}>
+              <div style={{marginRight:'10px'}}>
+              {selectedFilter[0].startDate.toISOString().split('T')[0]} <br></br> {selectedFilter[0].endDate.toISOString().split('T')[0]}
+              </div>
+              <CalendarIcon />
+
+            </div>
+          :
+          <div>
+          Select Date Range
+          <CalendarIcon />
+          </div>
+          }
+        </div>
+        {popupVisible ? 
+          <div style={{position:'absolute',left:'calc(100% - 600px)'}}>
+            <DateRangePicker
+              ranges={selectedFilter ? selectedFilter : [{
+                startDate: new Date(),
+                endDate: new Date(),
+                key: 'selection',
+              }]}
+              onChange={handleDateFilterChange}
+            />
+          </div>
+        : null
+
+        }
+
+    </div>
+      }
+        </div>
+    )
 }
 
 function UserIcon(){
@@ -819,6 +1009,8 @@ function TSLogo(){
 function GitHubLogo(){
   return <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 256 250" version="1.1" preserveAspectRatio="xMidYMid"><g><path d="M128.00106,0 C57.3172926,0 0,57.3066942 0,128.00106 C0,184.555281 36.6761997,232.535542 87.534937,249.460899 C93.9320223,250.645779 96.280588,246.684165 96.280588,243.303333 C96.280588,240.251045 96.1618878,230.167899 96.106777,219.472176 C60.4967585,227.215235 52.9826207,204.369712 52.9826207,204.369712 C47.1599584,189.574598 38.770408,185.640538 38.770408,185.640538 C27.1568785,177.696113 39.6458206,177.859325 39.6458206,177.859325 C52.4993419,178.762293 59.267365,191.04987 59.267365,191.04987 C70.6837675,210.618423 89.2115753,204.961093 96.5158685,201.690482 C97.6647155,193.417512 100.981959,187.77078 104.642583,184.574357 C76.211799,181.33766 46.324819,170.362144 46.324819,121.315702 C46.324819,107.340889 51.3250588,95.9223682 59.5132437,86.9583937 C58.1842268,83.7344152 53.8029229,70.715562 60.7532354,53.0843636 C60.7532354,53.0843636 71.5019501,49.6441813 95.9626412,66.2049595 C106.172967,63.368876 117.123047,61.9465949 128.00106,61.8978432 C138.879073,61.9465949 149.837632,63.368876 160.067033,66.2049595 C184.49805,49.6441813 195.231926,53.0843636 195.231926,53.0843636 C202.199197,70.715562 197.815773,83.7344152 196.486756,86.9583937 C204.694018,95.9223682 209.660343,107.340889 209.660343,121.315702 C209.660343,170.478725 179.716133,181.303747 151.213281,184.472614 C155.80443,188.444828 159.895342,196.234518 159.895342,208.176593 C159.895342,225.303317 159.746968,239.087361 159.746968,243.303333 C159.746968,246.709601 162.05102,250.70089 168.53925,249.443941 C219.370432,232.499507 256,184.536204 256,128.00106 C256,57.3066942 198.691187,0 128.00106,0 Z M47.9405593,182.340212 C47.6586465,182.976105 46.6581745,183.166873 45.7467277,182.730227 C44.8183235,182.312656 44.2968914,181.445722 44.5978808,180.80771 C44.8734344,180.152739 45.876026,179.97045 46.8023103,180.409216 C47.7328342,180.826786 48.2627451,181.702199 47.9405593,182.340212 Z M54.2367892,187.958254 C53.6263318,188.524199 52.4329723,188.261363 51.6232682,187.366874 C50.7860088,186.474504 50.6291553,185.281144 51.2480912,184.70672 C51.8776254,184.140775 53.0349512,184.405731 53.8743302,185.298101 C54.7115892,186.201069 54.8748019,187.38595 54.2367892,187.958254 Z M58.5562413,195.146347 C57.7719732,195.691096 56.4895886,195.180261 55.6968417,194.042013 C54.9125733,192.903764 54.9125733,191.538713 55.713799,190.991845 C56.5086651,190.444977 57.7719732,190.936735 58.5753181,192.066505 C59.3574669,193.22383 59.3574669,194.58888 58.5562413,195.146347 Z M65.8613592,203.471174 C65.1597571,204.244846 63.6654083,204.03712 62.5716717,202.981538 C61.4524999,201.94927 61.1409122,200.484596 61.8446341,199.710926 C62.5547146,198.935137 64.0575422,199.15346 65.1597571,200.200564 C66.2704506,201.230712 66.6095936,202.705984 65.8613592,203.471174 Z M75.3025151,206.281542 C74.9930474,207.284134 73.553809,207.739857 72.1039724,207.313809 C70.6562556,206.875043 69.7087748,205.700761 70.0012857,204.687571 C70.302275,203.678621 71.7478721,203.20382 73.2083069,203.659543 C74.6539041,204.09619 75.6035048,205.261994 75.3025151,206.281542 Z M86.046947,207.473627 C86.0829806,208.529209 84.8535871,209.404622 83.3316829,209.4237 C81.8013,209.457614 80.563428,208.603398 80.5464708,207.564772 C80.5464708,206.498591 81.7483088,205.631657 83.2786917,205.606221 C84.8005962,205.576546 86.046947,206.424403 86.046947,207.473627 Z M96.6021471,207.069023 C96.7844366,208.099171 95.7267341,209.156872 94.215428,209.438785 C92.7295577,209.710099 91.3539086,209.074206 91.1652603,208.052538 C90.9808515,206.996955 92.0576306,205.939253 93.5413813,205.66582 C95.054807,205.402984 96.4092596,206.021919 96.6021471,207.069023 Z" fill="currentColor"/></g></svg>
 }
-
+function CalendarIcon(){
+  return <svg xmlns="http://www.w3.org/2000/svg" viewBox="-2 -3 24 24" width="24" fill="currentColor"><path d="M9 2V1a1 1 0 1 1 2 0v1h3V1a1 1 0 0 1 2 0v1h1a3 3 0 0 1 3 3v10a3 3 0 0 1-3 3H3a3 3 0 0 1-3-3V5a3 3 0 0 1 3-3h1V1a1 1 0 1 1 2 0v1h3zm0 2H6v1a1 1 0 1 1-2 0V4H3a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1V5a1 1 0 0 0-1-1h-1v1a1 1 0 0 1-2 0V4h-3v1a1 1 0 0 1-2 0V4zM3 8h2v2H3V8zm0 4h2v2H3v-2zm12 0h2v2h-2v-2zm0-4h2v2h-2V8zM7 8h2v2H7V8zm4 0h2v2h-2V8zm0 4h2v2h-2v-2zm-4 0h2v2H7v-2z"></path></svg>
+}
 
 export default Content;

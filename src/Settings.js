@@ -361,6 +361,8 @@ function Link(props){
   }
   else if (type=='Image'){
    contentInput = <ImageInput value={content} setValue={handleContentChange}></ImageInput>
+  }else if (type == 'OnImageViz'){
+    contentInput = <ImageVizInput value={content} setValue={handleContentChange}></ImageVizInput>
   }
   else if (type=="None"){
     contentInput = null;
@@ -381,7 +383,7 @@ function Link(props){
 
   var parentOptions = []
   var parentOptionLinks = linkNames
-  if (type=='Filter'){
+  if (type=='Filter' || type=='Date Filter'){
     parentOptionLinks = activeReports;
   }
   if (type=='Field'){
@@ -403,6 +405,7 @@ function Link(props){
     'None':'Link Name',
     'Rest':'Link Name',
     'Advanced':'Link Name',
+    'Date Filter':'Column Name'
   }
   return(
     <div className="link">
@@ -421,6 +424,7 @@ function Link(props){
         <option value="Field">Field (Search String)</option>
         <option value="Rest">REST Content List</option>
         <option value="Advanced">Advanced</option>
+        <option value="Date Filter">Date Filter</option>
       </select>
       {contentInput}
       {(type!='Menu' && type!='Rest') ? 
@@ -513,6 +517,98 @@ function ImageInput(props){
             style={{display:'none'}}
             encType="multipart/form-data" 
             required/>
+     </div>
+  )
+}
+function ImageVizInput(props){
+  const {
+    value,
+    setValue
+  } = props
+  const [areaVisible,setAreaVisible] = useState(false)
+  const [isSelecting,setIsSelecting] = useState(false)
+  const [x,setX] = useState(0)
+  const [y,setY] = useState(0)
+  const [width,setWidth] = useState(0)
+  const [height,setHeight] = useState(0)
+  const imageInput = useRef(null)
+
+  async function handleImageChange(event){
+    const file = event.target.files[0]
+    const base64 = await convertBase64(file)
+    var valueCopy = value ? value : {}
+    valueCopy['image'] = base64
+    setValue(valueCopy)
+  }
+  const triggerInputImage = () => {
+    imageInput.current.click()
+  }
+  useEffect(()=>{
+
+  },[])
+  function exposeDragArea(){
+    setAreaVisible(!areaVisible)
+    document.getElementById("settingsContainer").parentElement.style.background = "transparent"
+  }
+  function  handleMouseDown(e){
+    setX(e.clientX)
+    setY(e.clientY)
+    setIsSelecting(true)
+
+
+  }
+  function handleMouseUp(e){
+    if (isSelecting){
+      setIsSelecting(false)
+      setAreaVisible(!areaVisible)
+      setWidth(0)
+      setHeight(0)
+      document.getElementById("settingsContainer").parentElement.style.background = "#ffffff"
+    }
+    var valueCopy = value ? value : {}
+    valueCopy['box'] = {
+      x: x / window.innerWidth * 100,
+      y: y / window.innerHeight * 100,
+      width:width / window.innerWidth * 100,
+      height:height / window.innerHeight * 100,
+    }
+    console.log(valueCopy)
+    setValue(valueCopy)
+  }
+  function handleMouseMove(e){
+    if (isSelecting){
+      setHeight(e.clientY - y)
+      setWidth(e.clientX - x)
+    }
+  }
+  function handleConfigChange(e){
+    var valueCopy = value ? value : {}
+    valueCopy['config'] = e.target.value
+    setValue(valueCopy)
+  }
+  return (
+    <div style={{display:'flex',flexDirection:'row',width:'100%'}}>
+        <img className="logoImagePreview" onClick={triggerInputImage} src={value ? value.image : ""}></img> 
+        <input ref={imageInput} type="file" name="file" 
+              className="upload-file" 
+              id="file"
+              onChange={handleImageChange}
+              style={{display:'none'}}
+              encType="multipart/form-data" 
+              required/>
+        <div onClick={exposeDragArea} style={{width:'75px',height:'30px',background:'#ffffff',border:'1px solid #cccccc'}}>
+          Select Area
+        </div>
+        {areaVisible?
+          <div onMouseDown={(e)=>handleMouseDown(e)}
+          onMouseMove={(e)=>handleMouseMove(e)} onMouseUp={(e)=>handleMouseUp(e)} style={{position:'fixed',top:0,left:0,width:'100%',height:'100%',background:'#efefef33',cursor:'crosshair'}}>
+            <img style={{position:'fixed',top:0,left:0,width:'100%',height:'100%'}} src={value ? value.image : ""}></img> 
+            <div style={{top:y+"px",left:x+"px",display:'flex',alignItems:'center',justifyContent:'center',width:width,height:height,position:'fixed',background:'#efefef99',border:'1px dashed #cccccc'}}>
+                Viz will go here
+            </div>
+          </div>: 
+        null}
+      <input style={{flex:1,border:'1px solid #cccccccc', borderRadius:'5px', marginRight:'5px'}} s onChange={handleConfigChange} placeholder="LiveboardGUID|VizGUID" value={value ? value.config : ''}></input>
      </div>
   )
 }

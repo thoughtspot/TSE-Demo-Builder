@@ -74,7 +74,7 @@ function ColumnList(props){
         var colOptions = []
         for (var col of tables[tableName]){
             colOptions.push(
-                <Column worksheet={worksheet} col={col} toggleColumn={toggleColumn} toggleFilter={toggleFilter} isSelected={selectedColumns && selectedColumns.includes(col)}></Column>
+                <Column worksheet={worksheet} col={col} selectedFilters={selectedFilters} toggleColumn={toggleColumn} toggleFilter={toggleFilter} isSelected={selectedColumns && selectedColumns.includes(col)}></Column>
             )
         }
         menu.push(<div style={{display:'flex',flexDirection:'column',alignItems:'flex-start',minWidth:'200px',maxWidth:'calc(vw / 6)',paddingLeft:'10px',height:'90%'}}>
@@ -102,6 +102,7 @@ function Column(props){
     const {
         worksheet,
         col,
+        selectedFilters,
         isSelected,
         toggleColumn,
         toggleFilter
@@ -126,7 +127,7 @@ function Column(props){
                 <div>
                     <div onClick={toggleFilterSelection} style={{zIndex:998,position:'fixed',top:0,left:0,width:'100vh',height:'100vh'}}>
                     </div>
-                    <FilterPopup worksheet={worksheet} col={col} toggleFilter={toggleFilter}></FilterPopup>
+                    <FilterPopup worksheet={worksheet} col={col} toggleFilter={toggleFilter} selectedFilters={selectedFilters}></FilterPopup>
                 </div>
             :null}
         </div>
@@ -138,13 +139,17 @@ function FilterPopup(props){
     const {
         worksheet,
         col,
-        toggleFilter
+        toggleFilter,
+        selectedFilters
     } = props
     
     const [filterValues, setFilterValues] = useState('')
 
     useEffect(() => {
         var queryString = '['+col+']'
+        for (var filter of selectedFilters){
+            queryString+= '['+filter.col+'].'+"'"+filter.val+"'"
+        }
         if (queryString){
             var url = "https://se-thoughtspot-cloud.thoughtspot.cloud/callosum/v1/tspublic/v1/searchdata?query_string="+encodeURIComponent(queryString)+
             "&data_source_guid="+worksheet+"&batchsize=-1&pagenumber=-1&offset=-1&formattype=COMPACT"
@@ -169,8 +174,13 @@ function FilterPopup(props){
         filterOptions.push(<Filter value={val} col={col} toggleFilter={toggleFilter}></Filter>)
     }
     return(
-        <div style={{boxShadow:'0px 0px 25px #e0e0e0', top:'100px',height:'350px',width:'250px',zIndex:999,display:'flex',flexDirection:'column',position:'absolute',background:'#ffffff',padding:'10px'}}>
+        <div style={{boxShadow:'0px 0px 25px #e0e0e0',height:'350px',width:'250px', top:'100px',zIndex:999,display:'flex',flexDirection:'column',position:'absolute',background:'#ffffff',padding:'10px'}}>
+            <div style={{height:'30px',margin:'5px',fontWeight:600}}>
+            Select {col}
+            </div>
+            <div style={{height:'320px',overflowX:'hidden',overflowY:'auto',scrollbarWidth:'thin'}}>
             {filterOptions}
+            </div>
         </div>
 
 
