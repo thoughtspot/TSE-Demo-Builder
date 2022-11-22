@@ -1,6 +1,6 @@
 import React, { useState, useEffect, setState } from 'react';
 import { init,  AuthType, Page, EmbedEvent, Action, HostEvent} from '@thoughtspot/visual-embed-sdk';
-import { SearchEmbed, LiveboardEmbed, AppEmbed, useEmbedRef } from '@thoughtspot/visual-embed-sdk/react';
+import { SearchEmbed, LiveboardEmbed, AppEmbed, SearchBarEmbed, useEmbedRef } from '@thoughtspot/visual-embed-sdk/react';
 import { MultiSelect } from "react-multi-select-component";
 import NotePopup from './NotePopup';
 import ClientWebsite from './ClientWebsite'
@@ -11,7 +11,7 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import 'react-date-range/dist/styles.css'; // main style file
 import 'react-date-range/dist/theme/default.css'; // theme css file
 import { DateRangePicker } from 'react-date-range';
-
+import SpotIQPopup from './SpotIQPopUp'
 function Content(props) {
 const {
   settings,
@@ -50,107 +50,107 @@ useEffect(() => {
       init({
         thoughtSpotHost: settings.URL,
         authType: AuthType.None,
-        // customisations: {
-        //   style: {
-        //     customCSS: {
-        //       variables: {
-        //         "--ts-var-button--primary-color": settings.secondaryColor,
-        //         "--ts-var-button--secondary-color":settings.secondaryColor,
-        //         "--ts-var-button--secondary-background":settings.primaryColor+"cc",
-        //         "--ts-var-viz-background":settings.primaryColor+"ee",
-        //         "--ts-var-viz-title-color":settings.secondaryColor,
-        //         "--ts-var-root-background":settings.primaryColor+"77",
-        //       },
-        //       rules_UNSTABLE: {
-        //         '[data-testid="sage-search-bar"]':{
-        //           "background":settings.primaryColor,
-        //           "color":settings.secondaryColor
-        //         },
-        //         '[data-testid="sage-completions-dropdown"]':{
-        //           "background":settings.primaryColor,
-        //           "color":settings.secondaryColor
-        //         },
-        //         '[data-testid="answer-header-action-menu"]':{
-        //           "background":settings.primaryColor,
-        //           "color":settings.secondaryColor+" !important"
-        //         },
-        //         '[data-testid="answer-config-panel"]':{
-        //           "background":settings.primaryColor,
-        //           "color":settings.secondaryColor
-        //         },
-        //         '[data-testid="answer-content-loading-indicator"]':{
-        //           "background-color":settings.primaryColor+"77"
-        //         },
-        //         '[class*="_measure"]':{
-        //           "background-color":"#0dce85 !important",
-        //           "border-bottom":"1px solid #0dce85"
-        //         },
-        //         '[class*="_attribute"]':{
-        //           "background-color":"#2770ef !important",
-        //           "border-bottom":"1px solid #2770ef"
-        //         },
-        //         '.axis-label-title':{
-        //           "color":settings.secondaryColor+" !important"
-        //         },
-        //         '.highcharts-yaxis-labels text':{
-        //           "color":settings.secondaryColor+" !important",
-        //           "fill":settings.secondaryColor+" !important"
-        //         },
-        //         '.highcharts-xaxis-labels text':{
-        //           "color":settings.secondaryColor+" !important",
-        //           "fill":settings.secondaryColor+" !important"
-        //         },
-        //         '[class*="completionText"]':{
-        //           "color":settings.secondaryColor+" !important"
-        //         },
-        //         '[class*="completionSubtext"]':{
-        //           "color":settings.secondaryColor+"66 !important"
-        //         },
-        //         '[class*="completion"]:hover':{
-        //           "background":settings.primaryColor+"66 !important"
-        //         },
-        //         '[class*="footerHelpContainer"]':{
-        //           "background":settings.primaryColor+"66 !important"
-        //         },
-        //         '[class*="_selected"]':{
-        //           "background":settings.secondaryColor+"11 !important"
-        //         },
-        //         '[class*="answerEditPane"], [class*="answerConfigPanelNav"]':{
-        //           "border-left":"1px solid "+settings.secondaryColor+"11 !important"
-        //         },
-        //         '[class*="headerText"]':{
-        //           "color":settings.secondaryColor+" !important"
-        //         },
-        //         '[class*="labelText"]':{
-        //           "color":settings.secondaryColor+"cc !important"
-        //         },
-        //         '[class*="_input"]':{
-        //           "background-color":settings.primaryColor+"cc !important",
-        //           "color":settings.secondaryColor+" !important"
-        //         },
-        //         '[class*="_itemText"] p':{
-        //           "color":settings.secondaryColor+" !important"
-        //         },
-        //         '[class*="buttonSelected"], [class*="buttonWithIcon"]:hover':{
-        //           "background-color":settings.secondaryColor+"33 !important"
-        //         },
-        //         '[class*="undoRedoResetWrapper"]':{
-        //           "background":settings.primaryColor+" !important",
-        //           "color":settings.secondaryColor+" !important"
-        //         },
-        //         '[class*="buttonWithIcon"]':{
-        //           "color":settings.secondaryColor+" !important"
-        //         },
-        //         '[class*="_positionable"]':{
-        //           "background":settings.primaryColor+" !important"
-        //         },
-        //         '[class*="_container"]':{
-        //           "background-color":"transparent !important"
-        //         },
-        //       }
-        //     },
-        //   },
-        // },
+        customisations: {
+          style: {
+            customCSS: {
+              variables: {
+                "--ts-var-button--secondary-color": settings.buttonColor ? settings.buttonColor : 'initial' ,
+                // "--ts-var-button--secondary-color":settings.secondaryColor,
+                // "--ts-var-button--secondary-background":settings.primaryColor+"cc",
+                // "--ts-var-viz-background":settings.primaryColor+"ee",
+                // "--ts-var-viz-title-color":settings.secondaryColor,
+                "--ts-var-root-background":settings.backgroundColor ? settings.backgroundColor  : 'initial',
+              },
+              // rules_UNSTABLE: {
+              //   '[data-testid="sage-search-bar"]':{
+              //     "background":settings.primaryColor,
+              //     "color":settings.secondaryColor
+              //   },
+              //   '[data-testid="sage-completions-dropdown"]':{
+              //     "background":settings.primaryColor,
+              //     "color":settings.secondaryColor
+              //   },
+              //   '[data-testid="answer-header-action-menu"]':{
+              //     "background":settings.primaryColor,
+              //     "color":settings.secondaryColor+" !important"
+              //   },
+              //   '[data-testid="answer-config-panel"]':{
+              //     "background":settings.primaryColor,
+              //     "color":settings.secondaryColor
+              //   },
+              //   '[data-testid="answer-content-loading-indicator"]':{
+              //     "background-color":settings.primaryColor+"77"
+              //   },
+              //   '[class*="_measure"]':{
+              //     "background-color":"#0dce85 !important",
+              //     "border-bottom":"1px solid #0dce85"
+              //   },
+              //   '[class*="_attribute"]':{
+              //     "background-color":"#2770ef !important",
+              //     "border-bottom":"1px solid #2770ef"
+              //   },
+              //   '.axis-label-title':{
+              //     "color":settings.secondaryColor+" !important"
+              //   },
+              //   '.highcharts-yaxis-labels text':{
+              //     "color":settings.secondaryColor+" !important",
+              //     "fill":settings.secondaryColor+" !important"
+              //   },
+              //   '.highcharts-xaxis-labels text':{
+              //     "color":settings.secondaryColor+" !important",
+              //     "fill":settings.secondaryColor+" !important"
+              //   },
+              //   '[class*="completionText"]':{
+              //     "color":settings.secondaryColor+" !important"
+              //   },
+              //   '[class*="completionSubtext"]':{
+              //     "color":settings.secondaryColor+"66 !important"
+              //   },
+              //   '[class*="completion"]:hover':{
+              //     "background":settings.primaryColor+"66 !important"
+              //   },
+              //   '[class*="footerHelpContainer"]':{
+              //     "background":settings.primaryColor+"66 !important"
+              //   },
+              //   '[class*="_selected"]':{
+              //     "background":settings.secondaryColor+"11 !important"
+              //   },
+              //   '[class*="answerEditPane"], [class*="answerConfigPanelNav"]':{
+              //     "border-left":"1px solid "+settings.secondaryColor+"11 !important"
+              //   },
+              //   '[class*="headerText"]':{
+              //     "color":settings.secondaryColor+" !important"
+              //   },
+              //   '[class*="labelText"]':{
+              //     "color":settings.secondaryColor+"cc !important"
+              //   },
+              //   '[class*="_input"]':{
+              //     "background-color":settings.primaryColor+"cc !important",
+              //     "color":settings.secondaryColor+" !important"
+              //   },
+              //   '[class*="_itemText"] p':{
+              //     "color":settings.secondaryColor+" !important"
+              //   },
+              //   '[class*="buttonSelected"], [class*="buttonWithIcon"]:hover':{
+              //     "background-color":settings.secondaryColor+"33 !important"
+              //   },
+              //   '[class*="undoRedoResetWrapper"]':{
+              //     "background":settings.primaryColor+" !important",
+              //     "color":settings.secondaryColor+" !important"
+              //   },
+              //   '[class*="buttonWithIcon"]':{
+              //     "color":settings.secondaryColor+" !important"
+              //   },
+              //   '[class*="_positionable"]':{
+              //     "background":settings.primaryColor+" !important"
+              //   },
+              //   '[class*="_container"]':{
+              //     "background-color":"transparent !important"
+              //   },
+              // }
+            },
+          },
+        },
         callPrefetch: true,
       });
     }
@@ -237,8 +237,21 @@ function buildSearchString(searchingFields,filteringFields){
   if (filteringFields){
     for (var filter of filteringFields){
       var filterVals = filter.values
-      for (var val of filterVals){
-        filterString+=" ["+filter.columnName+"].'"+val+"'"
+      if (filter.operator == "BW_INC"){
+        var startDate =  new Date(filterVals[0]*1000)
+        var endDate =  new Date(filterVals[1]*1000)
+        var startDay = ((startDate.getMonth() > 8) ? (startDate.getMonth() + 1) : ('0' + (startDate.getMonth() + 1))) + '/' + ((startDate.getDate() > 9) ? startDate.getDate() : ('0' + startDate.getDate())) + '/' + startDate.getFullYear()
+        var endDay = ((endDate.getMonth() > 8) ? (endDate.getMonth() + 1) : ('0' + (endDate.getMonth() + 1))) + '/' + ((endDate.getDate() > 9) ? endDate.getDate() : ('0' + endDate.getDate())) + '/' + endDate.getFullYear()
+
+        filterString+=" ["+filter.columnName+"] > '"+startDay+"'"
+        filterString+=" ["+filter.columnName+"] < '"+endDay+"'"
+      }
+      else{
+        for (var val of filterVals){
+
+            filterString+=" ["+filter.columnName+"].'"+val+"'"
+          
+        }
       }
     }
   }
@@ -372,8 +385,12 @@ function onEmbedRendered(){
   embedRef.current.on(EmbedEvent.VizPointClick, (data) => {
     console.log('single click',data);
   })
-
-
+  embedRef.current.on(EmbedEvent.SpotIQAnalyze, (data) => {
+    const event = new CustomEvent('spotiq', {detail: {data: data}});
+    window.dispatchEvent(event)
+ 
+  })
+  
 
 
 
@@ -682,6 +699,8 @@ return (
           <img src={settings.logoImage} style={isHorizontal ? horizontalLogoImage : verticalLogoImage}></img>
         </div>
         <div>
+        <SpotIQPopup  popupVisible={popupVisible} togglePopupVisible={togglePopupVisible} popupConfig={popupConfig} primaryColor={settings.primaryColor} secondaryColor={settings.secondaryColor}></SpotIQPopup> 
+
         <NotePopup  popupVisible={popupVisible} togglePopupVisible={togglePopupVisible} popupConfig={popupConfig} primaryColor={settings.primaryColor} secondaryColor={settings.secondaryColor}></NotePopup> 
       </div>
         {linkContainers}
@@ -959,7 +978,7 @@ function Filter(props){
       overrideStrings={overrideStrings}/>
       :
       <div>
-        <div style={{height:'38px',color:'#999999',width:'140px',fontSize:'11px',border:'1px solid #ccc',borderRadius:'5px',display:'flex',alignItems:'center',justifyContent:'center'}} onClick={()=>setPopupVisible(!popupVisible)}> 
+        <div style={{height:'38px',background:'#ffffff',color:'#999999',width:'140px',fontSize:'11px',border:'1px solid #ccc',borderRadius:'5px',display:'flex',alignItems:'center',justifyContent:'center'}} onClick={()=>setPopupVisible(!popupVisible)}> 
           { selectedFilter[0] ? 
             <div style={{display:'flex',flexDirection:'row'}}>
               <div style={{marginRight:'10px'}}>

@@ -27,10 +27,14 @@ const [linkContents, setLinkContents] = useState('')
 const [linkParents, setLinkParents] = useState('')
 const [primaryColor, setPrimaryColor] = useState('')
 const [secondaryColor, setSecondaryColor] = useState('')
+const [buttonColor,setButtonColor]  = useState('')
+const [backgroundColor,setBackgroundColor]  = useState('')
 const [orientation, setOrientation] = useState('')
 const [logoImage, setLogoImage] = useState('')
 const [displayPrimaryPicker, setDisplayPrimaryPicker] = useState('')
 const [displaySecondaryPicker, setDisplaySecondaryPicker] = useState('')
+const [displayButtonPicker, setDisplayButtonPicker] = useState('')
+const [displayBackgroundPicker, setDisplayBackgroundPicker] = useState('')
 
 
 useEffect(()=>{
@@ -44,8 +48,12 @@ function updatePrimaryColor(color){
 function updateSecondaryColor(color){
   setSecondaryColor(color.hex);
 };
-
-
+function updateBackgroundColor(color){
+  setBackgroundColor(color.hex);
+};
+function updateButtonColor(color){
+  setButtonColor(color.hex);
+};
 const handleLinkTypeChange = (linkId, value) => {
   setLinkTypes({ ...linkTypes, [linkId]: value });
 };
@@ -107,6 +115,8 @@ const getSettingsObj = () =>{
     linkParents: linkParents,
     primaryColor: primaryColor,
     secondaryColor: secondaryColor,
+    buttonColor: buttonColor,
+    backgroundColor: backgroundColor,
     orientation: orientation,
     logoImage: logoImage
   }
@@ -129,6 +139,8 @@ useEffect(() => {
     setLinkParents(settings.linkParents)
     setPrimaryColor(settings.primaryColor)
     setSecondaryColor(settings.secondaryColor)
+    setButtonColor(settings.buttonColor)
+    setBackgroundColor(settings.backgroundColor)
     setOrientation(settings.orientation)
     setLogoImage(settings.logoImage)
   }
@@ -283,12 +295,36 @@ return (
               />
             </div> : null }
       </div>
+      <div className='verticalMenu'>
+      <div className="settingLabel">TS Button Color</div> 
+        <div className="colorPlaceholder" style={{background: buttonColor, border:'1px solid #ccc'}} onClick={e => setDisplayButtonPicker(true) }></div>
+        { displayButtonPicker ? <div style={ popover }>
+              <div style={ cover } onClick={() => setDisplayButtonPicker(false) }/>
+              <SketchPicker color={buttonColor}
+                  onChangeComplete={updateButtonColor}
+              />
+            </div> : null }
+
+        <div className="settingLabel">TS Background Color</div> 
+        <div className="colorPlaceholder" style={{background: backgroundColor, border:'1px solid #ccc'}} onClick={e => setDisplayBackgroundPicker(true) }></div>
+        { displayBackgroundPicker ? <div style={ popover }>
+              <div style={ cover } onClick={ e => setDisplayBackgroundPicker(false) }/>
+              <SketchPicker color={backgroundColor}
+                  onChangeComplete={updateBackgroundColor}
+              />
+            </div> : null }
+      </div>
       <div className="verticalMenu">
         <div className="settingLabel">Orientation</div> 
         <select onChange={e => setOrientation(e.target.value)} value={orientation}> 
             <option value="Vertical">Vertical</option>
             <option value="Horizontal">Horizontal</option>
         </select>
+        {/* <div className="settingLabel">Font Familiy</div> 
+      <select > 
+            <option value="Vertical">Roboto</option>
+            <option value="Horizontal">Horizontal</option>
+        </select> */}
       </div>
     </div>
     
@@ -369,6 +405,7 @@ function Link(props){
   }else{
     var placeholders = {
       'Search': 'WorksheetGUID|hideDataSources=false|disableAction=Action.Share|disableAction=Action.Save',
+      'Search Bar': 'WorksheetGUID|hideDataSources=false|disableAction=Action.Share|disableAction=Action.Save',
       'Liveboard':'LiveboardGUID|disableAction=Action.Share|disableAction=Action.Save',
       'Answer': 'AnswerGUID|hideDataSources=false|disableAction=Action.Share|disableAction=Action.Save',
       'Filter':'East,West,South,North',
@@ -405,7 +442,9 @@ function Link(props){
     'None':'Link Name',
     'Rest':'Link Name',
     'Advanced':'Link Name',
-    'Date Filter':'Column Name'
+    'Date Filter':'Column Name',
+    'Search Bar': 'Link Name',
+ 
   }
   return(
     <div className="link">
@@ -425,6 +464,7 @@ function Link(props){
         <option value="Rest">REST Content List</option>
         <option value="Advanced">Advanced</option>
         <option value="Date Filter">Date Filter</option>
+        <option value="Search Bar">Search Bar</option>
       </select>
       {contentInput}
       {(type!='Menu' && type!='Rest') ? 

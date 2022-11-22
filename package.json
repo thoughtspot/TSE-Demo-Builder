@@ -19,6 +19,7 @@
     "react-date-range": "^1.4.0",
     "react-dom": "^18.0.0",
     "react-file-reader": "^1.1.4",
+    "react-moveable": "^0.42.1",
     "react-multi-select-component": "^4.2.5",
     "react-router-dom": "^6.3.0",
     "react-scripts": "5.0.1",
