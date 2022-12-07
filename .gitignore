@@ -1,1 +1,3 @@
 /node_modules
+/src/Content.tsx
+package-lock.json
