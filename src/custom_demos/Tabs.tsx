@@ -99,8 +99,8 @@ function Tab(props){
                     <Text fontWeight={600} fontSize={18}>Identities Managed</Text>
                 </Flex>
                 <Flex justifyContent={"flex-end"}>
-                    <Text fontWeight={600} color="blue" fontSize={14} paddingRight={5}>RUN CERTIFICATION</Text>
-                    <Text fontWeight={600} color="blue" fontSize={14} onClick={()=>setSelectedTab('All Identities')}>VIEW ALL</Text>
+                    <Text fontWeight={600} color="blue" fontSize={14} _hover={{cursor:'pointer',color:'blue.200'}}  paddingRight={5}>RUN CERTIFICATION</Text>
+                    <Text fontWeight={600} color="blue" fontSize={14} _hover={{cursor:'pointer',color:'blue.200'}} onClick={()=>setSelectedTab('All Identities')}>VIEW ALL</Text>
                 </Flex>
             </HStack>
             <HStack maxH={60} alignItems="center">
