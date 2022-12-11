@@ -16,7 +16,7 @@ function Tabs(props){
         worksheet
     } = props
     const [data,setData] = useState('')
-    const [selectedTab, setSelectedTab] = useState('')
+    const [selectedTab, setSelectedTab] = useState('Identities Overview')
     useEffect(() => {
         let query = "[Number of Employees] [Status]"       
         let worksheet = "fec33004-d42b-44aa-b74c-b33aa47132f0"   
