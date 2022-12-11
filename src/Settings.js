@@ -464,7 +464,8 @@ function Link(props){
         <option value="Rest">REST Content List</option>
         <option value="Advanced">Advanced</option>
         <option value="Date Filter">Date Filter</option>
-        <option value="Search Bar">Search Bar</option>
+        <option value="Custom Demos">Custom Demos</option>
+
       </select>
       {contentInput}
       {(type!='Menu' && type!='Rest') ? 

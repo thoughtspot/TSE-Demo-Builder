@@ -12,6 +12,7 @@ import 'react-date-range/dist/styles.css'; // main style file
 import 'react-date-range/dist/theme/default.css'; // theme css file
 import { DateRangePicker } from 'react-date-range';
 import SpotIQPopup from './SpotIQPopUp'
+import Tabs from './custom_demos/Tabs'
 function Content(props) {
 const {
   settings,
@@ -648,6 +649,9 @@ if (renderType=='Search String'){
 if (renderType=='App'){
   renderPage = <AppEmbed pageId={renderContent} frameParams={{width:'100%',height:'100%'}} />
 }
+if (renderType=='Custom Demos'){
+  renderPage = <Tabs tsURL={settings.URL}></Tabs>
+}
 if (renderType=='URL'){
   //renderPage = <ClientWebsite url={renderContent}></ClientWebsite>
   renderPage = <iframe  style={{width:'100%',height:'100%',border:'none'}} src={renderContent}></iframe>
@@ -728,6 +732,7 @@ return (
       <div id="TSContainer" style={{height:'100%'}} key={renderKey}>
         {renderPage}
       </div>
+
   </div>
 )
 }
@@ -842,6 +847,7 @@ const verticalLogoImage ={
 }
 const horizontalLogoImage ={
   height:'50px',
+  maxWidth: 'inherit'
 }
 const horizontalIcons = {
   display:'flex',
