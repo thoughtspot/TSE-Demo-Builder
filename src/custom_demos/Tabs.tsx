@@ -111,7 +111,7 @@ function Tab(props){
                 <Flex alignItems={"center"}>
                 <Box maxW={2} bgColor="green" borderRadius={5}></Box>
                 <Text paddingLeft={4} fontWeight={600} fontSize={18}>{data ? data[1][1].toLocaleString() : null}</Text>
-                <Text paddingLeft={2} fontSize={18}>Added Recently</Text>
+                <Text paddingLeft={2} fontSize={14}>Added Recently</Text>
                 </Flex>
                 <Flex justifyContent="flex-end">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="-8 -5 24 24" width="24" fill="currentColor"><path d="M5.314 7.071l-4.95-4.95A1 1 0 0 1 1.778.707l5.657 5.657a1 1 0 0 1 0 1.414l-5.657 5.657a1 1 0 0 1-1.414-1.414l4.95-4.95z"></path></svg>
@@ -121,13 +121,13 @@ function Tab(props){
                 <Flex alignItems={"center"}>
                 <Box maxW={2} bgColor="#dedede" borderRadius={5}></Box>
                 <Text paddingLeft={4} fontWeight={600} fontSize={18}>{data ? data[2][1].toLocaleString() : null}</Text>
-                <Text paddingLeft={2} fontSize={18}>With Pending Approvals</Text>
+                <Text paddingLeft={2} fontSize={14}>With Pending Approvals</Text>
                 </Flex>
                 <Flex justifyContent="flex-end" alignItems={"center"}>
                     <Flex background="#ff2a1266" color="#ff2a12" maxW={8} maxH={8} justifyContent="center" alignItems={"center"}>
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="-2 -3 24 24" width="24" fill="currentColor"><path d="M12.8 1.613l6.701 11.161c.963 1.603.49 3.712-1.057 4.71a3.213 3.213 0 0 1-1.743.516H3.298C1.477 18 0 16.47 0 14.581c0-.639.173-1.264.498-1.807L7.2 1.613C8.162.01 10.196-.481 11.743.517c.428.276.79.651 1.057 1.096zm-2.22.839a1.077 1.077 0 0 0-1.514.365L2.365 13.98a1.17 1.17 0 0 0-.166.602c0 .63.492 1.14 1.1 1.14H16.7c.206 0 .407-.06.581-.172a1.164 1.164 0 0 0 .353-1.57L10.933 2.817a1.12 1.12 0 0 0-.352-.365zM10 14a1 1 0 1 1 0-2 1 1 0 0 1 0 2zm0-9a1 1 0 0 1 1 1v4a1 1 0 0 1-2 0V6a1 1 0 0 1 1-1z"></path></svg>
                     </Flex>
-                    <Text paddingLeft={2} paddingRight={2} fontSize={16}>Overdue 7 Days</Text>
+                    <Text paddingLeft={2} paddingRight={2} fontSize={14}>Overdue 7 Days</Text>
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="-8 -5 24 24" width="24" fill="currentColor"><path d="M5.314 7.071l-4.95-4.95A1 1 0 0 1 1.778.707l5.657 5.657a1 1 0 0 1 0 1.414l-5.657 5.657a1 1 0 0 1-1.414-1.414l4.95-4.95z"></path></svg>
                 </Flex>
             </HStack>
@@ -135,13 +135,13 @@ function Tab(props){
                 <Flex alignItems={"center"}>
                 <Box maxW={2} bgColor="#dedede" borderRadius={5}></Box>
                 <Text paddingLeft={4} fontWeight={600} fontSize={18}>{data ? data[3][1].toLocaleString() : null}</Text>
-                <Text paddingLeft={2} fontSize={18}>Need Certification</Text>
+                <Text paddingLeft={2} fontSize={14}>Need Certification</Text>
                 </Flex>
                 <Flex justifyContent="flex-end" alignItems={"center"}>
                     <Flex background="#ff2a1266" color="#ff2a12" maxW={8} maxH={8} justifyContent="center" alignItems={"center"}>
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="-2 -3 24 24" width="24" fill="currentColor"><path d="M12.8 1.613l6.701 11.161c.963 1.603.49 3.712-1.057 4.71a3.213 3.213 0 0 1-1.743.516H3.298C1.477 18 0 16.47 0 14.581c0-.639.173-1.264.498-1.807L7.2 1.613C8.162.01 10.196-.481 11.743.517c.428.276.79.651 1.057 1.096zm-2.22.839a1.077 1.077 0 0 0-1.514.365L2.365 13.98a1.17 1.17 0 0 0-.166.602c0 .63.492 1.14 1.1 1.14H16.7c.206 0 .407-.06.581-.172a1.164 1.164 0 0 0 .353-1.57L10.933 2.817a1.12 1.12 0 0 0-.352-.365zM10 14a1 1 0 1 1 0-2 1 1 0 0 1 0 2zm0-9a1 1 0 0 1 1 1v4a1 1 0 0 1-2 0V6a1 1 0 0 1 1-1z"></path></svg>
                     </Flex>
-                    <Text paddingLeft={2} paddingRight={2} fontSize={16}>Due in 2 Days</Text>
+                    <Text paddingLeft={2} paddingRight={2} fontSize={14}>Due in 2 Days</Text>
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="-8 -5 24 24" width="24" fill="currentColor"><path d="M5.314 7.071l-4.95-4.95A1 1 0 0 1 1.778.707l5.657 5.657a1 1 0 0 1 0 1.414l-5.657 5.657a1 1 0 0 1-1.414-1.414l4.95-4.95z"></path></svg>
                 </Flex>
             </HStack>
