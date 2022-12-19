@@ -1,3 +1,4 @@
+import { VStack,Heading } from '@chakra-ui/react';
 import React, { useState, useEffect, setState } from 'react';
 function ColumnList(props){
     const {
@@ -60,13 +61,14 @@ function ColumnList(props){
           data => {
               var fileinfo = JSON.parse(data)
               var tml = JSON.parse(fileinfo.object[0].edoc)
+              console.log(tml.worksheet.worksheet_columns)
               setColumns(tml.worksheet.worksheet_columns)
         })
       }
       var tables = {}
       for (var col of columns){
         var table = col.column_id ? col.column_id.split("::")[0] : 'FORMULAS'
-        tables[table] ? tables[table].push(col.name) : tables[table] = [col.name]
+        tables[table] ? tables[table].push({name:col.name,type:col.properties.column_type}) : tables[table] = [{name:col.name,type:col.properties.column_type}]
       }
 
       var menu = []
@@ -74,21 +76,21 @@ function ColumnList(props){
         var colOptions = []
         for (var col of tables[tableName]){
             colOptions.push(
-                <Column worksheet={worksheet} col={col} selectedFilters={selectedFilters} toggleColumn={toggleColumn} toggleFilter={toggleFilter} isSelected={selectedColumns && selectedColumns.includes(col)}></Column>
+                <Column worksheet={worksheet} col={col} selectedFilters={selectedFilters} toggleColumn={toggleColumn} toggleFilter={toggleFilter} isSelected={selectedColumns && selectedColumns.includes(col.name)}></Column>
             )
         }
-        menu.push(<div style={{display:'flex',flexDirection:'column',alignItems:'flex-start',minWidth:'200px',maxWidth:'calc(vw / 6)',paddingLeft:'10px',height:'90%'}}>
-            <div style={{fontWeight:600,display:'flex',justifyContent:'flex-start',alignItems:'center',width:'100%',height:'35px',fontSize:'12px',marginBottom:'5px'}}>
+        menu.push(<div style={{display:'flex',flexDirection:'column',alignItems:'flex-start',minWidth:'220px',maxWidth:'calc(vw / 6)',paddingLeft:'10px',height:'90%'}}>
+            <Heading as='h2' fontSize={18} marginBottom={1} marginTop={3}> 
                 {tableName.replace("_1","").replace("_"," ")}
-            </div>
+            </Heading>
             <div style={{display:'flex',flexDirection:'column',alignItems:'flex-start',overflow:'auto',scrollbarWidth:'thin',marginRight:'10px',height:'100%'}}>
             {colOptions}
             </div>
             </div>)
       }
       return (
-        <div style={{height:'260px',width:'calc(100% - 40px)',margin:'15px',padding:'5px',boxShadow:'0px 0px 15px #e6e6e6',flexDirection:'column',display:'flex'}}>
-                <div style={{margin:'10px',fontWeight:600,height:'25px'}}>Configuration</div>
+        <div style={{height:'260px',width:'calc(100%)',padding:'5px',boxShadow:'0px 0px 15px #e6e6e6',flexDirection:'column',display:'flex'}}>
+                {/* <div style={{margin:'10px',fontWeight:600,height:'25px'}}>Configuration</div> */}
                 <div style={{marginLeft:'10px',marginRight:'10px',width:'calc(100% - 20px)',display:'flex',flexDirection:'row',overflowX:'auto'}}>
                     {menu}
                 </div>
@@ -109,7 +111,7 @@ function Column(props){
     } = props
     const [filterListVisible, setFilterListVisible] = useState('')
     function toggleColumnSelector(){
-        toggleColumn(col)
+        toggleColumn(col.name)
     }
     function toggleFilterSelection(){
         setFilterListVisible(!filterListVisible)
@@ -122,12 +124,12 @@ function Column(props){
             <div  onClick={toggleFilterSelection} style={{marginRight:'5px', width:'18px',color:'#cccccccc',display:'flex',alignItems:'center'}}>
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="-3 -2.5 24 24" width="18" fill="currentColor"><path d="M1.08.858h15.84a1 1 0 0 1 .78 1.625l-6.48 8.101a1 1 0 0 0-.22.625v5.149a1 1 0 0 1-.4.8l-2 1.5a1 1 0 0 1-1.6-.8v-6.65a1 1 0 0 0-.22-.624L.3 2.483A1 1 0 0 1 1.08.858z"></path></svg>
             </div>
-            <div style={{display:'flex',alignItems:'center'}}> {col}</div>
+            <div style={{fontSize:13,display:'flex',alignItems:'center',color:col.type=="MEASURE" ? "green" : "#2b4594"}}> {col.name}</div>
             {filterListVisible?
                 <div>
                     <div onClick={toggleFilterSelection} style={{zIndex:998,position:'fixed',top:0,left:0,width:'100vh',height:'100vh'}}>
                     </div>
-                    <FilterPopup worksheet={worksheet} col={col} toggleFilter={toggleFilter} selectedFilters={selectedFilters}></FilterPopup>
+                    <FilterPopup worksheet={worksheet} col={col.name} toggleFilter={toggleFilter} selectedFilters={selectedFilters}></FilterPopup>
                 </div>
             :null}
         </div>
@@ -171,16 +173,18 @@ function FilterPopup(props){
     var filterOptions = []
     for (var i=0;i<filterValues.length;i++){
         var val = filterValues[i][0];
-        filterOptions.push(<Filter value={val} col={col} toggleFilter={toggleFilter}></Filter>)
+        if (val){
+            filterOptions.push(<Filter value={val} col={col} toggleFilter={toggleFilter}></Filter>)
+        }
     }
     return(
         <div style={{boxShadow:'0px 0px 25px #e0e0e0',height:'350px',width:'250px', top:'100px',zIndex:999,display:'flex',flexDirection:'column',position:'absolute',background:'#ffffff',padding:'10px'}}>
-            <div style={{height:'30px',margin:'5px',fontWeight:600}}>
-            Select {col}
-            </div>
-            <div style={{height:'320px',overflowX:'hidden',overflowY:'auto',scrollbarWidth:'thin'}}>
+            <Heading as='h2' fontSize={18} marginBottom={4}>Select {col}</Heading>  
+   
+            <VStack height={320} overflowY="auto" scrollbarWidth="thin" overflowX='hidden'>
             {filterOptions}
-            </div>
+            </VStack>
+
         </div>
 
 
@@ -198,11 +202,13 @@ function Filter(props){
     return (
         <div className="filterPicker" 
             onClick={toggleFilterValue}
-            style={{height:'20px',
-            padding:'5px',
-            marginBottom:'5px',
+            style={{height:'35px',
+            padding:'10px',
             display:'flex',
-            alignItems:'flex-start'}}>
+            fontSize:'13px',
+            justifyContent:'flex-start',
+            alignItems:'center',
+            borderRadius:'5px'}}>
             {value}
         </div>
     )

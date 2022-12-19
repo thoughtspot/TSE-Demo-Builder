@@ -3,6 +3,9 @@ import { init,  AuthType, Page, EmbedEvent, Action, HostEvent} from '@thoughtspo
 import { SearchEmbed, LiveboardEmbed, AppEmbed, useEmbedRef } from '@thoughtspot/visual-embed-sdk/react';
 import ColumnList from './ColumnList';
 import DataObjView from './DataObjView'
+import {  Heading, Box, HStack
+
+} from '@chakra-ui/react';
 function AdvancedDemoPage(props){
     const{
         worksheet
@@ -60,35 +63,44 @@ function AdvancedDemoPage(props){
         )
     }
     return(
-        <div style={{display:'flex',flexDirection:'column'}}>
-            <div style={{flex:1,display:'flex',flexDirection:'row',fontFamily:'Open Sans',maxHeight:'300px'}}>
-                <div style={{width:'75%'}}>
-                <ColumnList key={worksheet} selectedFilters={selectedFilters} setSelectedFilters={setSelectedFilters} worksheet={worksheet} updateSearch={updateSearch} ></ColumnList>
-                </div>
-                <div style={{height:'240px',display:'flex',flexDirection:'column',width:'25%',margin: '15px', padding: '15px', boxShadow: 'rgb(230 230 230) 0px 0px 15px'}}>
-                    <div style={{height:'30px',fontWeight:600}}>Information</div>
+        <Box textAlign="left" fontSize="xl" alignItems="flex-start" p={30} h="100%" overflowY={"auto"}>
+            <Heading as='h1' fontSize={32} marginBottom={2}>Search String Builder</Heading>  
+            <Heading as='h2' fontSize={18} marginBottom={4}>Custom interface for search analysis</Heading>  
+            <HStack marginTop={5} alignItems={"flex-start"} spacing={30} style={{fontFamily:'Open Sans',maxHeight:'300px'}}>
+            <div style={{height:'240px',display:'flex',flexDirection:'column',width:'25%', padding: '15px', boxShadow: 'rgb(230 230 230) 0px 0px 15px'}}>
+                    <Heading as='h2' fontSize={18} marginBottom={4}>Instructions</Heading>  
                     <div style={{display:'flex',flexDirection:'row',minHeight:'50px',alignItems:'center'}}>
-                        <div style={{width:'40px',color:'#cccccccc',display:'flex',alignItems:'center'}}>
+                        <div style={{width:'50px',color:'#cccccccc',display:'flex',alignItems:'center'}}>
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="-2 -1.5 24 24" width="24" fill="currentColor"><path d="M4 .565h12a4 4 0 0 1 4 4v12a4 4 0 0 1-4 4H4a4 4 0 0 1-4-4v-12a4 4 0 0 1 4-4z"></path></svg>
                         </div>
-                        <div style={{display:'flex',justifyContent:'center',alignItems:'center',fontSize:'12px'}}>
-                         Click on the checkbox beside any column to add that column to the report.
+                        <div style={{display:'flex',justifyContent:'flex-start',alignItems:'center',fontSize:'12px'}}>
+                         Click on the box beside a column to add it to the report.
                         </div>
                     </div>
                     <div style={{display:'flex',flexDirection:'row',minHeight:'50px',alignItems:'center'}}>
                         <div style={{width:'50px',color:'#cccccccc',display:'flex',alignItems:'center'}}>
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="-3 -2.5 24 24" width="24" fill="currentColor"><path d="M1.08.858h15.84a1 1 0 0 1 .78 1.625l-6.48 8.101a1 1 0 0 0-.22.625v5.149a1 1 0 0 1-.4.8l-2 1.5a1 1 0 0 1-1.6-.8v-6.65a1 1 0 0 0-.22-.624L.3 2.483A1 1 0 0 1 1.08.858z"></path></svg>
                         </div>
-                        <div style={{display:'flex',justifyContent:'center',alignItems:'center',fontSize:'12px'}}>
-                        Click on the filter icon beside the column to reveal the filter selection menu. 
+                        <div style={{display:'flex',justifyContent:'flex-start',alignItems:'center',fontSize:'12px'}}>
+                        Click on the funnel icon to filter on that column. 
+                        </div>
+                    </div>
+                    <div style={{display:'flex',flexDirection:'row',minHeight:'50px',alignItems:'center'}}>
+                        <div style={{fontSize:14,width:'50px',color:'#cccccccc',display:'flex',alignItems:'center'}}>
+                        TML
+                        </div>
+                        <div style={{display:'flex',justifyContent:'flex-start',alignItems:'center',fontSize:'12px'}}>
+                        {searchString}
                         </div>
                     </div>
                 </div>
-            </div>     
-            <div style={{display:'flex',maxHeight:'50px',flexDirection:'row',alignItems:'center',marginLeft:'15px'}}>
-                <div className={selectedView=="search" ?"advancedToggleButton selected" : "advancedToggleButton"} onClick={()=>setSelectedView('search')}>Explore</div>
-                <div className={selectedView=="table" ?"advancedToggleButton selected" : "advancedToggleButton"}  onClick={()=>setSelectedView('table')}>Table</div>
-                <div className={selectedView=="d3" ?"advancedToggleButton selected" : "advancedToggleButton"}  onClick={()=>setSelectedView('d3')}>Custom</div>
+                <div style={{width:'75%'}}>
+                <ColumnList key={worksheet} selectedFilters={selectedFilters} setSelectedFilters={setSelectedFilters} worksheet={worksheet} updateSearch={updateSearch} ></ColumnList>
+                </div>
+            </HStack>     
+            <div style={{display:'flex',maxHeight:'50px',flexDirection:'row',alignItems:'center'}}>
+                <div className={selectedView=="search" ?"advancedToggleButton selected" : "advancedToggleButton"} onClick={()=>setSelectedView('search')}>Explore (SDK)</div>
+                <div className={selectedView=="table" ?"advancedToggleButton selected" : "advancedToggleButton"}  onClick={()=>setSelectedView('table')}>Table (REST)</div>
                 <div style={{display:'flex',flexDirection:'row',alignItems:'center'}}>
                 {breadcrumbs}
                 </div>
@@ -98,11 +110,10 @@ function AdvancedDemoPage(props){
                 display:'flex',
                 flex:2,
                 minHeight:'600px',
-                width:'calc(100vw - 30px)',
+                maxHeight:'700px',
+                width:'calc(100vw - 80px)',
                 boxShadow:'0px 0px 15px #e0e0e0',
                 marginTop:'15px',
-                marginRight:'15px',
-                marginLeft:'15px',
             }}>
                 
                 {selectedView == 'search' ? 
@@ -115,13 +126,13 @@ function AdvancedDemoPage(props){
                 }}
                 dataSources={[worksheet]} 
                 hideDataSources={true} 
-                frameParams={{width:'calc(100vw - 30px)',height:'100%'}}></SearchEmbed>
+                frameParams={{width:'calc(100vw - 80px)',height:'100%'}}></SearchEmbed>
                 : null }
                 {selectedView == 'table' ? 
                 <DataObjView  key={searchString} worksheet={worksheet} queryString={searchString}></DataObjView>
                 : null }
             </div>
-        </div>
+        </Box>
     )
 }
 export default AdvancedDemoPage;

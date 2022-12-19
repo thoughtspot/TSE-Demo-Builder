@@ -102,17 +102,38 @@ body{
   height:20px;
   color:646464;
 }
-.contentLink{
+.contentLinkHorizontal{
   font-size:14px;
   font-family: 'Open Sans', sans-serif;
 }
-.contentLink:hover{
+.contentLinkHorizontal:hover{
+  cursor: pointer;
+  font-weight: 600;
+  border-radius: 5px 5px 0px 0px;
+  background:var(--secondary-color);
+  color: var(--primary-color);
+}
+.contentLinkVertical{
+  font-size:14px;
+  font-family: 'Open Sans', sans-serif;
+}
+.contentLinkVertical:hover{
   cursor: pointer;
   font-weight: 600;
   background:var(--secondary-color);
   color: var(--primary-color);
 }
-
+.dropdownLink{
+  font-size:14px;
+  font-family: 'Open Sans', sans-serif;
+}
+.dropdownLink:hover{
+  cursor: pointer;
+  font-weight: 600;
+  border-radius: 5px;
+  background: var(--secondary-color);
+  color: var(--primary-color);
+}
 .linkHeader{
   display:flex;
   flex-direction: row;
@@ -184,9 +205,14 @@ body{
 .hoverMenu {
   font-weight: 300;
   text-transform: none;
-  background: var(--secondary-color);
-  color: var(--primary-color);
+  background: #ffffff;
+  color: #232323;
+  border: 1px solid #efefef;
+  border-top: 4px solid var(--secondary-color);
   box-shadow: 0px 0px 15px #cccccc33;
+  border-radius: 0px 0px 5px 5px;
+  padding:10px;
+  margin-top: -4px
 }
 .nav__submenu-item:hover {
   background: rgba(#000, 0.1);
@@ -201,7 +227,7 @@ svg:hover{
   margin-top: var(--dropdown-top-margin);
   margin-left: var(--dropdown-left-margin);
   max-height: 150px;
-  width:200px !important;
+  width:250px !important;
 }
 .select-panel, .options{
   max-height: var(--dropdown-max-height) !important;
@@ -228,7 +254,8 @@ th{
   border: 1px solid #f6f6f6;
 }
 .filterPicker:hover{
-  background:#cccccc;
+  background:var(--secondary-color);
+  color: var(--primary-color);
   cursor: pointer;
 }
 .sectionTitle{
@@ -242,30 +269,32 @@ th{
 div.advancedToggleButton{
   color:var(--secondary-color);
   background:var(--primary-color);
-  width:120px !important;
-  height:35px !important;
+  width:180px !important;
+  height:45px !important;
   margin-right:15px;
+  font-size:14px;
   display:flex;
   align-items: center;
   justify-content: center;
   box-shadow: 0px 0px 5px #cccccccc;
+  border-radius: 5px;
+  border-bottom:4px solid var(--primary-color)
 }
 div.advancedToggleButton:hover{
-  background:var(--secondary-color);
-  color:var(--primary-color);
+  border-bottom:4px solid var(--secondary-color);
   cursor:pointer;
 }
 div.selected{
-  background:var(--secondary-color);
-  color:var(--primary-color);
+  border-bottom:4px solid var(--secondary-color);
 }
 .columnSelector{
   font-size:11px;
   word-wrap:none;
   display:flex;
   flex-direction:row;
-  min-height:30px;
-  max-height:30px;
+  min-height:35px;
+  max-height:35px;
+  margin-top:5px;
   border-bottom:1px solid #efefef;
   align-items:center;
 }

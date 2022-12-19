@@ -8,7 +8,7 @@ import {
   Link,
   
 } from "react-router-dom";
-import Settings from './Settings'
+import Settings from './settings/Settings'
 import Content from './Content'
 import React, { useState, useEffect, setState } from 'react';
 import { useLocalStorage } from "./LocalStorage";

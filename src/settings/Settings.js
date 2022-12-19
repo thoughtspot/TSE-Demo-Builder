@@ -1,6 +1,5 @@
-import React, { useState, useEffect, setState, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { init,  AuthType} from '@thoughtspot/visual-embed-sdk';
-import { SearchEmbed } from '@thoughtspot/visual-embed-sdk/react';
 import { SketchPicker } from 'react-color';
 
 
@@ -20,17 +19,17 @@ const imageInput = useRef(null)
 
 const [name, setName] = useState('')
 const [URL, setURL] = useState('')
-const [links, setLinks] = useState('')
-const [linkTypes, setLinkTypes] = useState('')
-const [linkNames, setLinkNames] = useState('')
-const [linkContents, setLinkContents] = useState('')
-const [linkParents, setLinkParents] = useState('')
+const [links, setLinks] = useState([])
+const [linkTypes, setLinkTypes] = useState({})
+const [linkNames, setLinkNames] = useState({})
+const [linkContents, setLinkContents] = useState({})
+const [linkParents, setLinkParents] = useState({})
 const [primaryColor, setPrimaryColor] = useState('')
 const [secondaryColor, setSecondaryColor] = useState('')
 const [buttonColor,setButtonColor]  = useState('')
 const [backgroundColor,setBackgroundColor]  = useState('')
 const [orientation, setOrientation] = useState('')
-const [logoImage, setLogoImage] = useState('')
+const [logoImage, setLogoImage] = useState()
 const [displayPrimaryPicker, setDisplayPrimaryPicker] = useState('')
 const [displaySecondaryPicker, setDisplaySecondaryPicker] = useState('')
 const [displayButtonPicker, setDisplayButtonPicker] = useState('')
@@ -413,7 +412,9 @@ function Link(props){
       'Search String':'[tml] [search] [query] |WorksheetGUID|hideDataSources=false',
       'URL':'URL of website or image',
       'Rest':'tags=Retail Sales|category=my|sort=CREATED|type=liveboard',
-      'Advanced':'WorksheetGUID'
+      'Advanced':'WorksheetGUID',
+      'Survey Demo':'No Config - Must use SE Cloud'
+
     }
     contentInput = <input style={{flex:1,border:'1px solid #cccccccc', borderRadius:'5px', marginRight:'5px'}} placeholder={placeholders[type]} value={content} onChange={e => handleContentChange(e.target.value)} />;
   }
@@ -458,13 +459,14 @@ function Link(props){
         <option value="App">Full App</option>
         <option value="URL">URL</option>
         <option value="Image">Image</option>
+        <option value="Rest">REST Content List</option>
         <option value="Search String">Search String</option>
         <option value="Filter">Filter (Liveboard & Search String)</option>
         <option value="Field">Field (Search String)</option>
-        <option value="Rest">REST Content List</option>
-        <option value="Advanced">Advanced</option>
         <option value="Date Filter">Date Filter</option>
-        <option value="Custom Demos">Custom Demos</option>
+        <option value="Advanced">Custom Demo: Search String Builder</option>
+        <option value="Custom Demos">Custom Demo: Tabbed Widgets</option>
+        <option value="Survey Demo">Custom Demo: Survey Demo</option>
 
       </select>
       {contentInput}

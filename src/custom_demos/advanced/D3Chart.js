@@ -8,7 +8,7 @@ function D3Chart(props){
     const svg = useRef(null);
 
     useEffect(()=>{
-        if (data && data[0].length > 1){
+        if (data && data[0].length > 2){
             var packedData = convertToCirclePack(data)
             var svgData = chart({'name':'charty','children':packedData})
             svgData.setAttribute("height",600)
@@ -21,7 +21,11 @@ function D3Chart(props){
 
 
     return (
-        <div ref={svg}/>
+        <div style={{display:'flex',flex:1, justifyContent:'center',alignItems:'center'}} ref={svg}>
+            {!data || data[0].length <= 2 ?
+                <span>Select 2 <span style={{color:"#2b4594"}}>Dimensions</span> and a <span style={{color:"green"}}>Metric</span></span>
+            : null}
+        </div>
     )
 }
 export default D3Chart

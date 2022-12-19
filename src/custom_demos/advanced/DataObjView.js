@@ -1,3 +1,4 @@
+import { HStack, Table, Tbody, Td, Th, Thead, Tr } from '@chakra-ui/react';
 import React, { useState, useEffect, setState } from 'react';
 import D3Chart from './D3Chart.js'
 function DataObjView(props){
@@ -40,7 +41,7 @@ function DataObjView(props){
     }
     var ths = []
     for (var idx in dataObj.columnNames){
-        ths.push(<th>{dataObj.columnNames[idx]}</th>)
+        ths.push(<Th>{dataObj.columnNames[idx]}</Th>)
     }
     var data = dataObj.data
     if (data){
@@ -48,30 +49,30 @@ function DataObjView(props){
         for (var row of data){
             var tds = []
             for (var col of row){
-                tds.push(<td>{col}</td>)
+                tds.push(<Td>{col ? col.toLocaleString() : null}</Td>)
             }
-            trs.push(<tr>{tds}</tr>)
+            trs.push(<Tr>{tds}</Tr>)
         }
     }
 
 
     return (
-        <div style={{minHeight:'250px',maxHeight:'250px',display:'flex',flexDirection:'row',padding:'15px'}}>
-            <div style={{flex:1}}>
-                <table>
-                    <thead>
+        <HStack spacing={20} padding={30}>
+            <div style={{flex:1, overflowY:'auto'}}>
+                <Table>
+                    <Thead>
                         {ths}
-                    </thead>
-                    <tbody>
+                    </Thead>
+                    <Tbody>
                         {trs}
-                    </tbody>
-                </table>
+                    </Tbody>
+                </Table>
             </div>
             <div style={{flex:1}}>
             <D3Chart data={data}></D3Chart>
             </div>
 
-        </div>
+        </HStack>
     )
 }
 export default DataObjView;
