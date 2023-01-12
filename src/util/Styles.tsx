@@ -7,9 +7,11 @@ export const styles : StyleSheet = {
     background: 'var(--primary-color)',
     color: 'var(--secondary-color)',
     borderRight: '1px solid #dddddd',
-    width: '150px',
+    width: '220px',
+    minWidth: '220px',
     height: '100%',
     display: 'flex',
+    paddingLeft: '15px',
     flexDirection: 'column',
     boxShadow: '0px 0px 15px #dddddd'
   },
@@ -41,7 +43,7 @@ export const styles : StyleSheet = {
   },
   logoImageHolderVertical : {
     height: '150px',
-    width: '150px',
+    width: '180px',
     display: 'flex',
     justifyContent: 'center',
     alignItems:'center',
@@ -56,7 +58,7 @@ export const styles : StyleSheet = {
     marginRight:'100px',
   },
   verticalLogoImage : {
-    width:'75px',
+    width:'150px',
   },
   horizontalLogoImage : {
     height:'50px',
@@ -110,7 +112,7 @@ export const styles : StyleSheet = {
     position: 'absolute',
     width: '250px',
     paddingRight:'10px',
-    left: '150px',
+    left: '220px',
     marginTop:'-29px',
     zIndex:99
   }

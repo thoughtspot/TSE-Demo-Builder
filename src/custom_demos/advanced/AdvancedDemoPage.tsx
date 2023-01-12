@@ -1,4 +1,4 @@
-import React, { useState, useEffect, setState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { init,  AuthType, Page, EmbedEvent, Action, HostEvent} from '@thoughtspot/visual-embed-sdk';
 import { SearchEmbed, LiveboardEmbed, AppEmbed, useEmbedRef } from '@thoughtspot/visual-embed-sdk/react';
 import ColumnList from './ColumnList';
@@ -6,6 +6,7 @@ import DataObjView from './DataObjView'
 import {  Heading, Box, HStack
 
 } from '@chakra-ui/react';
+import { parseTwoDigitYear } from 'moment';
 function AdvancedDemoPage(props){
     const{
         worksheet
@@ -14,25 +15,16 @@ function AdvancedDemoPage(props){
     const [dataObj,setDataObj] = useState('')
     const [selectedView, setSelectedView] = useState('search')
     const [searchString, setSearchString] = useState('')
-    const [selectedFilters, setSelectedFilters] = useState('')
-    function onEmbedRendered(){
-        embedRef.current.on(EmbedEvent.QueryChanged,(resp) => {
-            console.log("data!",resp)
-            // const event = new CustomEvent('popup', {detail: {data: resp.data.search}});
-            // window.dispatchEvent(event)
-        })
-    }
-    
-    function updateSearch(selectedColumns,selectedFilters,chartFilter){
+    const [selectedFilters, setSelectedFilters] = useState([])
+    const [selectedColumns, setSelectedColumns] = useState([])
+
+    useEffect(()=>{
         var searchString =""
         for (var i in selectedColumns){
             searchString += "["+selectedColumns[i]+"] "
         }
         for (var i in selectedFilters){
             searchString += "["+selectedFilters[i].col+"]."+"'"+selectedFilters[i].val+"' "
-        }
-        if (chartFilter){
-            searchString += "'"+chartFilter+"'"
         }
         if (embedRef.current){
             // embedRef.current.trigger(HostEvent.Search, {
@@ -49,8 +41,46 @@ function AdvancedDemoPage(props){
         setSelectedFilters(selectedFilters)
         const event = new CustomEvent('searchQuery', {detail: {data: searchString}});
         window.dispatchEvent(event)
+    },[selectedColumns,selectedFilters])
+
+    function onEmbedRendered(){
+        embedRef.current.on(EmbedEvent.QueryChanged,(resp) => {
+            embedRef.current.trigger(HostEvent.GetTML,{}).then((resp) => {
+                console.log("got TML!",resp.answer,selectedFilters)//
+                if (resp.answer.search_query.length == 0 ) return;
+                var queryParts = resp.answer.search_query.split(/\s+(?![^\[]*\]|[^(]*\)|[^\{]*})/)
+                console.log(queryParts)
+                var selectedFiltersCopy = []
+                var selectedColumnsCopy = []
+
+                for (var part of queryParts){
+                    if (part.split(".").length > 1){
+                        selectedFiltersCopy.push({
+                            val: part.split(".")[1].replace("'",""),
+                            col: part.split(".")[0].replace("[","").replace("]","")
+                        })
+                    }else{
+                        var column = part.replace("[","").replace("]","")
+                        if (column!="by"){
+                            selectedColumnsCopy.push(column)
+                        }
+                    }
+                }
+                console.log(selectedColumns,selectedColumnsCopy)
+                if (selectedColumnsCopy.length>0 && JSON.stringify(selectedColumns)!=JSON.stringify(selectedColumnsCopy)){
+                    setSelectedColumns(selectedColumnsCopy)
+                }
+                if  (JSON.stringify(selectedFilters)!=JSON.stringify(selectedFiltersCopy)){
+                    setSelectedFilters(selectedFiltersCopy)
+                }
+
+
+            })
+        })
 
     }
+    
+
     var breadcrumbs = []
     for (var filter of selectedFilters){
         breadcrumbs.push(<div style={{width:'auto',marginLeft:'15px',display:'flex',alignItems:'center'}}>
@@ -64,7 +94,7 @@ function AdvancedDemoPage(props){
     }
     return(
         <Box textAlign="left" fontSize="xl" alignItems="flex-start" p={30} h="100%" overflowY={"auto"}>
-            <Heading as='h1' fontSize={32} marginBottom={2}>Search String Builder</Heading>  
+            <Heading as='h1' fontSize={32} marginBottom={2}>Report Builder</Heading>  
             <Heading as='h2' fontSize={18} marginBottom={4}>Custom interface for search analysis</Heading>  
             <HStack marginTop={5} alignItems={"flex-start"} spacing={30} style={{fontFamily:'Open Sans',maxHeight:'300px'}}>
             <div style={{height:'240px',display:'flex',flexDirection:'column',width:'25%', padding: '15px', boxShadow: 'rgb(230 230 230) 0px 0px 15px'}}>
@@ -95,7 +125,13 @@ function AdvancedDemoPage(props){
                     </div>
                 </div>
                 <div style={{width:'75%'}}>
-                <ColumnList key={worksheet} selectedFilters={selectedFilters} setSelectedFilters={setSelectedFilters} worksheet={worksheet} updateSearch={updateSearch} ></ColumnList>
+                <ColumnList key={worksheet} 
+                    selectedFilters={selectedFilters} 
+                    setSelectedFilters={setSelectedFilters} 
+                    selectedColumns={selectedColumns} 
+                    setSelectedColumns={setSelectedColumns} 
+                    worksheet={worksheet} 
+                    ></ColumnList>
                 </div>
             </HStack>     
             <div style={{display:'flex',maxHeight:'50px',flexDirection:'row',alignItems:'center'}}>
@@ -140,7 +176,7 @@ export default AdvancedDemoPage;
 function SearchString(){
     const [queryString,setQueryString] = useState('')
     useEffect(() => {
-        window.addEventListener('popup', function(e){
+        window.addEventListener('popup', function(e:any){
             setQueryString(e.detail.data)
         })
 

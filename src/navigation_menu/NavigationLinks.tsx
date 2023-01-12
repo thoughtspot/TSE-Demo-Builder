@@ -101,69 +101,72 @@ export default function NavigationLinks(props){
 
     var linkContainers = []
     var topLevel = []
-    for (var link of links){
-      if (!linkParents[link] || linkParents[link]=='None'){
-        topLevel.push(link)
+    if (links){
+      for (var link of links){
+        if (!linkParents[link] || linkParents[link]=='None'){
+          topLevel.push(link)
+        }
+      }
+      for (var link of topLevel){
+        var childrenLinks = []
+        if (linkTypes[link]=='Rest' && restAnswers && restAnswers[link]){
+          for (var contentItem of restAnswers[link]){
+            childrenLinks.push(
+              <DropdownLink 
+              key={contentItem.id}
+              id={contentItem.id}
+              name={contentItem.name}
+              content={contentItem.id}
+              type="Answer"
+              renderLink={renderLink}
+              isHorizontal={isHorizontal}
+            />
+            )       
+          }
+        }
+        if (linkTypes[link]=='Rest' && restLiveboards && restLiveboards[link]){
+          for (var contentItem of restLiveboards[link]){
+            childrenLinks.push(
+              <DropdownLink
+              key={contentItem.id}
+              id={contentItem.id}
+              name={contentItem.name}
+              content={contentItem.id}
+              type="Liveboard"
+              renderLink={renderLink}
+              isHorizontal={isHorizontal}
+            />
+            )       
+          }
+        }
+        for (var child of links){
+          if (linkParents[child]==linkNames[link]){
+            childrenLinks.push(
+              <DropdownLink
+              key={child}
+              id={child}
+              name={linkNames[child]}
+              content={linkContents[child]}
+              type={linkTypes[child]}
+              renderLink={renderLink}
+              isHorizontal={isHorizontal}
+            />
+            )
+          }
+        }
+        linkContainers.push(<NavigationLink
+          key={link}
+          id={link}
+          name={linkNames[link]}
+          content={linkContents[link]}
+          type={linkTypes[link]}
+          renderLink={renderLink}
+          children={childrenLinks}
+          isHorizontal={isHorizontal}
+        />)
       }
     }
-    for (var link of topLevel){
-      var childrenLinks = []
-      if (linkTypes[link]=='Rest' && restAnswers && restAnswers[link]){
-        for (var contentItem of restAnswers[link]){
-          childrenLinks.push(
-            <DropdownLink 
-            key={contentItem.id}
-            id={contentItem.id}
-            name={contentItem.name}
-            content={contentItem.id}
-            type="Answer"
-            renderLink={renderLink}
-            isHorizontal={isHorizontal}
-          />
-          )       
-        }
-      }
-      if (linkTypes[link]=='Rest' && restLiveboards && restLiveboards[link]){
-        for (var contentItem of restLiveboards[link]){
-          childrenLinks.push(
-            <DropdownLink
-            key={contentItem.id}
-            id={contentItem.id}
-            name={contentItem.name}
-            content={contentItem.id}
-            type="Liveboard"
-            renderLink={renderLink}
-            isHorizontal={isHorizontal}
-          />
-          )       
-        }
-      }
-      for (var child of links){
-        if (linkParents[child]==linkNames[link]){
-          childrenLinks.push(
-            <DropdownLink
-            key={child}
-            id={child}
-            name={linkNames[child]}
-            content={linkContents[child]}
-            type={linkTypes[child]}
-            renderLink={renderLink}
-            isHorizontal={isHorizontal}
-          />
-          )
-        }
-      }
-      linkContainers.push(<NavigationLink
-        key={link}
-        id={link}
-        name={linkNames[link]}
-        content={linkContents[link]}
-        type={linkTypes[link]}
-        renderLink={renderLink}
-        children={childrenLinks}
-        isHorizontal={isHorizontal}
-      />)
-    }
+
       
     return (
       <div style={{display:'flex',alignItems:isHorizontal?"flex-end":'inherit'}}>

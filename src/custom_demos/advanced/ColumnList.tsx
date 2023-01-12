@@ -1,20 +1,18 @@
 import { VStack,Heading } from '@chakra-ui/react';
-import React, { useState, useEffect, setState } from 'react';
+import React, { useState, useEffect } from 'react';
 function ColumnList(props){
     const {
         worksheet,
-        updateSearch,
         selectedFilters,
-        setSelectedFilters
+        setSelectedFilters,
+        selectedColumns,
+        setSelectedColumns
     } = props
-    const [selectedColumns, setSelectedColumns] = useState('')
-    const [chartFilter, setChartFilter] = useState('')
-
     function toggleColumn(col){
         if (selectedColumns.includes(col)){
-            setSelectedColumns(selectedColumns.filter((e)=>(e !== col)),updateSearch(selectedColumns,selectedFilters,chartFilter))
+            setSelectedColumns(selectedColumns.filter((e)=>(e !== col)))
         }else{
-            setSelectedColumns([...selectedColumns, col], updateSearch(selectedColumns,selectedFilters,chartFilter))
+            setSelectedColumns([...selectedColumns, col])
         }
         
     }
@@ -30,21 +28,11 @@ function ColumnList(props){
             )
         }
     }
-    const [columns,setColumns] = useState('')
+    const [columns,setColumns] = useState([])
     useEffect(() => {
-        updateSearch(selectedColumns,selectedFilters,chartFilter)
-    }, [selectedColumns]);
-    useEffect(() => {
-        updateSearch(selectedColumns,selectedFilters,chartFilter)
-    }, [selectedFilters]);
-    useEffect(() => {
-        window.addEventListener('chartFilter', function(e){
-            setChartFilter(e.detail.name)
-            updateSearch(selectedColumns,selectedFilters,e.detail.name)
-        })
         getWorksheet()
     }, [])
-    function getWorksheet(restURLParams){
+    function getWorksheet(){
         let formData = 'export_ids=%5B'+worksheet+'%5D&formattype=JSON&export_associated=false'
         let url = 'https://se-thoughtspot-cloud.thoughtspot.cloud/callosum/v1/tspublic/v1/metadata/tml/export'
         fetch(url,
@@ -109,7 +97,7 @@ function Column(props){
         toggleColumn,
         toggleFilter
     } = props
-    const [filterListVisible, setFilterListVisible] = useState('')
+    const [filterListVisible, setFilterListVisible] = useState(false)
     function toggleColumnSelector(){
         toggleColumn(col.name)
     }
@@ -181,7 +169,7 @@ function FilterPopup(props){
         <div style={{boxShadow:'0px 0px 25px #e0e0e0',height:'350px',width:'250px', top:'100px',zIndex:999,display:'flex',flexDirection:'column',position:'absolute',background:'#ffffff',padding:'10px'}}>
             <Heading as='h2' fontSize={18} marginBottom={4}>Select {col}</Heading>  
    
-            <VStack height={320} overflowY="auto" scrollbarWidth="thin" overflowX='hidden'>
+            <VStack height={320} overflowY="auto" overflowX='hidden'>
             {filterOptions}
             </VStack>
 
