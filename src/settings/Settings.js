@@ -467,6 +467,7 @@ function Link(props){
         <option value="Advanced">Custom Demo: Search String Builder</option>
         <option value="Custom Demos">Custom Demo: Tabbed Widgets</option>
         <option value="Survey Demo">Custom Demo: Survey Demo</option>
+        <option value="OnImageViz">OnImageViz</option>
 
       </select>
       {contentInput}
