@@ -4,7 +4,7 @@ import { SearchEmbed, LiveboardEmbed, AppEmbed, SearchBarEmbed, useEmbedRef } fr
 import AdvancedDemoPage from "../custom_demos/advanced/AdvancedDemoPage"
 import Tabs from "../custom_demos/incidents/Tabs";
 import Surveys from "../custom_demos/surveys/Surveys";
-
+import SurveyRicky from "../custom_demos/surveys_ricky/SurveyRicky"
 export default function EmbedContainer(props){
 
   const {
@@ -42,17 +42,16 @@ export default function EmbedContainer(props){
       window.dispatchEvent(event)
     })
     embedRef.current.on(EmbedEvent.Save, (data) => {
-      console.log("yo it saved!")
       const event = new CustomEvent('save', {detail: {data: data}});
       window.dispatchEvent(event)
    
     })
     embedRef.current.on(EmbedEvent.MakeACopy, (data) => {
-      console.log("yo it saved!")
       const event = new CustomEvent('save', {detail: {data: data}});
       window.dispatchEvent(event)
    
     })
+
     embedRef.current.on(EmbedEvent.CustomAction, (payload) => {
       console.log(payload)
       var data = payload.data.embedAnswerData.data[0].columnDataLite
@@ -195,6 +194,9 @@ export default function EmbedContainer(props){
   }
   if (renderType=='Survey Demo'){
     renderPage = <Surveys tsURL={url}></Surveys>
+  }
+  if (renderType=='Survey Demo Ricky'){
+    renderPage = <SurveyRicky tsURL={url}></SurveyRicky>
   }
   
   return (
