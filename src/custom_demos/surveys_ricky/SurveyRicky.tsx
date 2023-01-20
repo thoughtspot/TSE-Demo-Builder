@@ -91,7 +91,7 @@ export default function SurveyRicky(props) {
 
 
   function setTopicVal(newTopics){
-    let queryString = "["+questionColumn+"] [Number of Replies] [Gender] sort by [Number of Replies] descending ["+questionColumn+"].'From which type of retailer(s) have you bought the following alcoholic beverages in the past 6 months?'"
+    let queryString = "["+questionColumn+"] [Number of Replies] sort by [Number of Replies] descending"
     for (var selectedTopic of newTopics){
       queryString += " ["+topicColumn+"]."+"'"+selectedTopic+"'"
     }
@@ -114,40 +114,36 @@ export default function SurveyRicky(props) {
     setTopic(newTopics)
   }
   let trows = []
-  function toggleQuestionPopup(selectedQuestion, type){
+  function toggleQuestionPopup(selectedQuestion){
+    console.log(question,selectedQuestion)
     if (question == selectedQuestion){
       setFilteredQuestions(questions)
       setQuestion(null)
-      setQuestionType(null)
     }else{
       setFilteredQuestions(questions.filter((val) => val[0] == selectedQuestion))
       setQuestion(selectedQuestion)
-      setQuestionType(type)
     }
 
   }
   for (var row of filteredQuestions){
     trows.push(
-      <TableRow question={row[0]} count={row[2]} type={row[1]} toggleQuestionPopup={toggleQuestionPopup}></TableRow>
+      <TableRow question={row[0]} count={row[1]} toggleQuestionPopup={toggleQuestionPopup}></TableRow>
     )
   }
-  console.log(trows)
   return (
       <Box textAlign="left" fontSize="xl" alignItems="flex-start" p={30} h="100%" overflowY={"auto"}>
         <Heading as='h1' fontSize={32} marginBottom={2}>Beverage Intelligence</Heading>  
         <Heading as='h2' fontSize={18} marginBottom={4}>Analytics Explorer</Heading>  
-        <VStack alignItems={"flex-start"}  height={"50px !important"}>
-          <HStack marginBottom={4}>
+          <VStack marginBottom={14}>
                 <MultiSelect 
-                fontSize={14}
-                value={topic ? topic : []}
-                options={topics ? topics : []}
-                label='Choose a Survey'
-                onChange={setTopicVal}
+                  fontSize={14}
+                  value={topic ? topic : []}
+                  options={topics ? topics : []}
+                  label='Choose a Survey Wave'
+                  onChange={setTopicVal}
                 />
-          </HStack>
-        </VStack>
-        <Table>
+          </VStack>
+        <Table marginBottom={8}>
           <Thead>
             <Tr>
             <Th>Question</Th>
@@ -178,7 +174,7 @@ function TableRow(props){
     toggleQuestionPopup,
   } = props
   function handleQuestionClick(){
-    toggleQuestionPopup(question,type)
+    toggleQuestionPopup(question)
   }
   return (
     <Tr>
