@@ -140,10 +140,9 @@ export default function SurveyRicky(props) {
                   value={topic ? topic : []}
                   options={topics ? topics : []}
                   label='Choose a Survey Wave'
-                  onChange={setTopicVal}
-                />
+                  onChange={setTopicVal}/>
           </VStack>
-        <Table marginBottom={8}>
+        <Table marginBottom={4}>
           <Thead>
             <Tr>
             <Th>Question</Th>
