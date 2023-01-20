@@ -63,7 +63,7 @@ export default function EmbedContainer(props){
     })
   }
 
-  var enabledActions = []
+  var visibleActions = []
   var disabledActions = []
   var hideDataSources = true;
   var collapseDataSources = false;
@@ -74,11 +74,14 @@ export default function EmbedContainer(props){
       var propStartIdx = renderType=='Search String' ? 2 : 1
       for (var i=propStartIdx;i<contents.length;i++){
         var contentProps = contents[i].split("=");
-        if (props.length>1){
+        console.log(contentProps,"contentProps")
+        if (contentProps.length>1){
           var property = contentProps[0]
+          console.log(property,"visibleAction",property=="visibleAction")
+
           var propertyValue = contentProps[1]
-          if (property == 'enableAction'){
-            enabledActions.push(Action[propertyValue.split("Action.")[1]])
+          if (property == 'visibleAction'){
+            visibleActions.push(Action[propertyValue.split("Action.")[1]])
           }
           if (property == 'disableAction'){
             disabledActions.push(Action[propertyValue.split("Action.")[1]])
@@ -94,7 +97,7 @@ export default function EmbedContainer(props){
     }
   }    
 
-
+console.log(visibleActions,"visibleaction")
   var renderPage = <div></div>
   if (!renderType && links){
     var firstLink =  links[0]
@@ -108,6 +111,7 @@ export default function EmbedContainer(props){
     renderPage = <SearchEmbed 
         ref={embedRef} 
         onLoad={onEmbedRendered}
+        visibleActions={visibleActions.length>0 ? visibleActions : null}  
         disabledActions={disabledActions.length>0 ? disabledActions : null} 
         dataSources={renderContents} 
         hideDataSources={hideDataSources} 
@@ -118,6 +122,7 @@ export default function EmbedContainer(props){
     renderPage = <LiveboardEmbed 
         ref={embedRef} 
         onLiveboardRendered = {onEmbedRendered}
+        visibleActions={visibleActions.length>0 ? visibleActions : null}  
         disabledActions={disabledActions.length>0 ? disabledActions : null}  
         runtimeFilters={runFilters}  
         liveboardId={renderContent.split("|")[0]} 
@@ -127,6 +132,7 @@ export default function EmbedContainer(props){
   ///Hide for mani
   if (renderType=='Answer'){
     renderPage = <SearchEmbed ref={embedRef} 
+        visibleActions={visibleActions.length>0 ? visibleActions : null}  
         disabledActions={disabledActions.length>0 ? disabledActions : null}  
         onLoad={onEmbedRendered}  
         hideDataSources={hideDataSources}  
@@ -148,6 +154,8 @@ export default function EmbedContainer(props){
           onLoad={onEmbedRendered}
           ref={embedRef}  
           dataSources={dataSources} 
+          visibleActions={visibleActions.length>0 ? visibleActions : null}  
+          disabledActions={disabledActions.length>0 ? disabledActions : null}  
           hideDataSources={hideDataSources} 
           searchOptions={searchOptions} 
           frameParams={{width:'100%',height:'100vh'}}
