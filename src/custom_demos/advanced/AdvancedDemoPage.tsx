@@ -7,6 +7,7 @@ import {  Heading, Box, HStack
 
 } from '@chakra-ui/react';
 import { parseTwoDigitYear } from 'moment';
+import "./embed.css"
 function AdvancedDemoPage(props){
     const{
         worksheet
@@ -48,6 +49,8 @@ function AdvancedDemoPage(props){
             embedRef.current.trigger(HostEvent.GetTML,{}).then((resp) => {
                 console.log("got TML!",resp.answer,selectedFilters)//
                 if (resp.answer.search_query.length == 0 ) return;
+
+                //split query string back out into individual componetns - split on spaces not in brackets
                 var queryParts = resp.answer.search_query.split(/\s+(?![^\[]*\]|[^(]*\)|[^\{]*})/)
                 console.log(queryParts)
                 var selectedFiltersCopy = []
