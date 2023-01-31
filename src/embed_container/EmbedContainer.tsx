@@ -5,6 +5,7 @@ import AdvancedDemoPage from "../custom_demos/advanced/AdvancedDemoPage"
 import Tabs from "../custom_demos/incidents/Tabs";
 import Surveys from "../custom_demos/surveys/Surveys";
 import SurveyRicky from "../custom_demos/surveys_ricky/SurveyRicky"
+import ParameterDemo from "../custom_demos/parameter/ParameterDemo"
 export default function EmbedContainer(props){
 
   const {
@@ -30,7 +31,6 @@ export default function EmbedContainer(props){
       // window.dispatchEvent(event)
   })
     embedRef.current.on(EmbedEvent.VizPointDoubleClick, (data) => {
-        console.log('>>> called !!', data);
         const event = new CustomEvent('popup', {detail: {data: data}});
         window.dispatchEvent(event)
     })
@@ -206,7 +206,9 @@ console.log(visibleActions,"visibleaction")
   if (renderType=='Survey Demo Ricky'){
     renderPage = <SurveyRicky tsURL={url}></SurveyRicky>
   }
-  
+  if (renderType=='ParamDemo'){
+    renderPage = <ParameterDemo tsURL={url}></ParameterDemo>
+  }
   return (
       <div id={renderType!='Survey Demo' ? "TSContainer" : null} style={{height:'100%'}} key={renderKey}>
           {renderPage}

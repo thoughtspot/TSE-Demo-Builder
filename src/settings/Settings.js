@@ -468,6 +468,8 @@ function Link(props){
         <option value="Custom Demos">Custom Demo: Tabbed Widgets</option>
         <option value="Survey Demo">Custom Demo: Survey Demo</option>
         <option value="Survey Demo Ricky">Custom Demo: Survey Demo - Ricky</option>
+        <option value="ParamDemo">Custom Demo: ParameterDemo</option>
+        
 
         <option value="OnImageViz">OnImageViz</option>
 
