@@ -414,7 +414,6 @@ function Link(props){
       'Rest':'tags=Retail Sales|category=my|sort=CREATED|type=liveboard',
       'Advanced':'WorksheetGUID',
       'Survey Demo':'No Config - Must use SE Cloud'
-
     }
     contentInput = <input style={{flex:1,border:'1px solid #cccccccc', borderRadius:'5px', marginRight:'5px'}} placeholder={placeholders[type]} value={content} onChange={e => handleContentChange(e.target.value)} />;
   }
@@ -467,12 +466,7 @@ function Link(props){
         <option value="Advanced">Custom Demo: Search String Builder</option>
         <option value="Custom Demos">Custom Demo: Tabbed Widgets</option>
         <option value="Survey Demo">Custom Demo: Survey Demo</option>
-        <option value="Survey Demo Ricky">Custom Demo: Survey Demo - Ricky</option>
-        <option value="ParamDemo">Custom Demo: ParameterDemo</option>
-        
-
         <option value="OnImageViz">OnImageViz</option>
-
       </select>
       {contentInput}
       {(type!='Menu' && type!='Rest') ? 
