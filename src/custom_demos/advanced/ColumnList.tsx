@@ -71,7 +71,7 @@ function ColumnList(props){
             <Heading as='h2' fontSize={18} marginBottom={1} marginTop={3}> 
                 {tableName.replace("_1","").replace("_"," ")}
             </Heading>
-            <div style={{display:'flex',flexDirection:'column',alignItems:'flex-start',overflow:'auto',scrollbarWidth:'thin',marginRight:'10px',height:'100%'}}>
+            <div style={{display:'flex',flexDirection:'column',alignItems:'flex-start',overflow:'auto',scrollbarWidth:'thin',marginRight:'10px',width:'100%',height:'100%'}}>
             {colOptions}
             </div>
             </div>)
@@ -105,7 +105,7 @@ function Column(props){
         setFilterListVisible(!filterListVisible)
     }
     return(
-        <div className="columnSelector" >
+        <div className="columnSelector" style={{width:'100%'}} >
             <div  onClick={toggleColumnSelector} style={{marginRight:'5px', width:'18px',color:isSelected?'#898989':'#efefef',display:'flex',alignItems:'center'}}>
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="-2 -1.5 24 24" width="18" fill="currentColor"><path d="M4 .565h12a4 4 0 0 1 4 4v12a4 4 0 0 1-4 4H4a4 4 0 0 1-4-4v-12a4 4 0 0 1 4-4z"></path></svg>
             </div>

@@ -149,6 +149,7 @@ function AdvancedDemoPage(props){
                 display:'flex',
                 flex:2,
                 minHeight:'600px',
+                height: '600px',
                 maxHeight:'700px',
                 width:'calc(100vw - 80px)',
                 boxShadow:'0px 0px 15px #e0e0e0',
