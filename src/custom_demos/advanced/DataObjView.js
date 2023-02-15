@@ -58,7 +58,7 @@ function DataObjView(props){
 
     return (
         <HStack spacing={20} padding={30}>
-            <div style={{flex:1, overflowY:'auto'}}>
+            <div style={{flex:1, overflowY:'auto', height:'100%'}}>
                 <Table>
                     <Thead>
                         {ths}
