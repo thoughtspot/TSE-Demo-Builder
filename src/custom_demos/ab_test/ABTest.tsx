@@ -39,7 +39,7 @@ export default function ABTest(props){
     useEffect(()=>{
         let queryString = "["+campgaingIDCol+"]"
     
-        var url = tsURL + "/callosum/v1/tspublic/v1/searchdata?query_string="+encodeURIComponent(queryString)+
+        var url = tsURL + "callosum/v1/tspublic/v1/searchdata?query_string="+encodeURIComponent(queryString)+
         "&data_source_guid="+worsheetUUID+"&batchsize=-1&pagenumber=-1&offset=-1&formattype=COMPACT"
         fetch(url,
         {
