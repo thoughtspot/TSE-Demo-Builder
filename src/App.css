@@ -194,13 +194,14 @@ body{
 .link{
   margin-bottom:5px;
   display:flex;
+  min-height:40px;
   align-items: center;
 }
 .link input{
-  height:25px;
+  height:35px;
 }
 .link select{
-  height:30px;
+  height:40px;
 }
 
 .hoverMenu {

@@ -82,6 +82,7 @@ export default function NavigationLinks(props){
         for (var config of restConfigs){
           if (config.type=='all' || config.type=='liveboard'){
             var liveboards = await getLiveboards(config.restURLParams);
+            console.log(liveboards,"liveboards")
           }
           if (config.type=='all' || config.type=='answer'){
             var answers = await getAnswers(config.restURLParams)

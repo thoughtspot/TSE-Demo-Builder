@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react"
 import { MultiSelect } from "react-multi-select-component"
 import { DateRangePicker } from 'react-date-range';
 import { icons } from "../util/Icons";
+import { RuntimeFilterOp } from "@thoughtspot/visual-embed-sdk";
 
 export default function Filter(props){
     const {
@@ -57,7 +58,7 @@ export default function Filter(props){
       }
       var filtersObj  = {
         columnName: filterName,
-        operator: 'IN',
+        operator: RuntimeFilterOp.IN,
         values: filterVals
       }
       setSelectedFilter(e)
@@ -68,7 +69,7 @@ export default function Filter(props){
       if (e.selection.startDate)
       var filtersObj  = {
         columnName: filterName,
-        operator: 'BW_INC',
+        operator: RuntimeFilterOp.BW_INC,
         values: [Math.floor(e.selection.startDate.getTime() / 1000), Math.floor(e.selection.endDate.getTime() / 1000)]
       }
       setSelectedFilter([e.selection])

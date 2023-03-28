@@ -330,7 +330,7 @@ return (
 
     <div className="settingLabel">Links</div> 
     <div className='linkHeader'>
-        <div style={{width:'110px'}}>Name</div><div style={{width:'90px'}}>Type</div><div style={{flex:1}}>Configuration</div><div style={{width:'160px'}}>Parent</div>
+        <div style={{width:'150px'}}>Name</div><div style={{width:'150px'}}>Type</div><div style={{flex:1}}>Configuration</div><div style={{width:'160px'}}>Parent</div>
       </div>
     <div id="linkContainer" className="linkContainer">
 
@@ -448,8 +448,8 @@ function Link(props){
   }
   return(
     <div className="link">
-      <input placeholder={namePlaceholders[type]} style={{width:'100px',marginRight:'5px'}} value={name} onChange={e => handleNameChange(e.target.value)} />
-      <select style={{width:'80px',marginRight:'5px'}} onChange={e => handleTypeChange(e.target.value)} value={type}> 
+      <input placeholder={namePlaceholders[type]} style={{width:'150px',marginRight:'5px'}} value={name} onChange={e => handleNameChange(e.target.value)} />
+      <select style={{width:'150px',marginRight:'5px'}} onChange={e => handleTypeChange(e.target.value)} value={type}> 
         <option value="None">None</option>
         <option value="Menu">Menu</option>
         <option value="Search">Search</option>
@@ -466,6 +466,8 @@ function Link(props){
         <option value="Advanced">Custom Demo: Search String Builder</option>
         <option value="Custom Demos">Custom Demo: Tabbed Widgets</option>
         <option value="Survey Demo">Custom Demo: Survey Demo</option>
+        <option value="AB Demo">Custom Demo: A / B Testing</option>
+        <option value="WordcloudDemo">Custom Viz Demo</option>
         <option value="OnImageViz">OnImageViz</option>
       </select>
       {contentInput}

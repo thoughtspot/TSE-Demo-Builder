@@ -47,14 +47,14 @@ useEffect(() => {
       init({
         thoughtSpotHost: settings.URL,
         authType: AuthType.None,
-        customCssUrl: 'cdn.jsdelivr.net/gh/hannsta/TSE-Demo-Builder@iqvia/public/csstest10.css',
+        customCssUrl: 'cdn.jsdelivr.net/gh/hannsta/TSE-Demo-Builder/public/csstest11.css',
         customizations: {
           style: {
             customCSS: {
               variables: {
                 "--ts-var-button--secondary-color": settings.buttonColor ? settings.buttonColor : 'initial' ,
                 "--ts-var-root-background":settings.backgroundColor ? settings.backgroundColor  : 'initial',
-              },
+              }
             },
           },
         },

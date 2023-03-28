@@ -6,6 +6,8 @@ import Tabs from "../custom_demos/incidents/Tabs";
 import Surveys from "../custom_demos/surveys/Surveys";
 import SurveyRicky from "../custom_demos/surveys_ricky/SurveyRicky"
 import ParameterDemo from "../custom_demos/parameter/ParameterDemo"
+import ABTest from "../custom_demos/ab_test/ABTest";
+import WordCloudDemo from "../custom_demos/word_cloud/WordCloudDemo";
 export default function EmbedContainer(props){
 
   const {
@@ -37,6 +39,9 @@ export default function EmbedContainer(props){
     embedRef.current.on(EmbedEvent.VizPointClick, (data) => {
       console.log('single click',data);
     })
+    embedRef.current.on(EmbedEvent.Drilldown, (data) => {
+      console.log('drill click',data);
+    })
     embedRef.current.on(EmbedEvent.SpotIQAnalyze, (data) => {
       const event = new CustomEvent('spotiq', {detail: {data: data}});
       window.dispatchEvent(event)
@@ -65,8 +70,8 @@ export default function EmbedContainer(props){
 
   var visibleActions = []
   var disabledActions = []
-  var hideDataSources = true;
-  var collapseDataSources = false;
+  var hideDataSources = false;
+  var collapseDataSources = true;
   //Scan Properties
   if (renderContent && (renderType=='Liveboard' || renderType=='Answer' || renderType=='Search'|| renderType=='Search String')){
     var contents = renderContent.split("|")
@@ -203,11 +208,17 @@ console.log(visibleActions,"visibleaction")
   if (renderType=='Survey Demo'){
     renderPage = <Surveys tsURL={url}></Surveys>
   }
+  if (renderType=='AB Demo'){
+    renderPage = <ABTest tsURL={url}></ABTest>
+  }
   if (renderType=='Survey Demo Ricky'){
     renderPage = <SurveyRicky tsURL={url}></SurveyRicky>
   }
   if (renderType=='ParamDemo'){
     renderPage = <ParameterDemo tsURL={url}></ParameterDemo>
+  }
+  if (renderType=='WordcloudDemo'){
+    renderPage = <WordCloudDemo tsURL={url}></WordCloudDemo>
   }
   return (
       <div id={renderType!='Survey Demo' ? "TSContainer" : null} style={{height:'100%'}} key={renderKey}>
