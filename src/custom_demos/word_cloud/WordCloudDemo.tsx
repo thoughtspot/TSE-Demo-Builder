@@ -124,7 +124,7 @@ export default function WordCloudDemo(props){
             queryString = queryString + "[Store Region].'"+region+"'"
         } 
         let worsheetUUID = "782b50d1-fe89-4fee-812f-b5f9eb0a552d"
-        var url = tsURL + "/callosum/v1/tspublic/v1/searchdata?query_string="+encodeURIComponent(queryString)+
+        var url = tsURL + "callosum/v1/tspublic/v1/searchdata?query_string="+encodeURIComponent(queryString)+
         "&data_source_guid="+worsheetUUID+"&batchsize=-1&pagenumber=-1&offset=-1&formattype=COMPACT"
         fetch(url,
         {
