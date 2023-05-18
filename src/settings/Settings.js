@@ -467,6 +467,7 @@ function Link(props){
         <option value="Custom Demos">Custom Demo: Tabbed Widgets</option>
         <option value="Survey Demo">Custom Demo: Survey Demo</option>
         <option value="AB Demo">Custom Demo: A / B Testing</option>
+        <option value="Product">Custom Demo: Product List</option>
         <option value="WordcloudDemo">Custom Viz Demo</option>
         <option value="OnImageViz">OnImageViz</option>
       </select>

@@ -54,6 +54,12 @@ useEffect(() => {
               variables: {
                 "--ts-var-button--secondary-color": settings.buttonColor ? settings.buttonColor : 'initial' ,
                 "--ts-var-root-background":settings.backgroundColor ? settings.backgroundColor  : 'initial',
+              },
+              rules_UNSTABLE: {
+                ".pinboard-edit-header-module__editActionHeader": {
+                  "background":"white",
+                  "color":"black"
+                }
               }
             },
           },

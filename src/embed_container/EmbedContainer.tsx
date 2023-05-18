@@ -7,7 +7,7 @@ import Surveys from "../custom_demos/surveys/Surveys";
 import SurveyRicky from "../custom_demos/surveys_ricky/SurveyRicky"
 import ParameterDemo from "../custom_demos/parameter/ParameterDemo"
 import ABTest from "../custom_demos/ab_test/ABTest";
-import WordCloudDemo from "../custom_demos/word_cloud/WordCloudDemo";
+import ProductDemo from "../custom_demos/product/Product";
 export default function EmbedContainer(props){
 
   const {
@@ -21,8 +21,14 @@ export default function EmbedContainer(props){
     isHorizontal,
     renderKey
   } = props
-
-  function onEmbedRendered(){
+  const startTime = Date.now()
+  const trackEvent = (data) => {
+    const eventTime = Date.now()
+    console.log("Event Triggered", data, eventTime, eventTime - startTime)
+  }
+  function onEmbedRendered(data){
+    const eventTime = Date.now()
+    console.log("Event Triggered", data, eventTime, eventTime - startTime)
     embedRef.current.on(EmbedEvent.Data,(data) => {
       console.log("data!",data)
       //loadRestContent();
@@ -46,6 +52,7 @@ export default function EmbedContainer(props){
       const event = new CustomEvent('spotiq', {detail: {data: data}});
       window.dispatchEvent(event)
     })
+    embedRef.current.
     embedRef.current.on(EmbedEvent.Save, (data) => {
       const event = new CustomEvent('save', {detail: {data: data}});
       window.dispatchEvent(event)
@@ -56,7 +63,6 @@ export default function EmbedContainer(props){
       window.dispatchEvent(event)
    
     })
-
     embedRef.current.on(EmbedEvent.CustomAction, (payload) => {
       console.log(payload)
       var data = payload.data.embedAnswerData.data[0].columnDataLite
@@ -119,7 +125,10 @@ console.log(visibleActions,"visibleaction")
         visibleActions={visibleActions.length>0 ? visibleActions : null}  
         disabledActions={disabledActions.length>0 ? disabledActions : null} 
         dataSources={renderContents} 
+        
         hideDataSources={hideDataSources} 
+      
+      
         frameParams={{width:'100%',height:'100%'}}
     />
   }
@@ -130,9 +139,13 @@ console.log(visibleActions,"visibleaction")
         visibleActions={visibleActions.length>0 ? visibleActions : null}  
         disabledActions={disabledActions.length>0 ? disabledActions : null}  
         runtimeFilters={runFilters}  
+        onAuthInit={trackEvent}
+        onData={trackEvent}
+        onInit={trackEvent}
+        onLoad={trackEvent}
         liveboardId={renderContent.split("|")[0]} 
         frameParams={{width:'100%',height:'100%'}}
-    />
+  />
   }
   ///Hide for mani
   if (renderType=='Answer'){
@@ -217,8 +230,8 @@ console.log(visibleActions,"visibleaction")
   if (renderType=='ParamDemo'){
     renderPage = <ParameterDemo tsURL={url}></ParameterDemo>
   }
-  if (renderType=='WordcloudDemo'){
-    renderPage = <WordCloudDemo tsURL={url}></WordCloudDemo>
+  if (renderType=='Product'){
+    renderPage = <ProductDemo tsURL={url}></ProductDemo>
   }
   return (
       <div id={renderType!='Survey Demo' ? "TSContainer" : null} style={{height:'100%'}} key={renderKey}>
