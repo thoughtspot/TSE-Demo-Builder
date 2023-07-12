@@ -3,15 +3,22 @@ import React, { useState, useEffect } from 'react';
 import 'react-date-range/dist/styles.css'; // main style file
 import 'react-date-range/dist/theme/default.css'; // theme css file
 
-import NavigationMenu from './navigation_menu/NavigationMenu';
-import EmbedContainer from './embed_container/EmbedContainer'
+import NavigationMenu from '../navigation_menu/NavigationMenu';
+import EmbedContainer from './EmbedContainer'
 import { useEmbedRef } from'@thoughtspot/visual-embed-sdk/react';
 import { init,  AuthType, HostEvent} from '@thoughtspot/visual-embed-sdk';
-import {styles} from "./util/Styles"
-import NotePopup from './popups/NotePopup';
-import SpotIQPopup from './popups/SpotIQPopUp';
+import {styles} from "../util/Styles"
+import NotePopup from '../popups/NotePopup';
+import SpotIQPopup from '../popups/SpotIQPopUp';
+import { Settings } from '../util/Types';
+import { StyleOptionList, StyleOptions } from '../util/PreBuiltStyles';
 
-export default function Content(props) {
+
+interface ContentProps {
+  settings: Settings
+  showSettings: boolean
+}
+export default function Content(props: ContentProps) {
 const {
   settings,
   showSettings
@@ -39,31 +46,44 @@ function togglePopupVisible(){
   setPopupVisible(!popupVisible)
 }
 
-useEffect(() => {
+const defaultStyles = {
+  style: {
+    customCSS: {
+      variables: {
+        "--ts-var-button--secondary-color": settings.buttonColor ? settings.buttonColor : 'initial' ,
+        "--ts-var-root-background":settings.backgroundColor ? settings.backgroundColor  : 'initial',
+      }
+    },
+  },
+}
 
+
+useEffect(() => {
+  console.log(settings.prebuiltStyle, StyleOptions, StyleOptions.filter((style) => style.name == settings.prebuiltStyle as StyleOptionList))
+  
   if (settings.URL){
     console.log(settings.URL,settings.backgroundColor)
+
+    let cssStyle = defaultStyles;
+    let cssURL = '';
+    let isURL = false;
+    if (settings.prebuiltStyle != StyleOptionList.None){
+      let styleOption = StyleOptions.filter((style) => style.name == settings.prebuiltStyle as StyleOptionList)[0]
+      if (styleOption.customCssUrl){
+        cssURL = styleOption.customCssUrl
+        isURL = true
+      }else{
+        cssStyle = styleOption.customizations
+      }
+    }
+    
+
     try {
       init({
         thoughtSpotHost: settings.URL,
         authType: AuthType.None,
-        customCssUrl: 'cdn.jsdelivr.net/gh/hannsta/TSE-Demo-Builder/public/csstest11.css',
-        customizations: {
-          style: {
-            customCSS: {
-              variables: {
-                "--ts-var-button--secondary-color": settings.buttonColor ? settings.buttonColor : 'initial' ,
-                "--ts-var-root-background":settings.backgroundColor ? settings.backgroundColor  : 'initial',
-              },
-              rules_UNSTABLE: {
-                ".pinboard-edit-header-module__editActionHeader": {
-                  "background":"white",
-                  "color":"black"
-                }
-              }
-            },
-          },
-        },
+        customizations: isURL ? undefined : cssStyle,
+        customCssUrl: isURL ? cssURL : undefined,
         callPrefetch: true,
       });
       // logon.addListener("SDK_SUCCESS",()=>{
@@ -75,7 +95,7 @@ useEffect(() => {
       // })
     }
     catch(err){
-      alert("could not connect to thoughtspot")
+      alert("Could not connect to ThoughtSpot")
     }
   }
   loadDefaultFilters();

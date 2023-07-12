@@ -1,7 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { init,  AuthType} from '@thoughtspot/visual-embed-sdk';
+import { init,  AuthType, Page} from '@thoughtspot/visual-embed-sdk';
 import { SketchPicker } from 'react-color';
-
+import { defaultPages, DemoPage, PageName, Settings } from '../util/Types';
+import { ApplyIcon, TrashIcon, RevertIcon, OpenIcon, SaveIcon, CloseIcon, PlusIcon, ArrowUp, ArrowDown } from '../util/Icons';
+import {uuidv4, convertBase64} from '../util/Util'
+import { StyleOptionList } from '../util/PreBuiltStyles';
 
 function SettingsMenu(props) {
 const {
@@ -29,11 +32,12 @@ const [secondaryColor, setSecondaryColor] = useState('')
 const [buttonColor,setButtonColor]  = useState('')
 const [backgroundColor,setBackgroundColor]  = useState('')
 const [orientation, setOrientation] = useState('')
-const [logoImage, setLogoImage] = useState()
-const [displayPrimaryPicker, setDisplayPrimaryPicker] = useState('')
-const [displaySecondaryPicker, setDisplaySecondaryPicker] = useState('')
-const [displayButtonPicker, setDisplayButtonPicker] = useState('')
-const [displayBackgroundPicker, setDisplayBackgroundPicker] = useState('')
+const [prebuiltStyle, setPrebuiltStyle] = useState(StyleOptionList.None)
+const [logoImage, setLogoImage] = useState<any>()
+const [displayPrimaryPicker, setDisplayPrimaryPicker] = useState(false)
+const [displaySecondaryPicker, setDisplaySecondaryPicker] = useState(false)
+const [displayButtonPicker, setDisplayButtonPicker] = useState(false)
+const [displayBackgroundPicker, setDisplayBackgroundPicker] = useState(false)
 
 
 useEffect(()=>{
@@ -41,18 +45,6 @@ useEffect(()=>{
   objDiv.scrollTop = objDiv.scrollHeight + 30;
 })
 
-function updatePrimaryColor(color){
-  setPrimaryColor(color.hex);
-};
-function updateSecondaryColor(color){
-  setSecondaryColor(color.hex);
-};
-function updateBackgroundColor(color){
-  setBackgroundColor(color.hex);
-};
-function updateButtonColor(color){
-  setButtonColor(color.hex);
-};
 const handleLinkTypeChange = (linkId, value) => {
   setLinkTypes({ ...linkTypes, [linkId]: value });
 };
@@ -104,7 +96,7 @@ const moveDown = (id) => {
   }
 }
 const getSettingsObj = () =>{
-  var settings = {
+  var settings: Settings = {
     name: name,
     URL: URL,
     links: links,
@@ -117,7 +109,8 @@ const getSettingsObj = () =>{
     buttonColor: buttonColor,
     backgroundColor: backgroundColor,
     orientation: orientation,
-    logoImage: logoImage
+    logoImage: logoImage,
+    prebuiltStyle: prebuiltStyle
   }
   return settings;
 }
@@ -138,6 +131,7 @@ useEffect(() => {
     setLinkParents(settings.linkParents)
     setPrimaryColor(settings.primaryColor)
     setSecondaryColor(settings.secondaryColor)
+    setPrebuiltStyle(settings.prebuiltStyle)
     setButtonColor(settings.buttonColor)
     setBackgroundColor(settings.backgroundColor)
     setOrientation(settings.orientation)
@@ -145,11 +139,11 @@ useEffect(() => {
   }
 }, [])
 const popover = {
-  position: 'absolute',
+  position:  'absolute' as 'absolute',
   zIndex: '2',
 }
 const cover = {
-  position: 'fixed',
+  position: 'fixed' as 'fixed',
   top: '0px',
   right: '0px',
   bottom: '0px',
@@ -161,19 +155,19 @@ if (!links){
 }else{
   var activeMenus = []
   for (var link of links){
-    if (linkTypes[link]=='Menu'){
+    if (linkTypes[link]==PageName.Menu){
       activeMenus.push(linkNames[link])
     }
   }
   var activeReports = []
   for (var link of links){
-    if (linkTypes[link]=='Liveboard' || linkTypes[link]=='Search String'){
+    if (linkTypes[link]==PageName.Liveboard || linkTypes[link]==PageName.SearchString){
       activeReports.push(linkNames[link])
     }
   }
   var activeSearchStrings = []
   for (var link of links){
-    if (linkTypes[link]=='Search String'){
+    if (linkTypes[link]==PageName.SearchString){
       activeSearchStrings.push(linkNames[link])
     }
   }
@@ -243,7 +237,7 @@ return (
             className="upload-file" 
             id="file"
             onChange={handleSettingsRead}
-            encType="multipart/form-data" 
+            formEncType="multipart/form-data" 
             style={{display:'none'}}
             required/>
         <div className="button" onClick={saveSettingMenu}>
@@ -273,7 +267,7 @@ return (
                                   id="file"
                                   onChange={handleFileRead}
                                   style={{display:'none'}}
-                                  encType="multipart/form-data" 
+                                  formEncType="multipart/form-data" 
                                   required/>
         
         <div className="settingLabel">Primary Color</div> 
@@ -281,7 +275,7 @@ return (
         { displayPrimaryPicker ? <div style={ popover }>
               <div style={ cover } onClick={() => setDisplayPrimaryPicker(false) }/>
               <SketchPicker color={primaryColor}
-                  onChangeComplete={updatePrimaryColor}
+                  onChangeComplete={(color)=>setPrimaryColor(color.hex)}
               />
             </div> : null }
 
@@ -290,7 +284,7 @@ return (
         { displaySecondaryPicker ? <div style={ popover }>
               <div style={ cover } onClick={ e => setDisplaySecondaryPicker(false) }/>
               <SketchPicker color={secondaryColor}
-                  onChangeComplete={updateSecondaryColor}
+                  onChangeComplete={(color)=>setSecondaryColor(color.hex)}
               />
             </div> : null }
       </div>
@@ -300,7 +294,7 @@ return (
         { displayButtonPicker ? <div style={ popover }>
               <div style={ cover } onClick={() => setDisplayButtonPicker(false) }/>
               <SketchPicker color={buttonColor}
-                  onChangeComplete={updateButtonColor}
+                  onChangeComplete={(color)=>setButtonColor(color.hex)}
               />
             </div> : null }
 
@@ -309,7 +303,7 @@ return (
         { displayBackgroundPicker ? <div style={ popover }>
               <div style={ cover } onClick={ e => setDisplayBackgroundPicker(false) }/>
               <SketchPicker color={backgroundColor}
-                  onChangeComplete={updateBackgroundColor}
+                  onChangeComplete={(color)=>setBackgroundColor(color.hex)}
               />
             </div> : null }
       </div>
@@ -319,11 +313,12 @@ return (
             <option value="Vertical">Vertical</option>
             <option value="Horizontal">Horizontal</option>
         </select>
-        {/* <div className="settingLabel">Font Familiy</div> 
-      <select > 
-            <option value="Vertical">Roboto</option>
-            <option value="Horizontal">Horizontal</option>
-        </select> */}
+        <div className="settingLabel">Pre-Built Style</div> 
+        <select onChange={e => setPrebuiltStyle(e.target.value as StyleOptionList)} value={prebuiltStyle}> 
+        {Object.keys(StyleOptionList).map((style: StyleOptionList)=>{
+          return (<option value={style}>{style}</option>)
+        })}
+        </select>
       </div>
     </div>
     
@@ -381,10 +376,15 @@ function Link(props){
   function handleContentChange(linkContent){
     saveLinkContent(id,linkContent)
   }
+  let demoPage: DemoPage = defaultPages.filter((page: DemoPage) => page.id == type as PageName)[0]
+  if (!demoPage){
+    demoPage = defaultPages.filter((page: DemoPage) => page.id == PageName.None)[0]
+  }
+  console.log(demoPage,"demoPage",defaultPages)
   var contentInput = null;
-  if (type=='Menu'){
+  if (type==PageName.Menu){
     contentInput = null;
-  }else if (type=='App'){
+  }else if (type==PageName.App){
     contentInput = <select style={{flex:1,marginRight:'5px'}} onChange={e => handleContentChange(e.target.value)} value={content}> 
       <option value="home">Home</option>
       <option value="answers">Answers</option>
@@ -394,32 +394,19 @@ function Link(props){
       <option value="search">Search</option> 
     </select>
   }
-  else if (type=='Image'){
+  else if (type==PageName.Image){
    contentInput = <ImageInput value={content} setValue={handleContentChange}></ImageInput>
-  }else if (type == 'OnImageViz'){
+  }else if (type == PageName.OnImageViz){
     contentInput = <ImageVizInput value={content} setValue={handleContentChange}></ImageVizInput>
   }
-  else if (type=="None"){
+  else if (type==PageName.None){
     contentInput = null;
   }else{
-    var placeholders = {
-      'Search': 'WorksheetGUID|hideDataSources=false|disableAction=Action.Share|disableAction=Action.Save',
-      'Search Bar': 'WorksheetGUID|hideDataSources=false|disableAction=Action.Share|disableAction=Action.Save',
-      'Liveboard':'LiveboardGUID|disableAction=Action.Share|disableAction=Action.Save',
-      'Answer': 'AnswerGUID|hideDataSources=false|disableAction=Action.Share|disableAction=Action.Save',
-      'Filter':'East,West,South,North',
-      'Field':'[Region]:Region,[Timestamp].detailed:Detailed Time',
-      'Search String':'[tml] [search] [query] |WorksheetGUID|hideDataSources=false',
-      'URL':'URL of website or image',
-      'Rest':'tags=Retail Sales|category=my|sort=CREATED|type=liveboard',
-      'Advanced':'WorksheetGUID',
-      'Survey Demo':'No Config - Must use SE Cloud'
-    }
-    contentInput = <input style={{flex:1,border:'1px solid #cccccccc', borderRadius:'5px', marginRight:'5px'}} placeholder={placeholders[type]} value={content} onChange={e => handleContentChange(e.target.value)} />;
+    contentInput = <input style={{flex:1,border:'1px solid #cccccccc', borderRadius:'5px', marginRight:'5px'}} placeholder={demoPage.configDesc} value={content} onChange={e => handleContentChange(e.target.value)} />;
   }
 
   var parentOptions = []
-  var parentOptionLinks = linkNames
+  var parentOptionLinks: {link: string} = linkNames
   if (type=='Filter' || type=='Date Filter'){
     parentOptionLinks = activeReports;
   }
@@ -429,47 +416,15 @@ function Link(props){
   for (var link of Object.values(parentOptionLinks)){
     parentOptions.push(<option value={link}>{link}</option>)
   }
-  var namePlaceholders = {
-    'Search': 'Link Name',
-    'Liveboard': 'Link Name',
-    'Answer': 'Link Name',
-    'Filter': 'Column Name',
-    'Field': 'Column Name',
-    'Search String':'Link Name',
-    'URL':'Link Name',
-    'App': 'Link Name',
-    'Menu': 'Menu Name',
-    'None':'Link Name',
-    'Rest':'Link Name',
-    'Advanced':'Link Name',
-    'Date Filter':'Column Name',
-    'Search Bar': 'Link Name',
- 
-  }
   return(
     <div className="link">
-      <input placeholder={namePlaceholders[type]} style={{width:'150px',marginRight:'5px'}} value={name} onChange={e => handleNameChange(e.target.value)} />
+      <input placeholder={demoPage.configName} style={{width:'150px',marginRight:'5px'}} value={name} onChange={e => handleNameChange(e.target.value)} />
       <select style={{width:'150px',marginRight:'5px'}} onChange={e => handleTypeChange(e.target.value)} value={type}> 
-        <option value="None">None</option>
-        <option value="Menu">Menu</option>
-        <option value="Search">Search</option>
-        <option value="Liveboard">Liveboard</option>
-        <option value="Answer">Answer</option>
-        <option value="App">Full App</option>
-        <option value="URL">URL</option>
-        <option value="Image">Image</option>
-        <option value="Rest">REST Content List</option>
-        <option value="Search String">Search String</option>
-        <option value="Filter">Filter (Liveboard & Search String)</option>
-        <option value="Field">Field (Search String)</option>
-        <option value="Date Filter">Date Filter</option>
-        <option value="Advanced">Custom Demo: Search String Builder</option>
-        <option value="Custom Demos">Custom Demo: Tabbed Widgets</option>
-        <option value="Survey Demo">Custom Demo: Survey Demo</option>
-        <option value="AB Demo">Custom Demo: A / B Testing</option>
-        <option value="Product">Custom Demo: Product List</option>
-        <option value="WordcloudDemo">Custom Viz Demo</option>
-        <option value="OnImageViz">OnImageViz</option>
+      {defaultPages.map((page: DemoPage)=>{
+          return (
+            <option value={page.id}>{page.name}</option>
+          )
+        })}
       </select>
       {contentInput}
       {(type!='Menu' && type!='Rest') ? 
@@ -490,51 +445,6 @@ function Link(props){
 
      </div>
   )
-}
-function uuidv4() {
-  return ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c =>
-    (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
-  );
-}
-
-function CloseIcon(){
-  return <svg xmlns="http://www.w3.org/2000/svg" viewBox="-2 -2 24 24" width="24" fill="currentColor"><path d="M4 2a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H4zm0-2h12a4 4 0 0 1 4 4v12a4 4 0 0 1-4 4H4a4 4 0 0 1-4-4V4a4 4 0 0 1 4-4z"></path><path d="M11.414 10l2.829 2.828a1 1 0 0 1-1.415 1.415L10 11.414l-2.828 2.829a1 1 0 1 1-1.415-1.415L8.586 10 5.757 7.172a1 1 0 0 1 1.415-1.415L10 8.586l2.828-2.829a1 1 0 0 1 1.415 1.415L11.414 10z"></path></svg>;
-}
-function OpenIcon(){
-  return <svg xmlns="http://www.w3.org/2000/svg" viewBox="-2 -4 24 24" width="24" fill="currentColor"><path d="M10.83 2H17a3 3 0 0 1 3 3v8a3 3 0 0 1-3 3H3a3 3 0 0 1-3-3V3a3 3 0 0 1 3-3h5c1.306 0 2.417.835 2.83 2zM17 4H9.415l-.471-1.334A1.001 1.001 0 0 0 8 2H3a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1V5a1 1 0 0 0-1-1z"></path><path d="M1 5h18v2H1z"></path></svg>;
-}
-function ApplyIcon(){
-  return <svg xmlns="http://www.w3.org/2000/svg" viewBox="-2 -2 24 24" width="24" fill="currentColor"><path d="M4 2a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H4zm0-2h12a4 4 0 0 1 4 4v12a4 4 0 0 1-4 4H4a4 4 0 0 1-4-4V4a4 4 0 0 1 4-4z"></path><path d="M8.414 9H14a1 1 0 1 1 0 2H8.414l2.536 2.536a1 1 0 0 1-1.414 1.414l-4.243-4.243a.997.997 0 0 1 0-1.414L9.536 5.05a1 1 0 1 1 1.414 1.414L8.414 9z"></path></svg>;
-}
-function SaveIcon(){
-  return <svg xmlns="http://www.w3.org/2000/svg" viewBox="-3 -3 24 24" width="24" fill="currentColor"><path d="M2 0h11.22a2 2 0 0 1 1.345.52l2.78 2.527A2 2 0 0 1 18 4.527V16a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2zm0 2v14h14V4.527L13.22 2H2zm4 8h6a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2zm0 2v4h6v-4H6zm7-9a1 1 0 0 1 1 1v3a1 1 0 0 1-2 0V4a1 1 0 0 1 1-1zM5 3h5a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1zm1 3h3V5H6v1z"></path></svg>;
-}
-function PlusIcon(){
-  return <svg xmlns="http://www.w3.org/2000/svg" viewBox="-2 -2 24 24" width="24" fill="currentColor"><path d="M4 2a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H4zm0-2h12a4 4 0 0 1 4 4v12a4 4 0 0 1-4 4H4a4 4 0 0 1-4-4V4a4 4 0 0 1 4-4zm7 11v4a1 1 0 0 1-2 0v-4H5a1 1 0 0 1 0-2h4V5a1 1 0 1 1 2 0v4h4a1 1 0 0 1 0 2h-4z"></path></svg>;
-}
-function TrashIcon(){
-  return <svg xmlns="http://www.w3.org/2000/svg" viewBox="-3 -2 24 24" width="24" fill="currentColor"><path d="M6 2V1a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v1h4a2 2 0 0 1 2 2v1a2 2 0 0 1-2 2h-.133l-.68 10.2a3 3 0 0 1-2.993 2.8H5.826a3 3 0 0 1-2.993-2.796L2.137 7H2a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h4zm10 2H2v1h14V4zM4.141 7l.687 10.068a1 1 0 0 0 .998.932h6.368a1 1 0 0 0 .998-.934L13.862 7h-9.72zM7 8a1 1 0 0 1 1 1v7a1 1 0 0 1-2 0V9a1 1 0 0 1 1-1zm4 0a1 1 0 0 1 1 1v7a1 1 0 0 1-2 0V9a1 1 0 0 1 1-1z"></path></svg>
-}
-function ArrowDown(){
-  return <svg xmlns="http://www.w3.org/2000/svg" viewBox="-5 -4.5 24 24" width="24" fill="currentColor"><path d="M8 11.243l3.95-3.95a1 1 0 1 1 1.414 1.414l-5.657 5.657a.997.997 0 0 1-1.414 0L.636 8.707A1 1 0 1 1 2.05 7.293L6 11.243V1.657a1 1 0 1 1 2 0v9.586z"></path></svg>;
-}
-function ArrowUp(){
-  return <svg xmlns="http://www.w3.org/2000/svg" viewBox="-5 -4.5 24 24" width="24" fill="currentColor"><path d="M6 4.071l-3.95 3.95A1 1 0 0 1 .636 6.607L6.293.95a.997.997 0 0 1 1.414 0l5.657 5.657A1 1 0 0 1 11.95 8.02L8 4.07v9.586a1 1 0 1 1-2 0V4.07z"></path></svg>
-}
-function RevertIcon(){
-  return <svg xmlns="http://www.w3.org/2000/svg" viewBox="-2 -2 24 24" width="24" fill="currentColor"><path d="M2 5h16V2H2v3zm16 2v12a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V7H1a1 1 0 0 1-1-1V1a1 1 0 0 1 1-1h18a1 1 0 0 1 1 1v5a1 1 0 0 1-1 1h-1zM4 18h12V7H4v11zm4-4h4a1 1 0 0 1 0 2H8a1 1 0 0 1 0-2z"></path></svg>;
-}
-const convertBase64 = (file) => {
-  return new Promise((resolve, reject) => {
-    const fileReader = new FileReader();
-    fileReader.readAsDataURL(file)
-    fileReader.onload = () => {
-      resolve(fileReader.result);
-    }
-    fileReader.onerror = (error) => {
-      reject(error);
-    }
-  })
 }
 
 function ImageInput(props){
@@ -560,7 +470,7 @@ function ImageInput(props){
             id="file"
             onChange={handleImageChange}
             style={{display:'none'}}
-            encType="multipart/form-data" 
+            formEncType="multipart/form-data" 
             required/>
      </div>
   )
@@ -639,7 +549,7 @@ function ImageVizInput(props){
               id="file"
               onChange={handleImageChange}
               style={{display:'none'}}
-              encType="multipart/form-data" 
+              formEncType="multipart/form-data" 
               required/>
         <div onClick={exposeDragArea} style={{width:'75px',height:'30px',background:'#ffffff',border:'1px solid #cccccc'}}>
           Select Area
@@ -653,7 +563,7 @@ function ImageVizInput(props){
             </div>
           </div>: 
         null}
-      <input style={{flex:1,border:'1px solid #cccccccc', borderRadius:'5px', marginRight:'5px'}} s onChange={handleConfigChange} placeholder="LiveboardGUID|VizGUID" value={value ? value.config : ''}></input>
+      <input style={{flex:1,border:'1px solid #cccccccc', borderRadius:'5px', marginRight:'5px'}} onChange={handleConfigChange} placeholder="LiveboardGUID|VizGUID" value={value ? value.config : ''}></input>
      </div>
   )
 }

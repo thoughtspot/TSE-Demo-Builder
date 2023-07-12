@@ -1,5 +1,6 @@
 .App {
   text-align: center;
+  font-family:'Trebuchet MS !important';
 }
 
 .App-logo {
@@ -105,7 +106,7 @@ body{
 }
 .contentLinkHorizontal{
   font-size:14px;
-  font-family: 'Open Sans', sans-serif;
+  font-family: 'Trebuchet MS', sans-serif;
 }
 .contentLinkHorizontal:hover{
   cursor: pointer;
@@ -116,7 +117,7 @@ body{
 }
 .contentLinkVertical{
   font-size:14px;
-  font-family: 'Open Sans', sans-serif;
+  font-family: 'Trebuchet MS', sans-serif;
 }
 .contentLinkVertical:hover{
   cursor: pointer;
@@ -126,7 +127,7 @@ body{
 }
 .dropdownLink{
   font-size:14px;
-  font-family: 'Open Sans', sans-serif;
+  font-family: 'Trebuchet MS', sans-serif;
 }
 .dropdownLink:hover{
   cursor: pointer;

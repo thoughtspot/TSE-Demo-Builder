@@ -65,7 +65,7 @@ function NotePopup(props){
             <div style={{padding:'10px 15px 10px 15px',color:'#343434'}}>
                 <div style={{fontSize:'18px',fontWeight:500}}>{value}</div>
                 <div style={{fontSize:'12px',fontWeight:'400',marginBottom:'10px'}}>{title}</div>
-                <textarea style={{fontFamily:'Open Sans',height:'130px',width:'360px',borderRadius:'5px',border:'2px solid #efefef'}} value={noteText} onChange={(e) => setNoteText(e.target.value)}></textarea>
+                <textarea style={{fontFamily:'Trebuchet MS',height:'130px',width:'360px',borderRadius:'5px',border:'2px solid #efefef'}} value={noteText} onChange={(e) => setNoteText(e.target.value)}></textarea>
                 <div className="button" style={{border:'2px solid var(--secondary-color)',fontSize:'14px',marginTop:'10px',height:'45px',width:'80px',display:'flex',justifyContent:'center',alignItems:'center',background:'var(--primary-color)',color:'var(--secondary-color)'}} onClick={saveButton}>Save</div>
             </div>
          </div>

@@ -99,7 +99,7 @@ function AdvancedDemoPage(props){
         <Box textAlign="left" fontSize="xl" alignItems="flex-start" p={30} h="100%" overflowY={"auto"}>
             <Heading as='h1' fontSize={32} marginBottom={2}>Report Builder</Heading>  
             <Heading as='h2' fontSize={18} marginBottom={4}>Custom interface for search analysis</Heading>  
-            <HStack marginTop={5} alignItems={"flex-start"} spacing={30} style={{fontFamily:'Open Sans',maxHeight:'300px'}}>
+            <HStack marginTop={5} alignItems={"flex-start"} spacing={30} style={{fontFamily:'Trebuchet MS',maxHeight:'300px'}}>
             <div style={{height:'240px',display:'flex',flexDirection:'column',width:'25%', padding: '15px', boxShadow: 'rgb(230 230 230) 0px 0px 15px'}}>
                     <Heading as='h2' fontSize={18} marginBottom={4}>Instructions</Heading>  
                     <div style={{display:'flex',flexDirection:'row',minHeight:'50px',alignItems:'center'}}>

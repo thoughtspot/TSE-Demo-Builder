@@ -1,13 +1,15 @@
 import React from "react"
 import { init,  AuthType, Page, EmbedEvent, Action, HostEvent} from '@thoughtspot/visual-embed-sdk';
 import { SearchEmbed, LiveboardEmbed, AppEmbed, SearchBarEmbed, useEmbedRef } from '@thoughtspot/visual-embed-sdk/react';
-import AdvancedDemoPage from "../custom_demos/advanced/AdvancedDemoPage"
-import Tabs from "../custom_demos/incidents/Tabs";
-import Surveys from "../custom_demos/surveys/Surveys";
-import SurveyRicky from "../custom_demos/surveys_ricky/SurveyRicky"
-import ParameterDemo from "../custom_demos/parameter/ParameterDemo"
-import ABTest from "../custom_demos/ab_test/ABTest";
-import ProductDemo from "../custom_demos/product/Product";
+import AdvancedDemoPage from "./custom_demos/advanced/AdvancedDemoPage"
+import Tabs from "./custom_demos/incidents/Tabs";
+import Surveys from "./custom_demos/surveys/Surveys";
+import SurveyRicky from "./custom_demos/surveys_ricky/SurveyRicky"
+import ParameterDemo from "./custom_demos/parameter/ParameterDemo"
+import ABTest from "./custom_demos/ab_test/ABTest";
+import ProductDemo from "./custom_demos/product/Product";
+import { PageName } from "../util/Types";
+import { StyleOptionList, StyleOptions } from "../util/PreBuiltStyles";
 export default function EmbedContainer(props){
 
   const {
@@ -52,7 +54,6 @@ export default function EmbedContainer(props){
       const event = new CustomEvent('spotiq', {detail: {data: data}});
       window.dispatchEvent(event)
     })
-    embedRef.current.
     embedRef.current.on(EmbedEvent.Save, (data) => {
       const event = new CustomEvent('save', {detail: {data: data}});
       window.dispatchEvent(event)
@@ -62,6 +63,9 @@ export default function EmbedContainer(props){
       const event = new CustomEvent('save', {detail: {data: data}});
       window.dispatchEvent(event)
    
+    })
+    embedRef.current.trigger(HostEvent.UpdateRuntimeFilters, {
+      
     })
     embedRef.current.on(EmbedEvent.CustomAction, (payload) => {
       console.log(payload)
@@ -74,15 +78,16 @@ export default function EmbedContainer(props){
     })
   }
 
-  var visibleActions = []
-  var disabledActions = []
-  var hideDataSources = false;
-  var collapseDataSources = true;
+  var visibleActions: Action[] = []
+  var disabledActions: Action[] = []
+  var hideDataSources: boolean = false;
+  var collapseDataSources: boolean = true;
+  let contentStyle: StyleOptionList = undefined;
   //Scan Properties
-  if (renderContent && (renderType=='Liveboard' || renderType=='Answer' || renderType=='Search'|| renderType=='Search String')){
+  if (renderContent && (renderType==PageName.Liveboard || renderType==PageName.Answer || renderType==PageName.Search|| renderType==PageName.SearchString)){
     var contents = renderContent.split("|")
     if (contents.length>1){
-      var propStartIdx = renderType=='Search String' ? 2 : 1
+      var propStartIdx = renderType==PageName.SearchString ? 2 : 1
       for (var i=propStartIdx;i<contents.length;i++){
         var contentProps = contents[i].split("=");
         console.log(contentProps,"contentProps")
@@ -103,12 +108,26 @@ export default function EmbedContainer(props){
           if (property == 'collapseDataSources'){
             collapseDataSources = propertyValue.toLowerCase() == 'true'
           }
+          if (property == 'style'){
+            contentStyle = propertyValue as StyleOptionList
+            
+          }
         }
       }
     }
   }    
-
-console.log(visibleActions,"visibleaction")
+  let cssStyle = undefined;
+  let cssURL = '';
+  let isURL = false;
+  if (contentStyle && contentStyle != StyleOptionList.None){
+    let styleOption = StyleOptions.filter((style) => style.name == contentStyle)[0]
+    if (styleOption.customCssUrl){
+      cssURL = styleOption.customCssUrl
+      isURL = true
+    }else{
+      cssStyle = styleOption.customizations
+    }
+  }
   var renderPage = <div></div>
   if (!renderType && links){
     var firstLink =  links[0]
@@ -132,7 +151,7 @@ console.log(visibleActions,"visibleaction")
         frameParams={{width:'100%',height:'100%'}}
     />
   }
-  if (renderType=='Liveboard'){
+  if (renderType==PageName.Liveboard){
     renderPage = <LiveboardEmbed 
         ref={embedRef} 
         onLiveboardRendered = {onEmbedRendered}
@@ -143,12 +162,13 @@ console.log(visibleActions,"visibleaction")
         onData={trackEvent}
         onInit={trackEvent}
         onLoad={trackEvent}
+        customizations={isURL ? undefined : cssStyle}
         liveboardId={renderContent.split("|")[0]} 
         frameParams={{width:'100%',height:'100%'}}
   />
   }
   ///Hide for mani
-  if (renderType=='Answer'){
+  if (renderType==PageName.Answer){
     renderPage = <SearchEmbed ref={embedRef} 
         visibleActions={visibleActions.length>0 ? visibleActions : null}  
         disabledActions={disabledActions.length>0 ? disabledActions : null}  
@@ -159,15 +179,13 @@ console.log(visibleActions,"visibleaction")
         frameParams={{width:'100%',height:'100vh'}}
     />
   }
-  if (renderType=='Search String'){
+  if (renderType==PageName.SearchString){
     var searchString = buildSearchString(renderContent.split("|")[0], searchFields, runFilters)
-    console.log("init search String",searchString)
     var searchOptions = {
       searchTokenString: searchString,
       executeSearch: true,
     }
     var dataSources = renderContent.split("|")[1].split(",");
-    
     renderPage = <SearchEmbed 
           onLoad={onEmbedRendered}
           ref={embedRef}  
@@ -179,22 +197,22 @@ console.log(visibleActions,"visibleaction")
           frameParams={{width:'100%',height:'100vh'}}
     />
   }
-  if (renderType=='App'){
+  if (renderType==PageName.App){
     renderPage = <AppEmbed pageId={{
 
     }[renderContent]} frameParams={{width:'100%',height:'100%'}} />
   }
-  if (renderType=='URL'){
+  if (renderType==PageName.URL){
     //renderPage = <ClientWebsite url={renderContent}></ClientWebsite>
     renderPage = <iframe  style={{width:'100%',height:'100%',border:'none'}} src={renderContent}></iframe>
   }
-  if (renderType=="Image"){
+  if (renderType==PageName.Image){
     renderPage = 
     <div style={{height:'100%',width:'100%',overflow:'auto'}}>
       <img  style={{width:'100%',border:'none'}} src={renderContent}></img>
     </div>
 
-  }if (renderType=="OnImageViz"){
+  }if (renderType==PageName.OnImageViz){
     var addedHeight = isHorizontal ? "75px" : "0px"; 
     renderPage = 
     <div style={{height:'100%',width:'100%',overflow:'auto'}}>
@@ -211,30 +229,30 @@ console.log(visibleActions,"visibleaction")
 
     </div>
   }
-  if (renderType=='Advanced'){
+  if (renderType==PageName.Advanced){
     //renderPage = <ClientWebsite url={renderContent}></ClientWebsite>
     renderPage = <AdvancedDemoPage  worksheet={renderContent}></AdvancedDemoPage>
   }
-  if (renderType=='Custom Demos'){
+  if (renderType==PageName.Tabbed){
     renderPage = <Tabs tsURL={url}></Tabs>
   }
-  if (renderType=='Survey Demo'){
+  if (renderType==PageName.Survey){
     renderPage = <Surveys tsURL={url}></Surveys>
   }
-  if (renderType=='AB Demo'){
+  if (renderType==PageName.ABTest){
     renderPage = <ABTest tsURL={url}></ABTest>
   }
-  if (renderType=='Survey Demo Ricky'){
-    renderPage = <SurveyRicky tsURL={url}></SurveyRicky>
-  }
+  // if (renderType=='Survey Demo Ricky'){
+  //   renderPage = <SurveyRicky tsURL={url}></SurveyRicky>
+  // }
   if (renderType=='ParamDemo'){
     renderPage = <ParameterDemo tsURL={url}></ParameterDemo>
   }
-  if (renderType=='Product'){
+  if (renderType==PageName.ProductList){
     renderPage = <ProductDemo tsURL={url}></ProductDemo>
   }
   return (
-      <div id={renderType!='Survey Demo' ? "TSContainer" : null} style={{height:'100%'}} key={renderKey}>
+      <div id={renderType!=PageName.Survey ? "TSContainer" : null} style={{height:'100%'}} key={renderKey}>
           {renderPage}
       </div>
   )
