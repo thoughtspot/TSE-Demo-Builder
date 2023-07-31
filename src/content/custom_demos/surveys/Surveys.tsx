@@ -116,7 +116,7 @@ export default function Survey(props) {
   }
   console.log(trows)
   return (
-      <Box textAlign="left" fontSize="xl" alignItems="flex-start" p={30} h="100%" overflowY={"auto"}>
+      <Box textAlign="left" fontSize="xl" alignItems="flex-start" p={30} h="100%" w="100%" overflowY={"auto"}>
         <Heading as='h1' fontSize={32} marginBottom={2}>Pew Research Center</Heading>  
         <Heading as='h2' fontSize={18} marginBottom={4}>American Trends Survey</Heading>  
         <VStack alignItems={"flex-start"}>

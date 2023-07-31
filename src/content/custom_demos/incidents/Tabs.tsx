@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { init,  AuthType, Page, EmbedEvent, Action, HostEvent, LiveboardEmbed} from '@thoughtspot/visual-embed-sdk';
+import { init,  AuthType, Page, EmbedEvent, Action, HostEvent} from '@thoughtspot/visual-embed-sdk';
 import { SimpleGrid, Box, Text, HStack, Flex, VStack, Image, Drawer, DrawerContent, useColorModeValue, Icon, Input } from '@chakra-ui/react';
 import {
     FiHome,
@@ -9,12 +9,15 @@ import {
     FiSettings,
     FiMenu,
   } from 'react-icons/fi';
-import TabbedLiveboard from './TabbedLiveboard'
+  import { useEmbedRef } from'@thoughtspot/visual-embed-sdk/react';
+
+import { LiveboardEmbed } from '@thoughtspot/visual-embed-sdk/react';
 function Tabs(props){
     const{
         tsURL,
         worksheet
     } = props
+    const embedRef = useEmbedRef();
     const [data,setData] = useState('')
     const [selectedTab, setSelectedTab] = useState('Identities Overview')
     useEffect(() => {
@@ -43,6 +46,9 @@ function Tabs(props){
     function isOpen(e){
         console.log("isOpen",e)
     }
+    function TestFilter(){
+
+    }
     const LinkItems = [
         { name: 'Identities Overview', icon: FiHome, onClick:()=>setSelectedTab('Identities Overview'),isSelected:selectedTab=='Identities Overview'},
         { name: 'All Identities', icon: FiTrendingUp, onClick:()=>setSelectedTab('All Identities'),isSelected:selectedTab=='All Identities' },
@@ -51,7 +57,7 @@ function Tabs(props){
         { name: 'Settings', icon: FiSettings, onClick:()=>setSelectedTab('Settings'),isSelected:selectedTab=='Settings' },
       ];
     return(
-        <div style={{display:'flex',flexDirection:'row',background:'#f6f8fa'}}>
+        <div style={{display:'flex',flexDirection:'row',background:'#f6f8fa',width:'100%',height:'100%'}}>
             <Box maxW={250} backgroundColor="#ffffff">
                 <VStack padding={5}>
                 
@@ -62,14 +68,18 @@ function Tabs(props){
                 ))}
                 </VStack>
             </Box>
-            
-            <VStack padding={5}>
+            <div onClick={TestFilter}>Filter</div>
+            <VStack padding={5} w="100%">
             <Box padding={5} maxH={100} marginBottom={selectedTab =='All Identities' ? 10 : 0}>
                 <Text fontSize={18} fontWeight={600} marginBottom={5}>{selectedTab}</Text>
                 <Input borderRadius={20} borderColor="blue" backgroundColor={'#ffffff'}></Input>
             </Box>
             {selectedTab =='All Identities' ? 
-            <TabbedLiveboard></TabbedLiveboard>
+            <LiveboardEmbed 
+                ref={embedRef} 
+                liveboardId={"5fc750d7-dd94-4638-995c-31f0434ce2a0"} 
+                frameParams={{width:'100%',height:'100%'}}
+            />
             :
             <SimpleGrid padding={5} paddingTop={10} columns={2} spacing={10}>
                 <Tab data={data} setSelectedTab={setSelectedTab}></Tab>

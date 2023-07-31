@@ -24,7 +24,8 @@ export interface DemoPage {
 }
 enum Placeholder {
     Link = 'Link Name',
-    Column = 'Column Name'
+    Column = 'Column Name',
+    None = 'Placeholder'
 }
 export enum PageName {
     Search = 'Search',
@@ -100,7 +101,7 @@ export const defaultPages: DemoPage[] = [
     {
         id: PageName.Field,
         name: 'Field (Search String)',
-        configName: Placeholder.Column,
+        configName: Placeholder.None,
         configDesc: '[Region]:Region,[Timestamp].detailed:Detailed Time', 
     },
     {
@@ -125,7 +126,7 @@ export const defaultPages: DemoPage[] = [
         id: PageName.Rest,
         name: 'REST Content List',
         configName: Placeholder.Link,
-        configDesc: '[tml] [search] [query] |WorksheetGUID|hideDataSources=false', 
+        configDesc: 'tags=Retail Sales|category=my|sort=CREATED|type=liveboard', 
     },
     {
         id: PageName.Advanced,

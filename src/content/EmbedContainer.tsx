@@ -252,7 +252,7 @@ export default function EmbedContainer(props){
     renderPage = <ProductDemo tsURL={url}></ProductDemo>
   }
   return (
-      <div id={renderType!=PageName.Survey ? "TSContainer" : null} style={{height:'100%'}} key={renderKey}>
+      <div id={renderType!=PageName.Survey ? "TSContainer" : null} style={{height:'100%',width:'100%'}} key={renderKey}>
           {renderPage}
       </div>
   )

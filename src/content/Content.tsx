@@ -69,11 +69,13 @@ useEffect(() => {
     let isURL = false;
     if (settings.prebuiltStyle != StyleOptionList.None){
       let styleOption = StyleOptions.filter((style) => style.name == settings.prebuiltStyle as StyleOptionList)[0]
-      if (styleOption.customCssUrl){
-        cssURL = styleOption.customCssUrl
-        isURL = true
-      }else{
-        cssStyle = styleOption.customizations
+      if (styleOption){
+        if (styleOption.customCssUrl){
+          cssURL = styleOption.customCssUrl
+          isURL = true
+        }else{
+          cssStyle = styleOption.customizations
+        }
       }
     }
     
