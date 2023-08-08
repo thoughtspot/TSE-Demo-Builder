@@ -83,7 +83,7 @@ useEffect(() => {
     try {
       init({
         thoughtSpotHost: settings.URL,
-        authType: AuthType.TrustedAuthToken,
+        authType: AuthType.None,
         customizations: isURL ? undefined : cssStyle,
         customCssUrl: isURL ? cssURL : undefined,
         callPrefetch: true,
