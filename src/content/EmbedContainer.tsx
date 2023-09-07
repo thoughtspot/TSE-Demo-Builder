@@ -1,5 +1,5 @@
 import React from "react"
-import { init,  AuthType, Page, EmbedEvent, Action, HostEvent} from '@thoughtspot/visual-embed-sdk';
+import { init,  AuthType, Page, EmbedEvent, Action, HostEvent, RuntimeFilterOp} from '@thoughtspot/visual-embed-sdk';
 import { SearchEmbed, LiveboardEmbed, AppEmbed, SearchBarEmbed, useEmbedRef } from '@thoughtspot/visual-embed-sdk/react';
 import AdvancedDemoPage from "./custom_demos/advanced/AdvancedDemoPage"
 import Tabs from "./custom_demos/incidents/Tabs";
@@ -144,24 +144,36 @@ export default function EmbedContainer(props){
         visibleActions={visibleActions.length>0 ? visibleActions : null}  
         disabledActions={disabledActions.length>0 ? disabledActions : null} 
         dataSources={renderContents} 
-        
+        enableSearchAssist={true}
         hideDataSources={hideDataSources} 
-      
-      
+
         frameParams={{width:'100%',height:'100%'}}
     />
   }
+
+  let runtimeFilters = [
+    {
+      columnName: 'Property',
+      columnOp: RuntimeFilterOp.IN,
+      values: ['1234','1234','2345']
+    },
+    {
+      columnName: 'Region',
+      columnOp: RuntimeFilterOp.IN,
+      values: ['east','west']
+    }
+
+  ]
   if (renderType==PageName.Liveboard){
     renderPage = <LiveboardEmbed 
         ref={embedRef} 
-        onLiveboardRendered = {onEmbedRendered}
+        onLiveboardRendered={onEmbedRendered}
         visibleActions={visibleActions.length>0 ? visibleActions : null}  
         disabledActions={disabledActions.length>0 ? disabledActions : null}  
         runtimeFilters={runFilters}  
         onAuthInit={trackEvent}
         onData={trackEvent}
-        onInit={trackEvent}
-        onLoad={trackEvent}
+        onLoad={onEmbedRendered}
         customizations={isURL ? undefined : cssStyle}
         liveboardId={renderContent.split("|")[0]} 
         frameParams={{width:'100%',height:'100%'}}
@@ -189,6 +201,7 @@ export default function EmbedContainer(props){
     renderPage = <SearchEmbed 
           onLoad={onEmbedRendered}
           ref={embedRef}  
+          enableSearchAssist={true}
           dataSources={dataSources} 
           visibleActions={visibleActions.length>0 ? visibleActions : null}  
           disabledActions={disabledActions.length>0 ? disabledActions : null}  
