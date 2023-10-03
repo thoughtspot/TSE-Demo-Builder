@@ -3,9 +3,11 @@ import React, { useState, useEffect } from "react"
 import { currencyFormatter } from "../../../util/Util"
 //@ts-ignore
 import salesImage from './sales.png'
+import { SelectedTab } from "./Tabs"
 
 export default function SalesTab(props){
     const {
+        isSelected,
         setSelectedTab,
         tsURL
     } = props
@@ -69,8 +71,10 @@ export default function SalesTab(props){
             <div style={{display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',marginBottom:'5px'}}>
                 <img style={{height:'150px'}} src={salesImage} >
                 </img>
-                <Text fontWeight={600} color="blue" fontSize={14} _hover={{cursor:'pointer',color:'blue.200'}} onClick={()=>setSelectedTab('All Identities')}>VIEW ALL</Text>
-            </div>
+                <Text fontWeight={600} color="blue" fontSize={14} _hover={{cursor:'pointer',color:'blue.200'}} 
+                    onClick={()=>isSelected ? setSelectedTab(SelectedTab.ALL) : setSelectedTab(SelectedTab.SALES)}>{isSelected ? 'VIEW ALL' : 'EXPLORE'}</Text>            
+
+                            </div>
         </div>
     )
 }

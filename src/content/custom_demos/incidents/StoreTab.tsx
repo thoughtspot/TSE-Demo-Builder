@@ -3,8 +3,10 @@ import React, { useState, useEffect } from "react"
 import { currencyFormatter } from "../../../util/Util"
 //@ts-ignore
 import storeImage from './store.png'
+import { SelectedTab } from "./Tabs"
 export default function StoreTab(props){
     const {
+        isSelected,
         setSelectedTab,
         tsURL
     } = props
@@ -30,7 +32,6 @@ export default function StoreTab(props){
                 setData(data.contents[0].data_rows)
         })
     },[])
-    console.log("this is dta",data)
     return (
         <div style={{display:"flex",flexDirection:"row",padding:15,maxHeight:250,marginBottom:25,background:"#ffffff",borderRadius:"25px",boxShadow:"0 0 15 #efefef"}}>
           <div style={{display:"flex",flexDirection:"column",width:"calc(100% - 175px)",justifyContent:'space-between',height:'100%'}}>
@@ -65,8 +66,9 @@ export default function StoreTab(props){
             <div style={{display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',marginBottom:'5px'}}>
                 <img style={{height:'150px'}} src={storeImage} >
                 </img>
-                <Text fontWeight={600} color="blue" fontSize={14} _hover={{cursor:'pointer',color:'blue.200'}} onClick={()=>setSelectedTab('All Identities')}>VIEW ALL</Text>
-            </div>
+                <Text fontWeight={600} color="blue" fontSize={14} _hover={{cursor:'pointer',color:'blue.200'}} 
+                onClick={()=>isSelected ? setSelectedTab(SelectedTab.ALL) : setSelectedTab(SelectedTab.STORE)}>{isSelected ? 'VIEW ALL' : 'EXPLORE'}</Text>            
+                </div>
         </div>
     )
 }
