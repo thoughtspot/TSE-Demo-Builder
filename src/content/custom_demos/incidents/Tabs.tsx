@@ -204,10 +204,10 @@ function Tabs(props){
             />
             :
             <div style={{display:'flex',flexDirection:'column',padding:'15px',paddingBottom:'35px'}}>
-                <SalesTab tsURL={tsURL} setSelectedTab={setSelectedTab}></SalesTab>
-                <CustomerTab tsURL={tsURL} setSelectedTab={setSelectedTab}></CustomerTab>
-                <StoreTab tsURL={tsURL} setSelectedTab={setSelectedTab}></StoreTab>
-                <CategoryTab tsURL={tsURL} setSelectedTab={setSelectedTab}></CategoryTab>
+                <SalesTab tsURL={tsURL} setSelectedTab={setSelectedTab} ></SalesTab>
+                <CustomerTab tsURL={tsURL} setSelectedTab={setSelectedTab }></CustomerTab>
+                <StoreTab tsURL={tsURL} setSelectedTab={setSelectedTab} ></StoreTab>
+                <CategoryTab tsURL={tsURL} setSelectedTab={setSelectedTab} ></CategoryTab>
             </div>
             }    
             </div>

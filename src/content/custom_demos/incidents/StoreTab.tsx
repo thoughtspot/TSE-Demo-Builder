@@ -33,7 +33,7 @@ export default function StoreTab(props){
     console.log("this is dta",data)
     return (
         <div style={{display:"flex",flexDirection:"row",padding:15,maxHeight:250,marginBottom:25,background:"#ffffff",borderRadius:"25px",boxShadow:"0 0 15 #efefef"}}>
-          <div style={{display:"flex",flexDirection:"column",width:"80%",justifyContent:'space-between',height:'100%'}}>
+          <div style={{display:"flex",flexDirection:"column",width:"calc(100% - 175px)",justifyContent:'space-between',height:'100%'}}>
             <div style={{display:"flex",flexDirection:"row",alignItems:"center", padding:5, width:"100%"}}>
                 <div style={{fontSize:"20px",fontWeight:600,marginLeft:5,marginRight:5,width:"50%"}}>Store Insights</div>
             </div>
