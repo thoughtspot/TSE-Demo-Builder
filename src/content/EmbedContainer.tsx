@@ -211,9 +211,7 @@ export default function EmbedContainer(props){
     />
   }
   if (renderType==PageName.App){
-    renderPage = <AppEmbed pageId={{
-
-    }[renderContent]} frameParams={{width:'100%',height:'100%'}} />
+    renderPage = <AppEmbed pageId={renderContent as Page} frameParams={{width:'100%',height:'100%'}} />
   }
   if (renderType==PageName.URL){
     //renderPage = <ClientWebsite url={renderContent}></ClientWebsite>

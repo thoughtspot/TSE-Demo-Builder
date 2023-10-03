@@ -1,0 +1,14 @@
+.rmsc .dropdown-heading {
+    height: 70px !important;
+}
+.dropdown-container{
+    width: 300px;
+    border: 0px solid #ffffff !important;
+    border-radius:15px !important;
+    background-color: #efefef !important;
+    color: #000000 !important;
+}
+.rmsc .gray{
+    color: #000000 !important;
+    font-weight: 600;
+}

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { init,  AuthType, Page, EmbedEvent, Action, HostEvent} from '@thoughtspot/visual-embed-sdk';
+import { init,  AuthType, Page, EmbedEvent, Action, HostEvent, RuntimeFilterOp} from '@thoughtspot/visual-embed-sdk';
 import { SimpleGrid, Box, Text, HStack, Flex, VStack, Image, Drawer, DrawerContent, useColorModeValue, Icon, Input } from '@chakra-ui/react';
 import {
     FiHome,
@@ -12,20 +12,37 @@ import {
   import { useEmbedRef } from'@thoughtspot/visual-embed-sdk/react';
 
 import { LiveboardEmbed } from '@thoughtspot/visual-embed-sdk/react';
+//import demographicImage from './demographics.png'
+
+//@ts-ignore
+import demographicImage from './demographics.png'
+import SalesTab from './SalesTab';
+import CategoryTab from './CategoryTab';
+import CustomerTab from './CustomerTab';
+import StoreTab from './StoreTab';
+import { MultiSelect } from 'react-multi-select-component';
+import './Tabs.css'
+
+enum LinkNames {
+    ALL = 'All Identities',
+}
+const liveboardId = "5fc750d7-dd94-4638-995c-31f0434ce2a0"
+
 function Tabs(props){
     const{
         tsURL,
         worksheet
     } = props
     const embedRef = useEmbedRef();
-    const [data,setData] = useState('')
-    const [selectedTab, setSelectedTab] = useState('Identities Overview')
-    useEffect(() => {
-        let query = "[Number of Employees] [Status]"       
-        let worksheet = "fec33004-d42b-44aa-b74c-b33aa47132f0"   
-        let liveboard = ""  
-        var url = tsURL+"callosum/v1/tspublic/v1/searchdata?query_string="+encodeURIComponent(query)+
-        "&data_source_guid="+worksheet+"&batchsize=-1&pagenumber=-1&offset=-1&formattype=COMPACT"
+    const [selectedTab, setSelectedTab] = useState('Sales Overview')
+    const [categoryFilterValue, setCategoryFilterValue] = useState([])
+    const [categoryTSFilter, setCategoryTSFilter] = useState({})
+    const [categoryFilterOptions, setCategoryFilterOptions] = useState([])
+    const [brandFilterValue, setBrandFilterValue] = useState([])
+    const [brandTSFilter, setBrandTSFilter] = useState({})
+    const [brandFilterOptions, setBrandFilterOptions] = useState([])
+    useEffect(()=>{
+        var url = tsURL+"api/rest/2.0/metadata/answer/data"
         fetch(url,
         {
             headers: {
@@ -34,12 +51,39 @@ function Tabs(props){
             },
             method:'POST',
             credentials: 'include',
+            body: JSON.stringify({
+                "metadata_identifier": "03f027d7-12a0-47b5-9ae4-7529a116f1a3",
+                "record_offset": 0,
+                "record_size": 80
+            })
         })
         .then(response => response.json()).then(
             data => {
-                setData(data.data)
+                let filterData = data.contents[0].data_rows;
+                var categories = []
+                var brands = []
+                var categoryOptions = []
+                var brandOptions = []
+                for (var dataRow of filterData){
+                    let category = {'value':dataRow[0],'label':dataRow[0]}
+                    if (!categories.includes(dataRow[0])){
+                        categoryOptions.push(category);
+                        categories.push(dataRow[0])
+                    }
+                    let brand = {'value':dataRow[1],'label':dataRow[1]}
+                    if (!brands.includes(dataRow[1])){
+                        brandOptions.push(brand);
+                        brands.push(dataRow[1]);
+                    }
+                }
+                setCategoryFilterOptions(categoryOptions);
+                setBrandFilterOptions(brandOptions);
         })
+
     },[])
+
+
+
     function onClose(e){
         console.log("onclose",e)
     }
@@ -47,118 +91,132 @@ function Tabs(props){
         console.log("isOpen",e)
     }
     function TestFilter(){
-
+        let filter = [{
+            columnName: 'Store Region',
+            operator: 'IN',
+            values: ['east']
+          }]
+          embedRef.current.trigger(HostEvent.Filter,)
+    }
+    function ToggleCategoryFilter(e){
+        console.log("category", e)
+        var filterVals = []
+        for (var i=0;i<e.length;i++){
+          filterVals.push(e[i].label)
+        }
+        var filtersObj  = {
+          columnName: 'Department',
+          operator: RuntimeFilterOp.IN,
+          values: filterVals
+        }
+        setCategoryFilterValue(e)
+        setCategoryTSFilter(filtersObj)
+    }
+    function ToggleBrandFilter(e){
+        var filterVals = []
+        for (var i=0;i<e.length;i++){
+          filterVals.push(e[i].label)
+        }
+        var filtersObj  = {
+          columnName: 'Brand',
+          operator: RuntimeFilterOp.IN,
+          values: filterVals
+        }
+        setBrandFilterValue(e)
+        setBrandTSFilter(filtersObj)
     }
     const LinkItems = [
-        { name: 'Identities Overview', icon: FiHome, onClick:()=>setSelectedTab('Identities Overview'),isSelected:selectedTab=='Identities Overview'},
+        { name: 'Sales Overview', icon: FiHome, onClick:()=>setSelectedTab('Sales Overview'),isSelected:selectedTab=='Sales Overview'},
         { name: 'All Identities', icon: FiTrendingUp, onClick:()=>setSelectedTab('All Identities'),isSelected:selectedTab=='All Identities' },
         { name: 'Explore', icon: FiCompass, onClick:()=>setSelectedTab('Explore'),isSelected:selectedTab=='Explore' },
         { name: 'Favourites', icon: FiStar, onClick:()=>setSelectedTab('Favourites'),isSelected:selectedTab=='Favourites' },
         { name: 'Settings', icon: FiSettings, onClick:()=>setSelectedTab('Settings'),isSelected:selectedTab=='Settings' },
       ];
+      var overrideStrings = {
+        "allItemsAreSelected": "All Categories",
+        "search": "Search Categories",
+        "selectAll": "All Categories",
+        "selectAllFiltered": "Select All (Filtered)",
+        "selectSomeItems": "Select A Category",
+        "create": "Create",
+    }   
+    var brandOverrideStrings = {
+        "allItemsAreSelected": "All Brands",
+        "search": "Search Brands",
+        "selectAll": "All Brands",
+        "selectAllFiltered": "Select All (Filtered)",
+        "selectSomeItems": "Select A Brand",
+        "create": "Create",
+    }    
     return(
-        <div style={{display:'flex',flexDirection:'row',background:'#f6f8fa',width:'100%',height:'100%'}}>
-            <Box maxW={250} backgroundColor="#ffffff">
-                <VStack padding={5}>
+        <div style={{display:'flex',flexDirection:'row',background:'#f6f8fa',width:'100%',height:'100%',padding:'10px'}}>
+            <div style={{display:'flex',flexDirection:'column',maxWidth:"220px", background:'#ffffff',paddingTop:'25px'}}>
                 
                 {LinkItems.map((link) => (
-                    <NavItem color={link.isSelected ? "blue" : "#232323"} borderLeft={link.isSelected ? "4px solid blue" : "4px solid white"} onClick={link.onClick} maxH={10} key={link.name} icon={link.icon}>
+                    <NavItem color={link.isSelected ? "blue" : "#232323"} marginBottom={2} borderRadius={10} borderLeft={link.isSelected ? "4px solid blue" : "4px solid white"} onClick={link.onClick} maxH={10} key={link.name} icon={link.icon}>
                     {link.name}
                     </NavItem>
                 ))}
-                </VStack>
-            </Box>
-            <div onClick={TestFilter}>Filter</div>
-            <VStack padding={5} w="100%">
-            <Box padding={5} maxH={100} marginBottom={selectedTab =='All Identities' ? 10 : 0}>
+            </div>
+            <div style={{display:'flex',flexDirection:'column',width:"calc(100% - 220px)",overflow:'auto',scrollbarWidth:'thin'}}>
+            <Box padding={5} maxH={150} marginBottom={selectedTab =='All Identities' ? 35 : 15}>
                 <Text fontSize={18} fontWeight={600} marginBottom={5}>{selectedTab}</Text>
-                <Input borderRadius={20} borderColor="blue" backgroundColor={'#ffffff'}></Input>
+                <div style={{display:'flex',flexDirection:'row',height:'50px'}}>
+                    <div style={{display:'flex',flexDirection:'column',height:'80px',width:'300px'}}>
+                        <MultiSelect 
+                            labelledBy={null}
+                            hasSelectAll={true} 
+                            value={categoryFilterValue} 
+                            options={categoryFilterOptions} 
+                            onChange={ToggleCategoryFilter}
+                            overrideStrings={overrideStrings}/>
+                    </div>
+                    <div style={{marginLeft:10,display:'flex',flexDirection:'column',height:'80px',width:'200px'}}>
+                        <MultiSelect 
+                            labelledBy={null}
+                            hasSelectAll={true} 
+                            value={brandFilterValue} 
+                            options={brandFilterOptions} 
+                            onChange={ToggleBrandFilter}
+                            overrideStrings={brandOverrideStrings}/>
+                    </div>
+                </div>
+
+                {/* <Input borderRadius={20} width={350} borderColor="blue" backgroundColor={'#ffffff'}></Input> */}
             </Box>
             {selectedTab =='All Identities' ? 
+            //@ts-ignore
             <LiveboardEmbed 
                 ref={embedRef} 
+                customizations= {
+                    {
+                    style: {
+                      customCSS: {
+                        variables: {
+                          "--ts-var-root-background": "#f6f8fa",
+                        }
+                      }
+                    }
+                }
+                }
                 liveboardId={"5fc750d7-dd94-4638-995c-31f0434ce2a0"} 
                 frameParams={{width:'100%',height:'100%'}}
             />
             :
-            <SimpleGrid padding={5} paddingTop={10} columns={2} spacing={10}>
-                <Tab data={data} setSelectedTab={setSelectedTab}></Tab>
-                <Tab data={data} setSelectedTab={setSelectedTab}></Tab>
-                <Tab data={data} setSelectedTab={setSelectedTab}></Tab>
-
-            </SimpleGrid>
+            <div style={{display:'flex',flexDirection:'column',padding:'15px',paddingBottom:'35px'}}>
+                <SalesTab tsURL={tsURL} setSelectedTab={setSelectedTab}></SalesTab>
+                <CustomerTab tsURL={tsURL} setSelectedTab={setSelectedTab}></CustomerTab>
+                <StoreTab tsURL={tsURL} setSelectedTab={setSelectedTab}></StoreTab>
+                <CategoryTab tsURL={tsURL} setSelectedTab={setSelectedTab}></CategoryTab>
+            </div>
             }    
-            </VStack>
+            </div>
 
         </div>
     )
 }
 export default Tabs;
 
-function Tab(props){
-    const {
-        data,
-        setSelectedTab
-    } = props
-    console.log("this is dta",data)
-    return (
-        <Box padding={5} maxH={350} background='#ffffff' borderRadius={5} boxShadow="0 0 10px #dddddd">
-            <VStack>
-            <HStack maxH={30}>
-                <Flex>
-                    <Text fontWeight={600} fontSize={18}>Identities Managed</Text>
-                </Flex>
-                <Flex justifyContent={"flex-end"}>
-                    <Text fontWeight={600} color="blue" fontSize={14} _hover={{cursor:'pointer',color:'blue.200'}}  paddingRight={5}>RUN CERTIFICATION</Text>
-                    <Text fontWeight={600} color="blue" fontSize={14} _hover={{cursor:'pointer',color:'blue.200'}} onClick={()=>setSelectedTab('All Identities')}>VIEW ALL</Text>
-                </Flex>
-            </HStack>
-            <HStack maxH={60} alignItems="center">
-                <Text paddingLeft={5} fontWeight={600} fontSize={45}>{data ? data[0][1].toLocaleString() : null}</Text>
-                <Image w="50" h="50" src='/icons/user.png'></Image>
-            </HStack>
-            <HStack maxH={40} paddingTop={5} alignItems="center">
-                <Flex alignItems={"center"}>
-                <Box maxW={2} bgColor="green" borderRadius={5}></Box>
-                <Text paddingLeft={4} fontWeight={600} fontSize={18}>{data ? data[1][1].toLocaleString() : null}</Text>
-                <Text paddingLeft={2} fontSize={14}>Added Recently</Text>
-                </Flex>
-                <Flex justifyContent="flex-end">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="-8 -5 24 24" width="24" fill="currentColor"><path d="M5.314 7.071l-4.95-4.95A1 1 0 0 1 1.778.707l5.657 5.657a1 1 0 0 1 0 1.414l-5.657 5.657a1 1 0 0 1-1.414-1.414l4.95-4.95z"></path></svg>
-                </Flex>
-            </HStack>
-            <HStack paddingTop={5}  maxH={40} alignItems="center">
-                <Flex alignItems={"center"}>
-                <Box maxW={2} bgColor="#dedede" borderRadius={5}></Box>
-                <Text paddingLeft={4} fontWeight={600} fontSize={18}>{data ? data[2][1].toLocaleString() : null}</Text>
-                <Text paddingLeft={2} fontSize={14}>With Pending Approvals</Text>
-                </Flex>
-                <Flex justifyContent="flex-end" alignItems={"center"}>
-                    <Flex background="#ff2a1266" color="#ff2a12" maxW={8} maxH={8} justifyContent="center" alignItems={"center"}>
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="-2 -3 24 24" width="24" fill="currentColor"><path d="M12.8 1.613l6.701 11.161c.963 1.603.49 3.712-1.057 4.71a3.213 3.213 0 0 1-1.743.516H3.298C1.477 18 0 16.47 0 14.581c0-.639.173-1.264.498-1.807L7.2 1.613C8.162.01 10.196-.481 11.743.517c.428.276.79.651 1.057 1.096zm-2.22.839a1.077 1.077 0 0 0-1.514.365L2.365 13.98a1.17 1.17 0 0 0-.166.602c0 .63.492 1.14 1.1 1.14H16.7c.206 0 .407-.06.581-.172a1.164 1.164 0 0 0 .353-1.57L10.933 2.817a1.12 1.12 0 0 0-.352-.365zM10 14a1 1 0 1 1 0-2 1 1 0 0 1 0 2zm0-9a1 1 0 0 1 1 1v4a1 1 0 0 1-2 0V6a1 1 0 0 1 1-1z"></path></svg>
-                    </Flex>
-                    <Text paddingLeft={2} paddingRight={2} fontSize={14}>Overdue 7 Days</Text>
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="-8 -5 24 24" width="24" fill="currentColor"><path d="M5.314 7.071l-4.95-4.95A1 1 0 0 1 1.778.707l5.657 5.657a1 1 0 0 1 0 1.414l-5.657 5.657a1 1 0 0 1-1.414-1.414l4.95-4.95z"></path></svg>
-                </Flex>
-            </HStack>
-            <HStack paddingTop={5} maxH={40} alignItems="center">
-                <Flex alignItems={"center"}>
-                <Box maxW={2} bgColor="#dedede" borderRadius={5}></Box>
-                <Text paddingLeft={4} fontWeight={600} fontSize={18}>{data ? data[3][1].toLocaleString() : null}</Text>
-                <Text paddingLeft={2} fontSize={14}>Need Certification</Text>
-                </Flex>
-                <Flex justifyContent="flex-end" alignItems={"center"}>
-                    <Flex background="#ff2a1266" color="#ff2a12" maxW={8} maxH={8} justifyContent="center" alignItems={"center"}>
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="-2 -3 24 24" width="24" fill="currentColor"><path d="M12.8 1.613l6.701 11.161c.963 1.603.49 3.712-1.057 4.71a3.213 3.213 0 0 1-1.743.516H3.298C1.477 18 0 16.47 0 14.581c0-.639.173-1.264.498-1.807L7.2 1.613C8.162.01 10.196-.481 11.743.517c.428.276.79.651 1.057 1.096zm-2.22.839a1.077 1.077 0 0 0-1.514.365L2.365 13.98a1.17 1.17 0 0 0-.166.602c0 .63.492 1.14 1.1 1.14H16.7c.206 0 .407-.06.581-.172a1.164 1.164 0 0 0 .353-1.57L10.933 2.817a1.12 1.12 0 0 0-.352-.365zM10 14a1 1 0 1 1 0-2 1 1 0 0 1 0 2zm0-9a1 1 0 0 1 1 1v4a1 1 0 0 1-2 0V6a1 1 0 0 1 1-1z"></path></svg>
-                    </Flex>
-                    <Text paddingLeft={2} paddingRight={2} fontSize={14}>Due in 2 Days</Text>
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="-8 -5 24 24" width="24" fill="currentColor"><path d="M5.314 7.071l-4.95-4.95A1 1 0 0 1 1.778.707l5.657 5.657a1 1 0 0 1 0 1.414l-5.657 5.657a1 1 0 0 1-1.414-1.414l4.95-4.95z"></path></svg>
-                </Flex>
-            </HStack>
-            </VStack>
-        </Box>
-    )
-}
 
 
 
@@ -171,8 +229,10 @@ const NavItem = ({ icon, children, ...rest }) => {
           role="group"
           cursor="pointer"
           _hover={{
-            borderLeft: '4px solid blue',
+            borderLeft: '4px solid 0000ef66',
+            background: '#0000ef11'
           }}
+          padding={5}
           border="4px solid white"
           fontSize={12}
           {...rest}>
