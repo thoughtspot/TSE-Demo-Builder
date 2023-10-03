@@ -23,8 +23,14 @@ import StoreTab from './StoreTab';
 import { MultiSelect } from 'react-multi-select-component';
 import './Tabs.css'
 
-enum LinkNames {
-    ALL = 'All Identities',
+
+enum SelectedTab {
+    NONE = 'None',
+    ALL = 'Sales Overview',
+    SALES = 'Sales',
+    CUSTOMER = 'Customer',
+    STORE = 'Store',
+    CATEGORY = 'Category'
 }
 const liveboardId = "5fc750d7-dd94-4638-995c-31f0434ce2a0"
 
@@ -34,7 +40,7 @@ function Tabs(props){
         worksheet
     } = props
     const embedRef = useEmbedRef();
-    const [selectedTab, setSelectedTab] = useState('Sales Overview')
+    const [selectedTab, setSelectedTab] = useState(SelectedTab.ALL)
     const [categoryFilterValue, setCategoryFilterValue] = useState([])
     const [categoryTSFilter, setCategoryTSFilter] = useState({})
     const [categoryFilterOptions, setCategoryFilterOptions] = useState([])
@@ -126,11 +132,11 @@ function Tabs(props){
         setBrandTSFilter(filtersObj)
     }
     const LinkItems = [
-        { name: 'Sales Overview', icon: FiHome, onClick:()=>setSelectedTab('Sales Overview'),isSelected:selectedTab=='Sales Overview'},
-        { name: 'All Identities', icon: FiTrendingUp, onClick:()=>setSelectedTab('All Identities'),isSelected:selectedTab=='All Identities' },
-        { name: 'Explore', icon: FiCompass, onClick:()=>setSelectedTab('Explore'),isSelected:selectedTab=='Explore' },
-        { name: 'Favourites', icon: FiStar, onClick:()=>setSelectedTab('Favourites'),isSelected:selectedTab=='Favourites' },
-        { name: 'Settings', icon: FiSettings, onClick:()=>setSelectedTab('Settings'),isSelected:selectedTab=='Settings' },
+        { name: 'Sales Overview', icon: FiHome, onClick:()=>setSelectedTab(SelectedTab.ALL),isSelected:selectedTab==SelectedTab.ALL},
+        // { name: 'All Identities', icon: FiTrendingUp, onClick:()=>setSelectedTab(SelectedTab.NONE),isSelected:selectedTab=='All Identities' },
+        // { name: 'Explore', icon: FiCompass, onClick:()=>setSelectedTab('Explore'),isSelected:selectedTab=='Explore' },
+        // { name: 'Favourites', icon: FiStar, onClick:()=>setSelectedTab('Favourites'),isSelected:selectedTab=='Favourites' },
+        // { name: 'Settings', icon: FiSettings, onClick:()=>setSelectedTab('Settings'),isSelected:selectedTab=='Settings' },
       ];
       var overrideStrings = {
         "allItemsAreSelected": "All Categories",
@@ -159,7 +165,7 @@ function Tabs(props){
                 ))}
             </div>
             <div style={{display:'flex',flexDirection:'column',width:"calc(100% - 220px)",overflow:'auto',scrollbarWidth:'thin'}}>
-            <Box padding={5} maxH={150} marginBottom={selectedTab =='All Identities' ? 35 : 15}>
+            <Box padding={5} maxH={150} marginBottom={selectedTab ==SelectedTab.ALL ? 35 : 15}>
                 <Text fontSize={18} fontWeight={600} marginBottom={5}>{selectedTab}</Text>
                 <div style={{display:'flex',flexDirection:'row',height:'50px'}}>
                     <div style={{display:'flex',flexDirection:'column',height:'80px',width:'300px'}}>
@@ -184,32 +190,35 @@ function Tabs(props){
 
                 {/* <Input borderRadius={20} width={350} borderColor="blue" backgroundColor={'#ffffff'}></Input> */}
             </Box>
-            {selectedTab =='All Identities' ? 
-            //@ts-ignore
-            <LiveboardEmbed 
-                ref={embedRef} 
-                customizations= {
-                    {
-                    style: {
-                      customCSS: {
-                        variables: {
-                          "--ts-var-root-background": "#f6f8fa",
-                        }
-                      }
-                    }
-                }
-                }
-                liveboardId={"5fc750d7-dd94-4638-995c-31f0434ce2a0"} 
-                frameParams={{width:'100%',height:'100%'}}
-            />
-            :
+            
+            {selectedTab == SelectedTab.ALL ?
             <div style={{display:'flex',flexDirection:'column',padding:'15px',paddingBottom:'35px'}}>
                 <SalesTab tsURL={tsURL} setSelectedTab={setSelectedTab} ></SalesTab>
                 <CustomerTab tsURL={tsURL} setSelectedTab={setSelectedTab }></CustomerTab>
                 <StoreTab tsURL={tsURL} setSelectedTab={setSelectedTab} ></StoreTab>
                 <CategoryTab tsURL={tsURL} setSelectedTab={setSelectedTab} ></CategoryTab>
             </div>
-            }    
+            :<></>}
+            {//selectedTab == SelectedTab.SALES}
+
+            <LiveboardEmbed 
+            ref={embedRef} 
+            customizations= {
+                {
+                style: {
+                  customCSS: {
+                    variables: {
+                      "--ts-var-root-background": "#f6f8fa",
+                    }
+                  }
+                }
+            }
+            }
+            liveboardId={"5fc750d7-dd94-4638-995c-31f0434ce2a0"} 
+            frameParams={{width:'100%',height:'100%'}}
+            />
+            }
+               
             </div>
 
         </div>
