@@ -22,7 +22,7 @@ import CategoryTab from './CategoryTab';
 import CustomerTab from './CustomerTab';
 import StoreTab from './StoreTab';
 import { MultiSelect } from 'react-multi-select-component';
-import './Tabs.css'
+// import './Tabs.css'
 
 
 export enum SelectedTab {
@@ -41,6 +41,10 @@ type RESTFilter = {
     op2: string,
     val2?: any[]
 }
+
+
+
+
 function Tabs(props){
     const{
         tsURL,
@@ -111,7 +115,7 @@ function Tabs(props){
         let liveboardId = "5fc750d7-dd94-4638-995c-31f0434ce2a0"  
         switch (selectedTab){
             case (SelectedTab.SALES):
-                liveboardId = "a34a8b8e-6dd9-492b-94cc-fbfd017f9987";
+                liveboardId = "a2fee3fb-c67a-4cdc-bdb9-b2dac0e6ec3b";
                 break;
             case (SelectedTab.CATEGORY):
                 liveboardId = "5fc750d7-dd94-4638-995c-31f0434ce2a0";
@@ -167,8 +171,11 @@ function Tabs(props){
         setCategoryFilterValue(e)
         setCategoryTSFilter(filtersObj)
         setTSSRestFilter(restFiltersObj);
-        embedRef.current.trigger(HostEvent.UpdateRuntimeFilters,[filtersObj,brandTSFilter])
-
+        if (JSON.stringify(brandTSFilter) != "{}"){
+            embedRef.current.trigger(HostEvent.UpdateRuntimeFilters,[filtersObj,brandTSFilter])
+        }else{
+            embedRef.current.trigger(HostEvent.UpdateRuntimeFilters,[filtersObj])
+        }
     }
     function ToggleBrandFilter(e){
         var filterVals = []
@@ -189,7 +196,11 @@ function Tabs(props){
         setBrandFilterValue(e)
         setBrandTSFilter(filtersObj)
         setTSSRestFilter(restFiltersObj);
-        embedRef.current.trigger(HostEvent.UpdateRuntimeFilters,[categoryTSFilter,filtersObj])
+        if (JSON.stringify(categoryTSFilter) != "{}"){
+            embedRef.current.trigger(HostEvent.UpdateRuntimeFilters,[categoryTSFilter,filtersObj])
+        }else{
+            embedRef.current.trigger(HostEvent.UpdateRuntimeFilters,[filtersObj])
+        }
 
     }
     const LinkItems = [
@@ -297,8 +308,8 @@ function Tabs(props){
                 frameParams={{width:'100%',height:'100%'}}
                 />
             </div>
-            
-               
+            <div style={{height:'100px'}}></div>
+               aß
             </div>
 
         </div>
