@@ -1,7 +1,7 @@
 .rmsc .dropdown-heading {
     height: 70px !important;
 }
-.dropdown-container{
+.dropdown-container, .dropdown-content{
     width: 300px;
     border: 0px solid #ffffff !important;
     border-radius:15px !important;

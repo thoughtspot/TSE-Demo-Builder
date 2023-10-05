@@ -12,7 +12,7 @@ function AdvancedDemoPage(props){
     const{
         worksheet
     } = props
-    const embedRef = useEmbedRef();
+    const embedRef = useEmbedRef<typeof SearchEmbed>();
     const [dataObj,setDataObj] = useState('')
     const [selectedView, setSelectedView] = useState('search')
     const [searchString, setSearchString] = useState('')

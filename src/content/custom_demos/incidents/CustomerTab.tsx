@@ -8,7 +8,8 @@ export default function CustomersTab(props){
     const {
         isSelected,
         setSelectedTab,
-        tsURL
+        tsURL,
+        TSRestFilter
     } = props
     const [data,setData] = useState('')
     useEffect(() => {
@@ -24,14 +25,15 @@ export default function CustomersTab(props){
             body: JSON.stringify({
                 "metadata_identifier": "ca0c7c41-a552-4775-ab96-e70a447c19ef",
                 "record_offset": 0,
-                "record_size": 10
+                "record_size": 10,
+                "runtime_filter":TSRestFilter
             })
         })
         .then(response => response.json()).then(
             data => {
                 setData(data.contents[0].data_rows)
         })
-    },[])
+    },[TSRestFilter])
     return (
         <div style={{display:"flex",flexDirection:"row",padding:15,maxHeight:250,marginBottom:25,background:"#ffffff",borderRadius:"25px",boxShadow:"0 0 15 #efefef"}}>
           <div style={{display:"flex",flexDirection:"column",width:"calc(100% - 175px)",justifyContent:'space-between',height:'100%'}}>

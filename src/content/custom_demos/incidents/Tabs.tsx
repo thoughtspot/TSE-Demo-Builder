@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { init,  AuthType, Page, EmbedEvent, Action, HostEvent, RuntimeFilterOp} from '@thoughtspot/visual-embed-sdk';
-import { SimpleGrid, Box, Text, HStack, Flex, VStack, Image, Drawer, DrawerContent, useColorModeValue, Icon, Input } from '@chakra-ui/react';
+import { SimpleGrid, Box, Text, HStack, Flex, VStack, Image, Drawer, DrawerContent, useColorModeValue, Icon, Input, filter } from '@chakra-ui/react';
 import {
     FiHome,
     FiTrendingUp,
@@ -9,9 +9,10 @@ import {
     FiSettings,
     FiMenu,
   } from 'react-icons/fi';
-  import { useEmbedRef } from'@thoughtspot/visual-embed-sdk/react';
-
-import { LiveboardEmbed } from '@thoughtspot/visual-embed-sdk/react';
+  import {
+    LiveboardEmbed,
+    useEmbedRef
+  } from "@thoughtspot/visual-embed-sdk/lib/src/react";
 //import demographicImage from './demographics.png'
 
 //@ts-ignore
@@ -32,17 +33,30 @@ export enum SelectedTab {
     STORE = 'Store Insights',
     CATEGORY = 'Category Insights'
 }
-const liveboardId = "5fc750d7-dd94-4638-995c-31f0434ce2a0"
-
+type RESTFilter = {
+    col1: string,
+    op1: string,
+    val1?: any[],
+    col2: string,
+    op2: string,
+    val2?: any[]
+}
 function Tabs(props){
     const{
         tsURL,
         worksheet
     } = props
-    const embedRef = useEmbedRef();
+    const ref = useRef(null);
+    const embedRef = useEmbedRef<typeof LiveboardEmbed>();
     const [selectedTab, setSelectedTab] = useState(SelectedTab.ALL)
     const [categoryFilterValue, setCategoryFilterValue] = useState([])
     const [categoryTSFilter, setCategoryTSFilter] = useState({})
+    const [TSRestFilter, setTSSRestFilter] = useState<RESTFilter>({
+        col1: 'Department',
+        op1: 'IN',
+        col2: 'Brand',
+        op2: 'IN',
+    })
     const [categoryFilterOptions, setCategoryFilterOptions] = useState([])
     const [brandFilterValue, setBrandFilterValue] = useState([])
     const [brandTSFilter, setBrandTSFilter] = useState({})
@@ -85,10 +99,39 @@ function Tabs(props){
                 setCategoryFilterOptions(categoryOptions);
                 setBrandFilterOptions(brandOptions);
         })
-
     },[])
 
+    useEffect(()=>{
+        if (!embedRef.current || !ref.current) return
+        if (selectedTab == SelectedTab.ALL){
+            ref.current.style.display = 'none'
+        }else{
+            ref.current.style.display = 'flex'
+        }
+        let liveboardId = "5fc750d7-dd94-4638-995c-31f0434ce2a0"  
+        switch (selectedTab){
+            case (SelectedTab.SALES):
+                liveboardId = "a34a8b8e-6dd9-492b-94cc-fbfd017f9987";
+                break;
+            case (SelectedTab.CATEGORY):
+                liveboardId = "5fc750d7-dd94-4638-995c-31f0434ce2a0";
+                break;
+            case (SelectedTab.CUSTOMER):
+                liveboardId = "1b191748-0c6b-496c-9ef3-ebf4dee1514d";
+                break;
+            case (SelectedTab.STORE):
+                liveboardId = "46d8822c-2674-438c-b540-d08eddfe263b";
+                break;
+        }
+        //@ts-ignore
+        embedRef.current.navigateToLiveboard(liveboardId);
+        console.log("here",selectedTab);
+    },[selectedTab])
 
+    useEffect(()=>{
+        if (!embedRef.current)
+        embedRef.current.prerenderGeneric();
+    },[embedRef])
 
     function onClose(e){
         console.log("onclose",e)
@@ -115,8 +158,17 @@ function Tabs(props){
           operator: RuntimeFilterOp.IN,
           values: filterVals
         }
+        var restFiltersObj = TSRestFilter;
+        if (filterVals.length == 0){
+            delete restFiltersObj['val1']
+        }else{
+            restFiltersObj.val1= filterVals
+        }
         setCategoryFilterValue(e)
         setCategoryTSFilter(filtersObj)
+        setTSSRestFilter(restFiltersObj);
+        embedRef.current.trigger(HostEvent.UpdateRuntimeFilters,[filtersObj,brandTSFilter])
+
     }
     function ToggleBrandFilter(e){
         var filterVals = []
@@ -128,8 +180,17 @@ function Tabs(props){
           operator: RuntimeFilterOp.IN,
           values: filterVals
         }
+        var restFiltersObj = TSRestFilter;
+        if (filterVals.length == 0){
+            delete restFiltersObj['val2']
+        }else{
+            restFiltersObj.val2 = filterVals
+        }
         setBrandFilterValue(e)
         setBrandTSFilter(filtersObj)
+        setTSSRestFilter(restFiltersObj);
+        embedRef.current.trigger(HostEvent.UpdateRuntimeFilters,[categoryTSFilter,filtersObj])
+
     }
     const LinkItems = [
         { name: SelectedTab.ALL, icon: FiHome, onClick:()=>setSelectedTab(SelectedTab.ALL),isSelected:selectedTab==SelectedTab.ALL ,subMenu:false},
@@ -154,21 +215,6 @@ function Tabs(props){
         "selectSomeItems": "Select A Brand",
         "create": "Create",
     } 
-    let liveboardId = "5fc750d7-dd94-4638-995c-31f0434ce2a0"  
-    switch (selectedTab){
-        case (SelectedTab.SALES):
-            liveboardId = "a34a8b8e-6dd9-492b-94cc-fbfd017f9987";
-            break;
-        case (SelectedTab.CATEGORY):
-            liveboardId = "5fc750d7-dd94-4638-995c-31f0434ce2a0";
-            break;
-        case (SelectedTab.CUSTOMER):
-            liveboardId = "5fc750d7-dd94-4638-995c-31f0434ce2a0";
-            break;
-        case (SelectedTab.STORE):
-            liveboardId = "c01821a6-f730-4ac3-8742-ab3e84b635fd";
-            break;
-    }
     return(
         <div style={{display:'flex',flexDirection:'row',background:'#f6f8fa',width:'100%',height:'100%',padding:'10px'}}>
             <div style={{display:'flex',flexDirection:'column',maxWidth:"220px", background:'#ffffff',paddingTop:'25px'}}>
@@ -209,19 +255,19 @@ function Tabs(props){
             
             <div style={{display:'flex',flexDirection:'column',padding:'15px',paddingLeft:'15px',paddingRight:'15px',paddingBottom:'0px',marginBottom:'-15px'}}>
                 {(selectedTab == SelectedTab.SALES || selectedTab == SelectedTab.ALL) && 
-                    <SalesTab tsURL={tsURL} isSelected={selectedTab==SelectedTab.SALES} setSelectedTab={setSelectedTab} ></SalesTab>
+                    <SalesTab key={"1"+JSON.stringify(TSRestFilter)} tsURL={tsURL} isSelected={selectedTab==SelectedTab.SALES} setSelectedTab={setSelectedTab} TSRestFilter={TSRestFilter}></SalesTab>
                 }
                 {(selectedTab == SelectedTab.CUSTOMER || selectedTab == SelectedTab.ALL)  && 
-                    <CustomerTab tsURL={tsURL} isSelected={selectedTab==SelectedTab.CUSTOMER} setSelectedTab={setSelectedTab }></CustomerTab>
+                    <CustomerTab key={"3"+JSON.stringify(TSRestFilter)} tsURL={tsURL} isSelected={selectedTab==SelectedTab.CUSTOMER} setSelectedTab={setSelectedTab } TSRestFilter={TSRestFilter}></CustomerTab>
                 }
                 {(selectedTab == SelectedTab.STORE || selectedTab == SelectedTab.ALL)  && 
-                    <StoreTab tsURL={tsURL} isSelected={selectedTab==SelectedTab.STORE} setSelectedTab={setSelectedTab} ></StoreTab>
+                    <StoreTab key={"2"+JSON.stringify(TSRestFilter)} tsURL={tsURL} isSelected={selectedTab==SelectedTab.STORE} setSelectedTab={setSelectedTab} TSRestFilter={TSRestFilter}></StoreTab>
                 }
                 {(selectedTab == SelectedTab.CATEGORY || selectedTab == SelectedTab.ALL)  && 
-                    <CategoryTab tsURL={tsURL} isSelected={selectedTab==SelectedTab.CATEGORY} setSelectedTab={setSelectedTab} ></CategoryTab>
+                    <CategoryTab key={"4"+JSON.stringify(TSRestFilter)} tsURL={tsURL} isSelected={selectedTab==SelectedTab.CATEGORY} setSelectedTab={setSelectedTab} TSRestFilter={TSRestFilter}></CategoryTab>
                 }
             </div>
-            {selectedTab != SelectedTab.ALL &&
+            <div style={{display:'none',height:'100%',width:'100%'}} ref={ref}>
             <LiveboardEmbed 
                 ref={embedRef} 
                 customizations= {
@@ -236,6 +282,9 @@ function Tabs(props){
                         rules_UNSTABLE: {
                             '[data-testid="pinboard-header"]': {
                                 'display': 'none !important'
+                            },
+                            '.ReactModalPortal .ReactModal__Overlay':{
+                                'background-color': '#ffffff00 !important'
                             }
                         }
                         
@@ -243,12 +292,12 @@ function Tabs(props){
                     }
                 }
                 }
+                liveboardId={"5fc750d7-dd94-4638-995c-31f0434ce2a0"}
                 fullHeight={true}
-                liveboardId={liveboardId} 
                 frameParams={{width:'100%',height:'100%'}}
                 />
-
-            }
+            </div>
+            
                
             </div>
 

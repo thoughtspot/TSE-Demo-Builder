@@ -12,7 +12,7 @@ export default function ProductDemo(props){
     } = props
     const [searchString, setSearchString] = useState(baseSearch)
     const [data, setData] = useState([])
-    const embedRef = useEmbedRef();
+    const embedRef = useEmbedRef<typeof SearchEmbed>();
 
     useEffect(()=>{
         let queryString = '[Category] [Department] [Product] sort by [Category] sort by [Department]'

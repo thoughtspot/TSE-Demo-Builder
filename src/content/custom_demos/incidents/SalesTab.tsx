@@ -9,7 +9,8 @@ export default function SalesTab(props){
     const {
         isSelected,
         setSelectedTab,
-        tsURL
+        tsURL,
+        TSRestFilter
     } = props
     const [data,setData] = useState('')
     useEffect(() => {
@@ -25,14 +26,15 @@ export default function SalesTab(props){
             body: JSON.stringify({
                 "metadata_identifier": "34808ec3-1272-4723-8339-fab426c9772a",
                 "record_offset": 0,
-                "record_size": 10
+                "record_size": 10,
+                "runtime_filter":TSRestFilter
             })
         })
         .then(response => response.json()).then(
             data => {
                 setData(data.contents[0].data_rows)
         })
-    },[])
+    },[TSRestFilter])
     console.log("sales data",data)
 
     let variance: number = 0;
