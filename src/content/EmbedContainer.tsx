@@ -4,7 +4,6 @@ import { SearchEmbed, LiveboardEmbed, AppEmbed, SearchBarEmbed, useEmbedRef } fr
 import AdvancedDemoPage from "./custom_demos/advanced/AdvancedDemoPage"
 import Tabs from "./custom_demos/incidents/Tabs";
 import Surveys from "./custom_demos/surveys/Surveys";
-import SurveyRicky from "./custom_demos/surveys_ricky/SurveyRicky"
 import ParameterDemo from "./custom_demos/parameter/ParameterDemo"
 import ABTest from "./custom_demos/ab_test/ABTest";
 import ProductDemo from "./custom_demos/product/Product";
@@ -64,9 +63,7 @@ export default function EmbedContainer(props){
       window.dispatchEvent(event)
    
     })
-    embedRef.current.trigger(HostEvent.UpdateRuntimeFilters, {
-      
-    })
+
     embedRef.current.on(EmbedEvent.CustomAction, (payload) => {
       console.log(payload)
       var data = payload.data.embedAnswerData.data[0].columnDataLite

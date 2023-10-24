@@ -22,7 +22,7 @@ import CategoryTab from './CategoryTab';
 import CustomerTab from './CustomerTab';
 import StoreTab from './StoreTab';
 import { MultiSelect } from 'react-multi-select-component';
-// import './Tabs.css'
+import './Tabs.css'
 
 
 export enum SelectedTab {
