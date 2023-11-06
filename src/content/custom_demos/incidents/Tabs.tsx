@@ -8,6 +8,8 @@ import {
     FiStar,
     FiSettings,
     FiMenu,
+    FiUsers,
+    FiUser
   } from 'react-icons/fi';
   import {
     LiveboardEmbed,
@@ -24,7 +26,12 @@ import StoreTab from './StoreTab';
 import { MultiSelect } from 'react-multi-select-component';
 import './Tabs.css'
 
-
+enum SelectedRole {
+    ADMIN = 'Admin',
+    CAT = 'Category Manager',
+    STORE = 'Brand Manager',
+    SALES = 'Sales Leader'
+}
 export enum SelectedTab {
     NONE = 'None',
     ALL = 'Performance Hub',
@@ -65,6 +72,10 @@ function Tabs(props){
     const [brandFilterValue, setBrandFilterValue] = useState([])
     const [brandTSFilter, setBrandTSFilter] = useState({})
     const [brandFilterOptions, setBrandFilterOptions] = useState([])
+
+    const [selectedRole, setSelectedRole] = useState(SelectedRole.ADMIN);
+    const [showRoleSelector, setShowRoleSelector] = useState(false);
+ 
     useEffect(()=>{
         var url = tsURL+"api/rest/2.0/metadata/answer/data"
         fetch(url,
@@ -230,6 +241,17 @@ function Tabs(props){
         <div style={{display:'flex',flexDirection:'row',background:'#f6f8fa',width:'100%',height:'100%',padding:'10px'}}>
             <div style={{display:'flex',flexDirection:'column',maxWidth:"220px", background:'#ffffff',paddingTop:'25px'}}>
                 
+                {/* <div onClick={()=>setShowRoleSelector(!showRoleSelector)} style={{width:'100%',height:'50px',display:'flex',justifyContent:'center',alignItems:'center'}}>
+                <div style={{border:'1px solid #343434', borderRadius:'50px',width:'50%',display:'flex',alignItems:'center',height:'40px',justifyContent:'center'}}>
+                    <Icon
+                        fontSize="32"
+                        as={FiUsers}
+                    />
+                </div>
+                </div> */}
+                {showRoleSelector && 
+                    <RoleSelector selectedRole={selectedRole} setSelectedRole={setSelectedRole}></RoleSelector>
+                }
                 {LinkItems.map((link) => (
                     <NavItem color={link.isSelected ? "blue" : "#232323"} marginBottom={2} subMenu={link.subMenu} borderRadius={10}  onClick={link.onClick} maxH={10} key={link.name} icon={link.icon}>
                     {link.name}
@@ -347,3 +369,31 @@ const NavItem = ({ icon,subMenu, children, ...rest }) => {
         </Flex>
     );
   };
+
+  function RoleSelector(props){
+      const {
+        selectedRole,
+        setSelectedRole
+      } = props
+      return (
+          
+          <div style={{position:'absolute',width:'175px',display:'flex',flexDirection:'column',left:180,background:'#ffffff', borderRadius:'15px',zIndex:99,padding:'15px',gap: '10px'}}>
+            <Role isSelected={selectedRole==SelectedRole.ADMIN} role={SelectedRole.ADMIN} setSelectedrole={setSelectedRole}></Role>
+            <Role isSelected={selectedRole==SelectedRole.CAT} role={SelectedRole.CAT} setSelectedrole={setSelectedRole}></Role>
+            <Role isSelected={selectedRole==SelectedRole.SALES} role={SelectedRole.SALES} setSelectedrole={setSelectedRole}></Role>
+            <Role isSelected={selectedRole==SelectedRole.STORE} role={SelectedRole.STORE} setSelectedrole={setSelectedRole}></Role>
+          </div>
+      )
+  }
+  function Role(props){
+      const {
+          isSelected,
+          role,
+          setSelectedRole
+      } = props
+      return (
+        <div  style={{background:isSelected? '0000ef11' : 'none'}} onClick={()=>setSelectedRole(role)}>
+            {role}
+        </div>
+      )
+  }

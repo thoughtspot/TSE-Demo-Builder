@@ -34,6 +34,7 @@ export enum PageName {
     Filter = 'Filter',
     Field = 'Field',
     SearchString ='Search String',
+    Sage = 'Sage',
     Liveboard='Liveboard',
     URL ='URL',
     Image = 'Image',
@@ -61,6 +62,12 @@ export const defaultPages: DemoPage[] = [
         name: 'Menu',
         configName: Placeholder.Link,
         configDesc: 'No Config'
+    },
+    {
+        id: PageName.Sage,
+        name: 'Sage',
+        configName: Placeholder.Link,
+        configDesc: 'WorksheetGUID',
     },
     {
         id: PageName.Search,
@@ -136,7 +143,7 @@ export const defaultPages: DemoPage[] = [
     },
     {
         id: PageName.Tabbed,
-        name: 'Custom Demo: Tabbed Widgets',
+        name: 'Performance Hub',
         configName: Placeholder.Link,
         configDesc: 'No Config - Must use SE Cloud'
     },

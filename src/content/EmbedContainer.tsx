@@ -1,6 +1,6 @@
 import React from "react"
 import { init,  AuthType, Page, EmbedEvent, Action, HostEvent, RuntimeFilterOp} from '@thoughtspot/visual-embed-sdk';
-import { SearchEmbed, LiveboardEmbed, AppEmbed, SearchBarEmbed, useEmbedRef } from '@thoughtspot/visual-embed-sdk/react';
+import { SearchEmbed, LiveboardEmbed, AppEmbed, SearchBarEmbed, useEmbedRef, SageEmbed } from '@thoughtspot/visual-embed-sdk/react';
 import AdvancedDemoPage from "./custom_demos/advanced/AdvancedDemoPage"
 import Tabs from "./custom_demos/incidents/Tabs";
 import Surveys from "./custom_demos/surveys/Surveys";
@@ -187,6 +187,15 @@ export default function EmbedContainer(props){
         answerId={renderContent.split("|")[0]} 
         frameParams={{width:'100%',height:'100vh'}}
     />
+  }
+  if (renderType==PageName.Sage){
+    renderPage = <SageEmbed ref={embedRef} 
+    visibleActions={visibleActions.length>0 ? visibleActions : null}  
+    disabledActions={disabledActions.length>0 ? disabledActions : null}  
+    onLoad={onEmbedRendered}  
+    runtimeFilters={runFilters}  
+    frameParams={{width:'100%',height:'100vh'}}
+/>
   }
   if (renderType==PageName.SearchString){
     var searchString = buildSearchString(renderContent.split("|")[0], searchFields, runFilters)
