@@ -48,7 +48,8 @@ export enum PageName {
     Survey = 'Survey Demo',
     ABTest = 'ABTest',
     ProductList = 'ProductList',
-    OnImageViz = 'On Image Viz'
+    OnImageViz = 'On Image Viz',
+    JoyPopup = 'JoyPopup'
 }
 export const defaultPages: DemoPage[] = [
     {
@@ -171,6 +172,12 @@ export const defaultPages: DemoPage[] = [
         configName: Placeholder.Link,
         configDesc: 'Viz Idx', 
     },
+    {
+        id: PageName.JoyPopup,
+        name: 'Custom  Demo: Joydeep Popup',
+        configName: Placeholder.Link,
+        configDesc: 'No Config - Must use SE Cloud'
+    }
 ]
 
 

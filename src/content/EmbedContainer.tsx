@@ -9,6 +9,7 @@ import ABTest from "./custom_demos/ab_test/ABTest";
 import ProductDemo from "./custom_demos/product/Product";
 import { PageName } from "../util/Types";
 import { StyleOptionList, StyleOptions } from "../util/PreBuiltStyles";
+import JoyPopup from "./custom_demos/joy_popup/JoyPopup";
 export default function EmbedContainer(props){
 
   const {
@@ -267,6 +268,9 @@ export default function EmbedContainer(props){
   }
   if (renderType==PageName.ProductList){
     renderPage = <ProductDemo tsURL={url}></ProductDemo>
+  }
+  if (renderType==PageName.JoyPopup){
+    renderPage = <JoyPopup tsURL={url}></JoyPopup>
   }
   return (
       <div id={renderType!=PageName.Survey ? "TSContainer" : null} style={{height:'100%',width:'100%'}} key={renderKey}>
