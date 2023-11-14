@@ -325,7 +325,7 @@ function Tabs(props){
                     }
                 }
                 }
-                liveboardId={"5fc750d7-dd94-4638-995c-31f0434ce2a0"}
+                liveboardId={""}
                 fullHeight={true}
                 frameParams={{width:'100%',height:'100%'}}
                 />
