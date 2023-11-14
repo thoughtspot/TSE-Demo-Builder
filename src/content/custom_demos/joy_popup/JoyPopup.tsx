@@ -1,4 +1,4 @@
-import { EmbedEvent, HostEvent, LiveboardEmbed, SearchEmbed, useEmbedRef } from "@thoughtspot/visual-embed-sdk/react"
+import { EmbedEvent, HostEvent, LiveboardEmbed, SearchEmbed, useEmbedRef , Action} from "@thoughtspot/visual-embed-sdk/react"
 import React, { useState, useEffect, useRef } from 'react';
 import dateFormat, { masks } from "dateformat";
 
@@ -42,6 +42,7 @@ function SearchPopup(){
         let eventData = e.detail.data.data
         ref.current.style.display = 'flex';
         let baseSearchString = "[EmployeeID]"
+        embedRef.current.trigger(HostEvent.ResetSearch)
         for (var attribute of eventData.contextMenuPoints.clickedPoint.selectedAttributes){
             if (attribute.column.dataType=='DATE'){
                 let date = new Date(attribute.value * 1000)
@@ -63,14 +64,30 @@ function SearchPopup(){
     }
     return (
         <div ref={ref}
-        style={{position:'absolute',top:'10%',left:'10%',width:'75%',height:'75%', display:'none'}}>
+        style={{position:'absolute',top:'10%',left:'10%',width:'75%',height:'75%', display:'none',boxShadow:'0 0 155px #cccccc'}}>
             <div style={{display:'flex',flexDirection:'column',width:'100%',height:'100%'}}>
-                <div onClick={ClosePopup}>X</div>
+                <div style={{marginLeft:'5px'}} onClick={ClosePopup}>X</div>
             <SearchEmbed 
                 ref={embedRef}
                 forceTable={true}
                 dataSource="0e70c10a-079c-4c1e-9d94-3c9d4c2a4292"
                 hideDataSources={true}
+                visibleActions={[Action.Download]}
+                hideSearchBar={true}
+                customizations={{
+                    style: {
+                        customCSS: {
+                            rules_UNSTABLE:{
+                                '[data-testid="sage-search-bar"]':{
+                                    'display':'none'
+                                },
+                                'sage-search-bar-module__undoRedoResetWrapper':{
+                                    'display':'none'
+                                }
+                            }
+                        }
+                    }
+                }}
             />
             </div>
         </div>
