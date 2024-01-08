@@ -47,6 +47,7 @@ export default function EmbedContainer(props){
     embedRef.current.on(EmbedEvent.VizPointClick, (data) => {
       console.log('single click',data);
     })
+
     embedRef.current.on(EmbedEvent.Drilldown, (data) => {
       console.log('drill click',data);
     })

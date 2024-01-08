@@ -330,7 +330,7 @@ const DarkModeColors = {
               "--ts-var-button--secondary-color": "#454545",
               "--ts-var-root-background": "#f6f7f7",
               "--ts-var-viz-border-radius": "0px",
-              "--ts-var-root-font-family":'Trebuchet MS !important',
+              "--ts-var-root-font-family":"font-family: 'Crimson Text', serif;",
               "--ts-var-button--secondary-background":"#F8F9FA",
               "--ts-var-viz-description-color":"#BCBCBC",
               "--ts-var-chip-background":"#FFFFFF",

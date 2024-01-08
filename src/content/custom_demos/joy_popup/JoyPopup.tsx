@@ -1,4 +1,4 @@
-import { EmbedEvent, HostEvent, LiveboardEmbed, SearchEmbed, useEmbedRef , Action} from "@thoughtspot/visual-embed-sdk/react"
+import { EmbedEvent, HostEvent, LiveboardEmbed, SearchEmbed, useEmbedRef , Action, RuntimeFilterOp, RuntimeFilter} from "@thoughtspot/visual-embed-sdk/react"
 import React, { useState, useEffect, useRef } from 'react';
 import dateFormat, { masks } from "dateformat";
 
@@ -12,7 +12,7 @@ export default function JoyPopup(props){
     const embedRef = useEmbedRef<typeof LiveboardEmbed>();
 
     function onLoad(){
-        embedRef.current.on(EmbedEvent.CustomAction,(data)=>{
+        embedRef.current.on(EmbedEvent.VizPointClick,(data)=>{
             console.log("Data",data)
             const event = new CustomEvent('JoySearch', {detail: {data: data}});
             window.dispatchEvent(event)
@@ -24,7 +24,7 @@ export default function JoyPopup(props){
         <LiveboardEmbed 
             ref={embedRef} 
             onLoad={onLoad}
-            liveboardId={"04898a8a-9a91-4fa4-8713-89700248a269"}
+            liveboardId={"596c6953-50d2-4d13-bdd9-10025565059b"}
             fullHeight={true}
             frameParams={{width:'100%',height:'100%'}}
             />   
@@ -35,29 +35,31 @@ export default function JoyPopup(props){
 }
 function SearchPopup(){
 
-    const embedRef = useEmbedRef<typeof SearchEmbed>();
+    const embedRef = useEmbedRef<typeof LiveboardEmbed>();
+    const [campaignFilter, setCampaignFilter] = useState<RuntimeFilter>({
+        columnName:'Campaign Name',
+        operator:RuntimeFilterOp.IN,
+        values:[]
+    })
     const ref = useRef(null);
     window.addEventListener('JoySearch', function(e: any){
         console.log(e)
         let eventData = e.detail.data.data
         ref.current.style.display = 'flex';
-        let baseSearchString = "[EmployeeID]"
-        embedRef.current.trigger(HostEvent.ResetSearch)
-        for (var attribute of eventData.contextMenuPoints.clickedPoint.selectedAttributes){
-            if (attribute.column.dataType=='DATE'){
-                let date = new Date(attribute.value * 1000)
-                date.setDate(date.getDate()+1);
-                baseSearchString += ' ['+attribute.column.referencedColumns[0].displayName+'].'+"'"+dateFormat(date,"mmmm yyyy").toLowerCase()+"'";
-            }
-            else{
-                baseSearchString += ' ['+attribute.column.name+'].'+"'"+attribute.value+"'";
+        let campaignFilter:RuntimeFilter;
+        for (var attribute of eventData.clickedPoint.selectedAttributes){
+            if (attribute.column.name=='Campaign Name'){
+                campaignFilter = {
+                    columnName: 'Campaign Name',
+                    operator: RuntimeFilterOp.IN,
+                    values: [attribute.value]
+                }
             }
         }
-        console.log("esarch!!!",baseSearchString);
-        embedRef.current.trigger(HostEvent.Search,{
-            searchQuery: baseSearchString,
-            execute: true
-        })
+        setCampaignFilter(campaignFilter)
+        // console.log(campaignFilter,"campaignFilter")
+        // embedRef.current.trigger(HostEvent.UpdateRuntimeFilters,[campaignFilter])
+        // embedRef.current.render()
     })
     function ClosePopup(){
         ref.current.style.display = 'none';
@@ -67,27 +69,14 @@ function SearchPopup(){
         style={{position:'absolute',top:'10%',left:'10%',width:'75%',height:'75%', display:'none',boxShadow:'0 0 155px #cccccc'}}>
             <div style={{display:'flex',flexDirection:'column',width:'100%',height:'100%'}}>
                 <div style={{marginLeft:'5px'}} onClick={ClosePopup}>X</div>
-            <SearchEmbed 
+            <LiveboardEmbed 
+                runtimeFilters={[
+                    campaignFilter
+                ]}
+                liveboardId="163e263c-a5e0-42ac-a1f4-3cd9e06a5003"
                 ref={embedRef}
-                forceTable={true}
-                dataSource="0e70c10a-079c-4c1e-9d94-3c9d4c2a4292"
-                hideDataSources={true}
                 visibleActions={[Action.Download]}
-                hideSearchBar={true}
-                customizations={{
-                    style: {
-                        customCSS: {
-                            rules_UNSTABLE:{
-                                '[data-testid="sage-search-bar"]':{
-                                    'display':'none'
-                                },
-                                'sage-search-bar-module__undoRedoResetWrapper':{
-                                    'display':'none'
-                                }
-                            }
-                        }
-                    }
-                }}
+                
             />
             </div>
         </div>
