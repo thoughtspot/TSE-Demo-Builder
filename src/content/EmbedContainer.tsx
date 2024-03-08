@@ -212,6 +212,7 @@ export default function EmbedContainer(props){
     var dataSources = renderContent.split("|")[1].split(",");
     renderPage = <SearchEmbed 
           onLoad={onEmbedRendered}
+          dataPanelV2={true}
           ref={embedRef}  
           enableSearchAssist={true}
           customizations={{ 
