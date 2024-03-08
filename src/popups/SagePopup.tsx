@@ -61,7 +61,7 @@ function SagePopup(props){
                 </div>
             </div>
             <div className='p-4'>
-            <SageQuestionInput defaultValue={sageQuestion} triggerSageSearch={(data)=>toggleSageQuestion(data)}></SageQuestionInput>
+            <SageQuestionInput key={sageQuestion} defaultValue={sageQuestion} triggerSageSearch={(data)=>toggleSageQuestion(data)}></SageQuestionInput>
             </div>
             <div style={{flex:1}}>
             {popupVisible?
@@ -131,6 +131,9 @@ function SageQuestionInput(props){
         defaultValue,
         triggerSageSearch
     } = props
+    useEffect(()=>{
+        setSageSearch(defaultValue);
+    },[defaultValue])
     const [sageSearch, setSageSearch] = useState('')
     return (
         <div>
