@@ -299,6 +299,11 @@ function AskSageButton(props) {
       return filtered;
     }, {})
   let numSampleQuestions = Object.keys(filteredQuestions).length;
+  for (var key of Object.keys(filteredQuestions)){
+    if (filteredQuestions[key].length > 50){
+      numSampleQuestions+=1
+    }
+  }
   return(
     <>
     {showAskPrompt && (
