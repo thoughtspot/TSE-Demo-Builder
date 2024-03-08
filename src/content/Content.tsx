@@ -252,7 +252,7 @@ return (
       ></NavigationMenu>
       <NotePopup></NotePopup>
       <SpotIQPopup></SpotIQPopup>
-      <SagePopup></SagePopup>
+      <SagePopup worksheet={settings.sageWorksheet}></SagePopup>
     <EmbedContainer
         url={settings.URL}
         renderType={renderType}

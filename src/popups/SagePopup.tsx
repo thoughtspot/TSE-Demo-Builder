@@ -4,8 +4,7 @@ import Moveable from "react-moveable";
 
 function SagePopup(props){
     const {
-        primaryColor,
-        secondaryColor,
+        worksheet
     } = props
 
     const [popupVisible,setPopupVisible] = useState(false)
@@ -13,7 +12,6 @@ function SagePopup(props){
     const [title,setTitle] = useState('')
     const [value,setValue] = useState('')
     const [noteText,setNoteText] = useState('')
-    const [worksheetID, setWorksheetID] = useState('')
     const [sageQuestion ,setSageQuestion] = useState('')
     useEffect(() => {
         window.addEventListener('sage', function(e: any){
@@ -43,10 +41,7 @@ function SagePopup(props){
     }
     //      <div  className="shadow-lg bg-white flex-col p-4 space-y-2"  style={{width:'450px',height:'150px',display:'flex',position:'absolute',bottom:'110px',right:'25px', borderWidth:2, borderRadius:'15px'}} >
 
-    var bannerColor = primaryColor;
-    if (bannerColor =='#ffffff'){
-        bannerColor = secondaryColor;
-    }
+
     return (
         //@ts-ignore
         <div style={style} id="spotIQDiv">
@@ -60,7 +55,7 @@ function SagePopup(props){
             </div>
             <div style={{flex:1}}>
             {popupVisible?
-                <SageEmbed dataSource={worksheetID} 
+                <SageEmbed dataSource={worksheet} 
                 searchOptions={{
                     searchQuery: sageQuestion,
                     executeSearch: sageQuestion!='' ? true : false
