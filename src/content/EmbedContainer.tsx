@@ -144,7 +144,7 @@ export default function EmbedContainer(props){
         dataSources={renderContents} 
         enableSearchAssist={true}
         hideDataSources={hideDataSources} 
-
+        dataPanelV2={true}
         frameParams={{width:'100%',height:'100%'}}
     />
   }
@@ -185,6 +185,7 @@ export default function EmbedContainer(props){
         onLoad={onEmbedRendered}  
         hideDataSources={hideDataSources}  
         runtimeFilters={runFilters}  
+        dataPanelV2={true}
         answerId={renderContent.split("|")[0]} 
         frameParams={{width:'100%',height:'100vh'}}
     />

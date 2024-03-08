@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { SearchEmbed, LiveboardEmbed, AppEmbed, SearchBarEmbed, useEmbedRef, SageEmbed } from '@thoughtspot/visual-embed-sdk/react';
 import Moveable from "react-moveable";
 import { EmbedEvent, HostEvent } from '@thoughtspot/visual-embed-sdk';
+import { FiAlignLeft } from 'react-icons/fi';
 
 function SagePopup(props){
     const {
@@ -144,6 +145,9 @@ function SageQuestionInput(props){
                       }
                   }} onChange={(e)=>setSageSearch(e.target.value)} value={sageSearch == '' ? defaultValue : sageSearch} placeholder="Ask AI a Data Question" 
                   className="rounded-2xl w-full pl-2 bg-white border-none outline-none"></input>
+                <div className='ml-auto text-white  flex items-center bg-blue-400 hover:bg-blue-300 rounded-lg px-4 py-2 border-none'>
+                    
+                </div>
                   <div onClick={()=>triggerSageSearch(sageSearch)} className="ml-auto text-white  flex items-center bg-blue-400 hover:bg-blue-300 rounded-lg px-4 py-2 border-none">
                       {/* <HiMiniPlay className="mr-2" /> Icon next to "GO" */}
                       GO!
