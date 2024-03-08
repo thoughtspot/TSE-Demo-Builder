@@ -301,3 +301,7 @@ div.selected{
   border-bottom:1px solid #efefef;
   align-items:center;
 }
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;

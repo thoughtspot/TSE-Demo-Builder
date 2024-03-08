@@ -41,13 +41,13 @@ export default function EmbedContainer(props){
       // window.dispatchEvent(event)
   })
     embedRef.current.on(EmbedEvent.VizPointDoubleClick, (data) => {
+      console.log(data, "vis point double clieck!!!")
         const event = new CustomEvent('popup', {detail: {data: data}});
         window.dispatchEvent(event)
     })
     embedRef.current.on(EmbedEvent.VizPointClick, (data) => {
       console.log('single click',data);
     })
-
     embedRef.current.on(EmbedEvent.Drilldown, (data) => {
       console.log('drill click',data);
     })
@@ -65,7 +65,6 @@ export default function EmbedContainer(props){
       window.dispatchEvent(event)
    
     })
-
     embedRef.current.on(EmbedEvent.CustomAction, (payload) => {
       console.log(payload)
       var data = payload.data.embedAnswerData.data[0].columnDataLite
@@ -191,13 +190,17 @@ export default function EmbedContainer(props){
     />
   }
   if (renderType==PageName.Sage){
-    renderPage = <SageEmbed ref={embedRef} 
+    renderPage = 
+    <div style={{padding:'25px',flexDirection:'column',width:'100%',height:'100%',display:'flex',justifyContent:'center', alignItems:'center'}}>
+    <div style={{marginBottom:'15px',marginTop:'50px',fontSize:'32px'}}>Search  Data</div>
+    <SageEmbed ref={embedRef} 
     visibleActions={visibleActions.length>0 ? visibleActions : null}  
     disabledActions={disabledActions.length>0 ? disabledActions : null}  
     onLoad={onEmbedRendered}  
     runtimeFilters={runFilters}  
     frameParams={{width:'100%',height:'100vh'}}
 />
+</div>
   }
   if (renderType==PageName.SearchString){
     var searchString = buildSearchString(renderContent.split("|")[0], searchFields, runFilters)
@@ -210,6 +213,29 @@ export default function EmbedContainer(props){
           onLoad={onEmbedRendered}
           ref={embedRef}  
           enableSearchAssist={true}
+          customizations={{ 
+            style: {
+              customCSS: {
+                variables:{
+                  '--ts-var-root-background':'white',
+                  //@ts-ignore
+                  '--ts-var-sage-bar-header-background-color':'white',
+                },
+                rules_UNSTABLE:{
+                  '.eureka-search-bar-module__withoutSage':{
+                    background: 'white'
+                  },
+                  '[data-testid="sage-enabled-search-bar-title"]':{
+                    display: 'none'
+                  },
+                  '.answer-actions-container-module__answerActionsHorizontal:not(:focus-within) .answer-actions-container-module__answerActionsCompact':{
+                    display: 'block'
+                  }
+                }
+      
+              }
+            }
+          }}
           dataSources={dataSources} 
           visibleActions={visibleActions.length>0 ? visibleActions : null}  
           disabledActions={disabledActions.length>0 ? disabledActions : null}  

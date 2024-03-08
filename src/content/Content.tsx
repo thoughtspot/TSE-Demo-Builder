@@ -12,6 +12,8 @@ import NotePopup from '../popups/NotePopup';
 import SpotIQPopup from '../popups/SpotIQPopUp';
 import { Settings } from '../util/Types';
 import { StyleOptionList, StyleOptions } from '../util/PreBuiltStyles';
+import SagePopup from '../popups/SagePopup';
+import { filter, flexbox } from '@chakra-ui/react';
 
 
 interface ContentProps {
@@ -250,6 +252,7 @@ return (
       ></NavigationMenu>
       <NotePopup></NotePopup>
       <SpotIQPopup></SpotIQPopup>
+      <SagePopup></SagePopup>
     <EmbedContainer
         url={settings.URL}
         renderType={renderType}
@@ -262,8 +265,84 @@ return (
         renderKey={renderKey}
     >
     </EmbedContainer>
+    {settings.askSage && (
+    <AskSageButton settings={settings}></AskSageButton>
+    )}
+
+
   </div>
 )
 }
 
 
+
+
+
+function AskSageButton(props) {
+  const {
+    settings
+  } = props
+  const [showAskPrompt,setShowAskPrompt] = useState(false)
+  const [sageSearch,setSageSearch] = useState('')
+  function triggerSageSearch(){
+      const event = new CustomEvent('sage', {detail: {data: sageSearch}});
+      window.dispatchEvent(event)
+      setShowAskPrompt(false)
+  }
+  function triggerSampleQuestion(question: string){
+    const event = new CustomEvent('sage', {detail: {data: question}});
+    window.dispatchEvent(event)
+    setShowAskPrompt(false)
+  }
+  let filteredQuestions = Object.keys(settings.sageQuestions).reduce(function (filtered, key) {
+    if (settings.sageQuestions[key].length > 0) filtered[key] = settings.sageQuestions[key];
+      return filtered;
+    }, {})
+  let numSampleQuestions = Object.keys(filteredQuestions).length;
+  return(
+    <>
+    {showAskPrompt && (
+      <div className="shadow-lg bg-white flex-col p-4 space-y-2"  style={{width:'450px',height:150+30*numSampleQuestions,display:'flex',position:'absolute',bottom:'110px',right:'25px', borderWidth:2, borderRadius:'15px'}} >
+      
+      <div className="font-bold">Ask Your Data a Question</div>
+          <div className="flex w-full h-12 bg-white border-slate-400 border rounded-2xl my-2 p-2"> 
+                <input onKeyUp={(e)=>{
+                    if (e.key === 'Enter' || e.keyCode === 13) {
+                        triggerSageSearch();
+                    }
+                }} onChange={(e)=>setSageSearch(e.target.value)} value={sageSearch} placeholder="Ask AI a Data Question" 
+                className="rounded-2xl w-full pl-2 bg-white border-none outline-none"></input>
+                <div onClick={triggerSageSearch} className="ml-auto text-white  flex items-center bg-blue-400 hover:bg-blue-300 rounded-lg px-4 py-2 border-none">
+                    {/* <HiMiniPlay className="mr-2" /> Icon next to "GO" */}
+                    GO!
+                </div>
+            </div>
+            {numSampleQuestions > 0 && (
+            <div className="pt-2">
+              <div className="font-bold">Or Try an Example:</div>
+              <div className='flex flex-col space-y-1'>
+
+            {Object.keys(filteredQuestions).map((questionKey)=>{
+            return <div onClick={()=>{
+              triggerSampleQuestion(settings.sageQuestions[questionKey]);
+            }} className="text-blue-400 hover:cursor-pointer hover:text-blue-300">{settings.sageQuestions[questionKey]}</div>
+            })
+            }
+            </div>
+            </div>
+            )}
+
+  
+      </div>
+    )}
+
+    <div
+    onClick={()=>setShowAskPrompt(!showAskPrompt)}
+    className='hover:cursor-pointer hover:shadow-lg'
+    style={{padding:'5px',alignItems:'center',justifyContent:'center',textAlign:'center',width:'75px',height:'75px',display:'flex',position:'absolute',bottom:'25px',right:'25px', backgroundColor: settings.primaryColor, borderWidth:2, borderRadius:'15px'}} >
+      Ask Sage
+    </div>
+    </>
+  )
+
+}

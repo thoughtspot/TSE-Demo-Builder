@@ -14,7 +14,10 @@ export interface Settings {
     backgroundColor: string,
     orientation: string,
     prebuiltStyle: StyleOptionList | undefined,
-    logoImage: string
+    logoImage: string,
+    askSage: boolean,
+    sageWorksheet: string
+    sageQuestions: {}
   }
 export interface DemoPage {
     id: PageName

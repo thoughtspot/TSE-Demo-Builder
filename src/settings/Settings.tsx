@@ -38,6 +38,10 @@ const [displayPrimaryPicker, setDisplayPrimaryPicker] = useState(false)
 const [displaySecondaryPicker, setDisplaySecondaryPicker] = useState(false)
 const [displayButtonPicker, setDisplayButtonPicker] = useState(false)
 const [displayBackgroundPicker, setDisplayBackgroundPicker] = useState(false)
+const [askSage, setAskSage]  = useState(false)
+const [sageWorksheet, setSageWorksheet]  = useState('')
+const [sageQuestions, setSageQuestions]  = useState({0:'',1:'',2:''})
+
 
 
 useEffect(()=>{
@@ -110,7 +114,10 @@ const getSettingsObj = () =>{
     backgroundColor: backgroundColor,
     orientation: orientation,
     logoImage: logoImage,
-    prebuiltStyle: prebuiltStyle
+    prebuiltStyle: prebuiltStyle,
+    askSage: askSage,
+    sageWorksheet: sageWorksheet,
+    sageQuestions: sageQuestions
   }
   return settings;
 }
@@ -136,6 +143,9 @@ useEffect(() => {
     setBackgroundColor(settings.backgroundColor)
     setOrientation(settings.orientation)
     setLogoImage(settings.logoImage)
+    setAskSage(settings.askSage)
+    setSageWorksheet(settings.sageWorksheet)
+    setSageQuestions(settings.sageQuestions)
   }
 }, [])
 const popover = {
@@ -210,6 +220,11 @@ const triggerInputImage = () => {
 }
 const hideSettings = () => {
   closeSettings();
+}
+const updateSageQuestions=(text: string, idx: number)=>{
+  setSageQuestions({ ...sageQuestions, [idx]: text });
+
+
 }
 return (
   <div id="settingsContainer">
@@ -334,11 +349,31 @@ return (
 
       </div>
     </div>
-    <div style={{display:'flex',flexDirection:'row'}}>
+    <div style={{display:'flex',flexDirection:'column'}}>
     <div className="button addLink" onClick={addLink}>
       <PlusIcon />
       Add Link
     </div>
+    <div className='flex flex-col items-start'>
+    <div className='flex flex-row'>
+    <div className="settingLabel mr-2">Enable Ask Sage</div> 
+    <input type="checkbox" checked={askSage} onChange={()=>setAskSage(!askSage)}></input>
+    </div>
+    {askSage && 
+      <>
+      <div className="settingLabel">Sage Worksheet</div> 
+      <input  className="h-8 w-96"  type="text" value={sageWorksheet} onChange={e => setSageWorksheet(e.target.value)}></input>
+      <div className="settingLabel">Sample Questions</div> 
+      <div className='flex flex-col space-y-2 w-full'>
+      <input className="h-8 w-full" type="text" value={sageQuestions? sageQuestions[0] : ''} onChange={e => updateSageQuestions(e.target.value, 0)}></input>
+      <input className="h-8 w-full"  type="text" value={sageQuestions? sageQuestions[1]: ''} onChange={e => updateSageQuestions(e.target.value, 1)}></input>
+      <input  className="h-8 w-full" type="text" value={sageQuestions? sageQuestions[2] : ''} onChange={e => updateSageQuestions(e.target.value, 2)}></input>
+      </div>
+          </>
+    }
+
+    </div>
+
   </div>
   </div>
 )
@@ -380,7 +415,6 @@ function Link(props){
   if (!demoPage){
     demoPage = defaultPages.filter((page: DemoPage) => page.id == PageName.None)[0]
   }
-  console.log(demoPage,"demoPage",defaultPages)
   var contentInput = null;
   if (type==PageName.Menu){
     contentInput = null;

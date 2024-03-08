@@ -75,7 +75,7 @@ function SearchPopup(){
                 ]}
                 liveboardId="163e263c-a5e0-42ac-a1f4-3cd9e06a5003"
                 ref={embedRef}
-                visibleActions={[Action.Download]}
+                visibleActions={[Action.Download,Action.Explore,Action.DrillDown]}
                 
             />
             </div>
