@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { SearchEmbed, LiveboardEmbed, AppEmbed, SearchBarEmbed, useEmbedRef, SageEmbed } from '@thoughtspot/visual-embed-sdk/react';
 import Moveable from "react-moveable";
+import { EmbedEvent, HostEvent } from '@thoughtspot/visual-embed-sdk';
 
 function SagePopup(props){
     const {
@@ -13,16 +14,25 @@ function SagePopup(props){
     const [value,setValue] = useState('')
     const [noteText,setNoteText] = useState('')
     const [sageQuestion ,setSageQuestion] = useState('')
+
+    const embedRef = useEmbedRef<typeof SageEmbed>();
     useEffect(() => {
         window.addEventListener('sage', function(e: any){
             setPopupVisible(true);
-            console.log(e.detail.data)
             setSageQuestion(e.detail.data);
 
         })
       }, [])
     function togglePopupVisible(){
         setPopupVisible(false)
+    }
+    function toggleSageQuestion(question: string){
+        setSageQuestion(question);
+        //console.log("updating",question)
+        // embedRef.current.trigger(HostEvent.UpdateSageQuery,{
+        //     queryString: question,
+        //     executeSearch: true
+        // })
     }
     var disp = popupVisible ? 'flex' : 'none';
 
@@ -51,11 +61,12 @@ function SagePopup(props){
                 </div>
             </div>
             <div className='p-4'>
-            <SageQuestionInput defaultValue={sageQuestion} triggerSageSearch={(data)=>setSageQuestion(data)}></SageQuestionInput>
+            <SageQuestionInput defaultValue={sageQuestion} triggerSageSearch={(data)=>toggleSageQuestion(data)}></SageQuestionInput>
             </div>
             <div style={{flex:1}}>
             {popupVisible?
                 <SageEmbed dataSource={worksheet} 
+                ref={embedRef}
                 searchOptions={{
                     searchQuery: sageQuestion,
                     executeSearch: sageQuestion!='' ? true : false
@@ -126,11 +137,11 @@ function SageQuestionInput(props){
         <div className="flex w-full h-12 bg-white border-slate-400 border rounded-2xl my-2 p-2"> 
                   <input onKeyUp={(e)=>{
                       if (e.key === 'Enter' || e.keyCode === 13) {
-                          triggerSageSearch();
+                          triggerSageSearch(sageSearch);
                       }
                   }} onChange={(e)=>setSageSearch(e.target.value)} value={sageSearch == '' ? defaultValue : sageSearch} placeholder="Ask AI a Data Question" 
                   className="rounded-2xl w-full pl-2 bg-white border-none outline-none"></input>
-                  <div onClick={triggerSageSearch} className="ml-auto text-white  flex items-center bg-blue-400 hover:bg-blue-300 rounded-lg px-4 py-2 border-none">
+                  <div onClick={()=>triggerSageSearch(sageSearch)} className="ml-auto text-white  flex items-center bg-blue-400 hover:bg-blue-300 rounded-lg px-4 py-2 border-none">
                       {/* <HiMiniPlay className="mr-2" /> Icon next to "GO" */}
                       GO!
                   </div>
